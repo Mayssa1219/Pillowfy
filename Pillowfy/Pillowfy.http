@@ -1,0 +1,6 @@
+@Pillowfy_HostAddress = http://localhost:5139
+
+GET {{Pillowfy_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
