@@ -1,0 +1,96 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\boute\\source\\repos\\Pillowfy\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|c:\\users\\boute\\source\\repos\\pillowfy\\pillowfy\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|solutionrelative:pillowfy\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|c:\\users\\boute\\source\\repos\\pillowfy\\pillowfy\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|solutionrelative:pillowfy\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|c:\\users\\boute\\source\\repos\\pillowfy\\pillowfy\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|solutionrelative:pillowfy\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|c:\\users\\boute\\source\\repos\\pillowfy\\pillowfy\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4D7ACE5-B906-4E53-8F54-8E12AE76F9F3}|Pillowfy\\Pillowfy.csproj|solutionrelative:pillowfy\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 160,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\appsettings.json",
+              "RelativeDocumentMoniker": "Pillowfy\\appsettings.json",
+              "ToolTip": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\appsettings.json",
+              "RelativeToolTip": "Pillowfy\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-22T14:11:24.661Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\.gitignore",
+              "RelativeDocumentMoniker": "Pillowfy\\.gitignore",
+              "ToolTip": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\.gitignore",
+              "RelativeToolTip": "Pillowfy\\.gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-04-22T14:11:17.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "Pillowfy\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\Properties\\launchSettings.json",
+              "RelativeToolTip": "Pillowfy\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-22T14:11:11.854Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\Program.cs",
+              "RelativeDocumentMoniker": "Pillowfy\\Program.cs",
+              "ToolTip": "C:\\Users\\boute\\source\\repos\\Pillowfy\\Pillowfy\\Program.cs",
+              "RelativeToolTip": "Pillowfy\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-22T14:10:53.075Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
