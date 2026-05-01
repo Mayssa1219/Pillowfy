@@ -1,0 +1,966 @@
+﻿@{
+    ViewData["Title"] = "Accueil";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Gestion hôtelière intelligente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: #E8D5B0;
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --cream: #FAF7F2;
+            --cream-dk: #F0EBE1;
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: #E6F2F2;
+            --radius-lg: 20px;
+            --radius-xl: 32px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.08);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.12);
+            --shadow-lg: 0 20px 60px rgba(15,22,33,0.16);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+            /* ───── NOISE TEXTURE OVERLAY ───── */
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 0;
+            }
+
+        /* ───── NAVBAR ───── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 3.5rem;
+            background: rgba(250,247,242,0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(201,169,110,0.18);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+       
+        .nav-brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .nav-brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--ink);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--ink-60);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            transition: color .2s;
+        }
+
+            .nav-link:hover {
+                color: var(--ink);
+            }
+
+        .nav-cta {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all .22s cubic-bezier(.4,0,.2,1);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--ink-30);
+        }
+
+            .btn-ghost:hover {
+                border-color: var(--ink);
+                background: rgba(15,22,33,0.04);
+            }
+
+        .btn-primary {
+            background: var(--ink);
+            color: var(--white);
+        }
+
+            .btn-primary:hover {
+                background: #1d2a3a;
+                box-shadow: 0 4px 20px rgba(15,22,33,0.28);
+                transform: translateY(-1px);
+            }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--ink);
+        }
+
+            .btn-gold:hover {
+                background: #b8924f;
+                box-shadow: 0 6px 28px rgba(201,169,110,0.40);
+                transform: translateY(-2px);
+            }
+
+        .btn-outline-gold {
+            background: transparent;
+            color: var(--gold);
+            border: 1.5px solid var(--gold);
+        }
+
+            .btn-outline-gold:hover {
+                background: rgba(201,169,110,0.08);
+            }
+
+        .btn-lg {
+            padding: 0.9rem 2rem;
+            font-size: 0.96rem;
+        }
+
+        /* ───── HERO ───── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 3.5rem 5rem;
+            overflow: hidden;
+        }
+
+        .hero-bg-pattern {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 60% at 80% 40%, rgba(201,169,110,0.12) 0%, transparent 65%), radial-gradient(ellipse 50% 50% at 10% 80%, rgba(26,107,107,0.07) 0%, transparent 60%);
+            z-index: 0;
+        }
+
+            /* Decorative lines */
+            .hero-bg-pattern::after {
+                content: '';
+                position: absolute;
+                right: 8%;
+                top: 15%;
+                width: 420px;
+                height: 420px;
+                border-radius: 50%;
+                border: 1px solid rgba(201,169,110,0.18);
+                box-shadow: inset 0 0 0 40px rgba(201,169,110,0.04), inset 0 0 0 80px rgba(201,169,110,0.02);
+            }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 660px;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201,169,110,0.12);
+            border: 1px solid rgba(201,169,110,0.28);
+            color: #9A722E;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 1.8rem;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero-eyebrow-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.8rem, 5vw, 4.2rem);
+            line-height: 1.12;
+            color: var(--ink);
+            margin-bottom: 1.6rem;
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+
+            .hero-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.75;
+            color: var(--ink-60);
+            max-width: 480px;
+            margin-bottom: 2.6rem;
+            animation: fadeUp 0.6s 0.2s ease both;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            animation: fadeUp 0.6s 0.3s ease both;
+        }
+
+        .hero-stats {
+            position: absolute;
+            right: 5%;
+            bottom: 10%;
+            z-index: 1;
+            display: flex;
+            gap: 1.5rem;
+            animation: fadeUp 0.8s 0.5s ease both;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(201,169,110,0.15);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-number {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.9rem;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--ink-60);
+            letter-spacing: 0.3px;
+            margin-top: 4px;
+        }
+
+        /* ───── SECTION COMMON ───── */
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-pad {
+            padding: 6rem 3.5rem;
+        }
+
+        .section-pad-sm {
+            padding: 4rem 3.5rem;
+        }
+
+        .label-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 1rem;
+        }
+
+            .label-tag::before {
+                content: '';
+                display: block;
+                width: 20px;
+                height: 1.5px;
+                background: var(--teal);
+            }
+
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            line-height: 1.18;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
+
+            .section-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .section-desc {
+            font-size: 1.02rem;
+            font-weight: 300;
+            line-height: 1.72;
+            color: var(--ink-60);
+            max-width: 520px;
+        }
+
+        /* ───── FEATURES GRID ───── */
+        .features-section {
+            background: var(--white);
+        }
+
+        .features-header {
+            max-width: 500px;
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--cream);
+            border: 1px solid rgba(201,169,110,0.14);
+            border-radius: var(--radius-xl);
+            padding: 2.2rem 1.8rem;
+            transition: all .28s cubic-bezier(.4,0,.2,1);
+            cursor: default;
+        }
+
+            .feature-card:hover {
+                background: var(--white);
+                border-color: rgba(201,169,110,0.35);
+                box-shadow: var(--shadow-md);
+                transform: translateY(-4px);
+            }
+
+            .feature-card.featured {
+                background: var(--ink);
+                border-color: var(--ink);
+                color: var(--white);
+            }
+
+                .feature-card.featured .feature-icon-wrap {
+                    background: rgba(255,255,255,0.1);
+                }
+
+                .feature-card.featured .feature-title {
+                    color: var(--white);
+                }
+
+                .feature-card.featured .feature-desc {
+                    color: rgba(255,255,255,0.55);
+                }
+
+        .feature-icon-wrap {
+            width: 48px;
+            height: 48px;
+            background: rgba(201,169,110,0.12);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .feature-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.18rem;
+            color: var(--ink);
+            margin-bottom: 0.6rem;
+        }
+
+        .feature-desc {
+            font-size: 0.92rem;
+            font-weight: 300;
+            line-height: 1.65;
+            color: var(--ink-60);
+        }
+
+        /* ───── HOW IT WORKS ───── */
+        .steps-section {
+            background: var(--cream);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 4rem;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            padding: 1.8rem 0;
+            border-bottom: 1px solid var(--cream-dk);
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+            .step-item:last-child {
+                border-bottom: none;
+            }
+
+            .step-item:hover .step-num {
+                background: var(--gold);
+                color: var(--white);
+            }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid var(--ink-30);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink-60);
+            transition: all .2s;
+        }
+
+        .step-content {
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--ink);
+            margin-bottom: 0.3rem;
+        }
+
+        .step-desc {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--ink-60);
+            line-height: 1.6;
+        }
+
+        .steps-visual {
+            position: relative;
+        }
+
+        .steps-visual-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(201,169,110,0.12);
+        }
+
+        .dashboard-preview {
+            width: 100%;
+        }
+
+        .dash-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .dash-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+        .dash-badge {
+            background: rgba(26,107,107,0.1);
+            color: var(--teal);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 100px;
+            letter-spacing: 0.5px;
+        }
+
+        .dash-rooms {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 1.2rem;
+        }
+
+        .dash-room {
+            padding: 10px 8px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .room-occ {
+            background: rgba(26,107,107,0.1);
+            color: var(--teal);
+        }
+
+        .room-free {
+            background: rgba(201,169,110,0.12);
+            color: #9A722E;
+        }
+
+        .room-maint {
+            background: rgba(15,22,33,0.06);
+            color: var(--ink-60);
+        }
+
+        .dash-metric-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dash-metric {
+            flex: 1;
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .dash-metric-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.35rem;
+            color: var(--ink);
+        }
+
+        .dash-metric-lbl {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        /* ───── CTA STRIP ───── */
+        .cta-section {
+            background: var(--ink);
+            padding: 5rem 3.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .cta-section::before {
+                content: '';
+                position: absolute;
+                right: -5%;
+                top: -30%;
+                width: 500px;
+                height: 500px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 65%);
+                pointer-events: none;
+            }
+
+        .cta-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-text .label-tag {
+            color: rgba(201,169,110,0.6);
+        }
+
+            .cta-text .label-tag::before {
+                background: rgba(201,169,110,0.4);
+            }
+
+        .cta-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            color: var(--white);
+            line-height: 1.2;
+        }
+
+            .cta-title em {
+                color: var(--gold);
+                font-style: italic;
+            }
+
+        .cta-actions {
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        /* ───── FOOTER ───── */
+        footer {
+            background: var(--cream-dk);
+            padding: 2.5rem 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(201,169,110,0.2);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--ink);
+        }
+
+        .footer-copy {
+            font-size: 0.82rem;
+            color: var(--ink-30);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-link {
+            font-size: 0.82rem;
+            color: var(--ink-60);
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+            .footer-link:hover {
+                color: var(--ink);
+            }
+
+        /* ───── ANIMATIONS ───── */
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ───── RESPONSIVE ───── */
+        @@media (max-width: 900px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 7rem 1.5rem 4rem;
+            }
+
+            .hero-stats {
+                position: static;
+                margin-top: 3rem;
+            }
+
+            .section-pad {
+                padding: 4rem 1.5rem;
+            }
+
+            .section-pad-sm {
+                padding: 3rem 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .cta-section {
+                padding: 3.5rem 1.5rem;
+            }
+
+            .cta-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            footer {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <a href="/" class="nav-brand">
+            <img src="/Images/logo.png" alt="Pillowfy" style="width:36px; height:36px; border-radius:10px; object-fit:cover;">
+            <span class="nav-brand-name">Pillowfy</span>
+        </a>
+        <div class="nav-links">
+            <a href="#fonctionnalites" class="nav-link">Fonctionnalités</a>
+            <a href="#comment-ca-marche" class="nav-link">Comment ça marche</a>
+            <a href="/swagger" class="nav-link">API</a>
+        </div>
+        <div class="nav-cta">
+            <a href="/Login/Index" class="btn btn-ghost">Connexion</a>
+            <a href="/Register/Index" class="btn btn-primary">Créer un compte →</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg-pattern"></div>
+        <div class="hero-content">
+            <div class="hero-eyebrow">
+                <span class="hero-eyebrow-dot"></span>
+                Plateforme de gestion hôtelière
+            </div>
+            <h1 class="hero-title">
+                Gérez votre hôtel<br>
+                avec <em>élégance</em><br>
+                & précision
+            </h1>
+            <p class="hero-desc">
+                Pillowfy centralise vos chambres, réservations et paiements dans une interface intuitive conçue pour les professionnels de l'hôtellerie.
+            </p>
+            <div class="hero-actions">
+                <a href="/Account/Register" class="btn btn-gold btn-lg">Commencer gratuitement</a>
+                <a href="/swagger" class="btn btn-ghost btn-lg">Explorer l'API</a>
+            </div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Taux de satisfaction</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support disponible</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">+500</div>
+                <div class="stat-label">Hôtels partenaires</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="fonctionnalites" class="features-section section-pad">
+        <div class="features-header">
+            <span class="label-tag">Fonctionnalités</span>
+            <h2 class="section-title">Tout ce dont vous<br><em>avez besoin</em></h2>
+            <p class="section-desc">Une suite d'outils pensée pour simplifier la gestion quotidienne et booster vos performances.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card featured">
+                <div class="feature-icon-wrap">🔐</div>
+                <div class="feature-title">Sécurité avancée</div>
+                <div class="feature-desc">Authentification JWT robuste, gestion fine des rôles et accès, conformité RGPD garantie.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap">📋</div>
+                <div class="feature-title">Gestion centralisée</div>
+                <div class="feature-desc">Suivi en temps réel des chambres, réservations, clients et paiements depuis un seul tableau de bord.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap">⚡</div>
+                <div class="feature-title">API REST performante</div>
+                <div class="feature-desc">Intégrez facilement vos systèmes existants grâce à notre API documentée, rapide et fiable.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap">📊</div>
+                <div class="feature-title">Analytiques & rapports</div>
+                <div class="feature-desc">Visualisez vos KPIs, taux d'occupation et revenus avec des tableaux de bord interactifs.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap">🔔</div>
+                <div class="feature-title">Notifications intelligentes</div>
+                <div class="feature-desc">Alertes automatiques pour les arrivées, départs, paiements en attente et événements critiques.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap">🌐</div>
+                <div class="feature-title">Multi-établissements</div>
+                <div class="feature-desc">Gérez plusieurs hôtels depuis un compte unique avec une séparation claire des données.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="comment-ca-marche" class="steps-section section-pad">
+        <span class="label-tag">Comment ça marche</span>
+        <h2 class="section-title">Opérationnel en<br><em>quelques minutes</em></h2>
+
+        <div class="steps-grid">
+            <div class="step-list">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Créez votre compte</div>
+                        <div class="step-desc">Inscription rapide en moins de 2 minutes. Aucune carte bancaire requise pour démarrer.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Configurez votre hôtel</div>
+                        <div class="step-desc">Ajoutez vos chambres, tarifs et équipements grâce à notre interface guidée intuitive.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Acceptez vos réservations</div>
+                        <div class="step-desc">Recevez et gérez les réservations en temps réel avec confirmation automatique par e-mail.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Suivez vos performances</div>
+                        <div class="step-desc">Analysez vos revenus, taux d'occupation et satisfaction client depuis votre tableau de bord.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="steps-visual">
+                <div class="steps-visual-card">
+                    <div class="dashboard-preview">
+                        <div class="dash-header">
+                            <span class="dash-title">Tableau de bord — Hôtel Lumière</span>
+                            <span class="dash-badge">● En ligne</span>
+                        </div>
+                        <div class="dash-rooms">
+                            <div class="dash-room room-occ">101 — Occupée</div>
+                            <div class="dash-room room-free">102 — Libre</div>
+                            <div class="dash-room room-occ">103 — Occupée</div>
+                            <div class="dash-room room-maint">104 — Entretien</div>
+                            <div class="dash-room room-free">105 — Libre</div>
+                            <div class="dash-room room-occ">106 — Occupée</div>
+                        </div>
+                        <div class="dash-metric-row">
+                            <div class="dash-metric">
+                                <div class="dash-metric-val">78%</div>
+                                <div class="dash-metric-lbl">Taux d'occupation</div>
+                            </div>
+                            <div class="dash-metric">
+                                <div class="dash-metric-val">12</div>
+                                <div class="dash-metric-lbl">Arrivées aujourd'hui</div>
+                            </div>
+                            <div class="dash-metric">
+                                <div class="dash-metric-val">3 480 €</div>
+                                <div class="dash-metric-lbl">Revenus du jour</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-inner">
+            <div class="cta-text">
+                <span class="label-tag">Prêt à démarrer ?</span>
+                <h2 class="cta-title">Rejoignez +500 hôtels<br>qui font confiance à <em>Pillowfy</em></h2>
+            </div>
+            <div class="cta-actions">
+                <a href="/Account/Register" class="btn btn-gold btn-lg">Créer un compte gratuit</a>
+                <a href="/Login/Index" class="btn btn-outline-gold btn-lg">Se connecter</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">Pillowfy</div>
+        <div class="footer-copy">© 2026 Pillowfy. Tous droits réservés.</div>
+        <div class="footer-links">
+            <a href="/swagger" class="footer-link">API Docs</a>
+            <a href="#" class="footer-link">Confidentialité</a>
+            <a href="#" class="footer-link">Contact</a>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -9,6 +9,7 @@
 	<ItemGroup>
 
 		<!-- 🔐 Identity (OFFICIEL NET 8) -->
+		<PackageReference Include="MailKit" Version="4.16.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
 
 		<!-- 🔑 JWT Authentication -->
@@ -28,6 +29,10 @@
 		<!-- 📦 JSON -->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\Images\logo.png" />
 	</ItemGroup>
 
 </Project>
