@@ -1,0 +1,780 @@
+﻿@{
+    ViewData["Title"] = "Inscription";
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Inscription</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --ink-10: rgba(15,22,33,0.08);
+            --cream: #FAF7F2;
+            --cream-dk: #F0EBE1;
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --error: #C0392B;
+        }
+
+        html, body {
+            min-height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 0;
+            }
+
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── LEFT PANEL ── */
+        .panel-left {
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .panel-left::before {
+                content: '';
+                position: absolute;
+                bottom: -10%;
+                left: -10%;
+                width: 420px;
+                height: 420px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.15) 0%, transparent 65%);
+                pointer-events: none;
+            }
+
+            .panel-left::after {
+                content: '';
+                position: absolute;
+                top: 20%;
+                right: -5%;
+                width: 260px;
+                height: 260px;
+                border-radius: 50%;
+                border: 1px solid rgba(201,169,110,0.12);
+            }
+
+        .panel-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        
+        .nav-brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--white);
+        }
+
+        .panel-copy {
+            position: relative;
+            z-index: 1;
+        }
+
+        .panel-quote {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+            line-height: 1.2;
+            color: var(--white);
+            margin-bottom: 1.2rem;
+        }
+
+            .panel-quote em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .panel-sub {
+            font-size: 0.92rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.65;
+            max-width: 320px;
+        }
+
+        .panel-stats {
+            display: flex;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pstat-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+
+        .pstat-lbl {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .panel-right {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 3rem 2.5rem;
+            overflow-y: auto;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 420px;
+            padding: 1rem 0;
+            animation: fadeUp 0.55s ease both;
+        }
+
+        .login-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 1.4rem;
+        }
+
+            .login-eyebrow::before {
+                content: '';
+                display: block;
+                width: 18px;
+                height: 1.5px;
+                background: var(--teal);
+            }
+
+        .login-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            line-height: 1.15;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+
+            .login-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .login-subtitle {
+            font-size: 0.92rem;
+            font-weight: 300;
+            color: var(--ink-60);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* ── FORM GRID ── */
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--ink-60);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.78rem 1rem;
+            background: var(--white);
+            border: 1.5px solid var(--cream-dk);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+            .form-input::placeholder {
+                color: var(--ink-30);
+            }
+
+            .form-input:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 3px rgba(201,169,110,0.15);
+            }
+
+            .form-input.error {
+                border-color: var(--error);
+                box-shadow: 0 0 0 3px rgba(192,57,43,0.10);
+            }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ink-30);
+            font-size: 1rem;
+            padding: 4px;
+            transition: color .2s;
+        }
+
+            .input-toggle:hover {
+                color: var(--ink);
+            }
+
+        .form-error {
+            font-size: 0.78rem;
+            color: var(--error);
+            margin-top: 5px;
+            display: none;
+        }
+
+            .form-error.visible {
+                display: block;
+            }
+
+        /* ── PASSWORD STRENGTH ── */
+        .strength-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .s-seg {
+            height: 3px;
+            border-radius: 2px;
+            background: var(--cream-dk);
+            transition: background .3s;
+        }
+
+            .s-seg.strength-1 {
+                background: #e74c3c;
+            }
+
+            .s-seg.strength-2 {
+                background: #e67e22;
+            }
+
+            .s-seg.strength-3 {
+                background: #f1c40f;
+            }
+
+            .s-seg.strength-4 {
+                background: #27ae60;
+            }
+
+        /* ── TERMS ── */
+        .terms-text {
+            font-size: 0.80rem;
+            color: var(--ink-60);
+            line-height: 1.55;
+            margin-top: 0.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+            .terms-text a {
+                color: var(--ink);
+                font-weight: 600;
+                text-decoration: none;
+                border-bottom: 1px solid var(--gold);
+            }
+
+        /* ── BUTTON ── */
+        .btn-submit {
+            width: 100%;
+            padding: 0.88rem;
+            background: var(--ink);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.96rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all .22s cubic-bezier(.4,0,.2,1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 0.6rem;
+        }
+
+            .btn-submit:hover:not(:disabled) {
+                background: #1d2a3a;
+                box-shadow: 0 6px 24px rgba(15,22,33,0.25);
+                transform: translateY(-1px);
+            }
+
+            .btn-submit:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            .btn-submit .btn-text {
+                transition: opacity .2s;
+            }
+
+            .btn-submit .btn-loader {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity .2s;
+            }
+
+            .btn-submit.loading .btn-text {
+                opacity: 0;
+            }
+
+            .btn-submit.loading .btn-loader {
+                opacity: 1;
+            }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        /* ── ALERT ── */
+        .alert {
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .alert.visible {
+                display: flex;
+            }
+
+        .alert-error {
+            background: rgba(192,57,43,0.08);
+            border: 1px solid rgba(192,57,43,0.22);
+            color: var(--error);
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 1.3rem 0;
+        }
+
+            .divider::before, .divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--cream-dk);
+            }
+
+        .divider-text {
+            font-size: 0.75rem;
+            color: var(--ink-30);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .login-row {
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--ink-60);
+        }
+
+            .login-row a {
+                color: var(--ink);
+                font-weight: 600;
+                text-decoration: none;
+                border-bottom: 1px solid var(--gold);
+                padding-bottom: 1px;
+                transition: color .2s;
+            }
+
+                .login-row a:hover {
+                    color: var(--gold);
+                }
+
+        /* ── ANIMATIONS ── */
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 768px) {
+            .page {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-left {
+                display: none;
+            }
+
+            .panel-right {
+                padding: 2.5rem 1.5rem;
+                align-items: flex-start;
+                padding-top: 3rem;
+            }
+
+            .row-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page">
+
+        <!-- LEFT — branding panel -->
+        <div class="panel-left">
+            <a href="/" class="panel-brand">
+                <img src="/images/logo.png" alt="Pillowfy" style="width:36px; height:36px; border-radius:10px; object-fit:cover;">
+                <span class="brand-name">Pillowfy</span>
+            </a>
+
+            <div class="panel-copy">
+                <h2 class="panel-quote">
+                    Rejoignez les<br>
+                    professionnels qui<br>
+                    choisissent <em>l'excellence</em>
+                </h2>
+                <p class="panel-sub">
+                    Créez votre espace en quelques secondes et gérez vos établissements depuis une seule plateforme.
+                </p>
+            </div>
+
+            <div class="panel-stats">
+                <div>
+                    <div class="pstat-num">+500</div>
+                    <div class="pstat-lbl">Hôtels partenaires</div>
+                </div>
+                <div>
+                    <div class="pstat-num">98%</div>
+                    <div class="pstat-lbl">Satisfaction client</div>
+                </div>
+                <div>
+                    <div class="pstat-num">24/7</div>
+                    <div class="pstat-lbl">Support disponible</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT — register form -->
+        <div class="panel-right">
+            <div class="register-box">
+
+                <span class="login-eyebrow">Créer un compte</span>
+                <h1 class="login-title">Bienvenue sur<br><em>Pillowfy</em></h1>
+                <p class="login-subtitle">Remplissez le formulaire pour démarrer gratuitement.</p>
+
+                <div class="alert alert-error" id="alertError">
+                    <span>⚠</span>
+                    <span id="alertMsg">Une erreur est survenue. Veuillez réessayer.</span>
+                </div>
+
+                <form id="registerForm" novalidate>
+
+                    <div class="row-2">
+                        <div class="form-group">
+                            <label class="form-label" for="firstName">Prénom</label>
+                            <input class="form-input" id="firstName" name="FirstName" type="text"
+                                   placeholder="Jean" autocomplete="given-name" required />
+                            <div class="form-error" id="firstNameError">Veuillez saisir votre prénom.</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="lastName">Nom</label>
+                            <input class="form-input" id="lastName" name="LastName" type="text"
+                                   placeholder="Dupont" autocomplete="family-name" required />
+                            <div class="form-error" id="lastNameError">Veuillez saisir votre nom.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Adresse e-mail</label>
+                        <input class="form-input" id="email" name="Email" type="email"
+                               placeholder="vous@exemple.com" autocomplete="email" required />
+                        <div class="form-error" id="emailError">Veuillez saisir un e-mail valide.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phoneNumber">Numéro de téléphone</label>
+                        <input class="form-input" id="phoneNumber" name="PhoneNumber" type="tel"
+                               placeholder="+33 6 00 00 00 00" autocomplete="tel" />
+                        <div class="form-error" id="phoneError">Numéro de téléphone invalide.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Mot de passe</label>
+                        <div class="input-wrap">
+                            <input class="form-input" id="password" name="Password" type="password"
+                                   placeholder="••••••••" autocomplete="new-password" required />
+                            <button type="button" class="input-toggle" id="togglePwd" aria-label="Afficher le mot de passe">👁</button>
+                        </div>
+                        <div class="strength-bar">
+                            <div class="s-seg" id="seg1"></div>
+                            <div class="s-seg" id="seg2"></div>
+                            <div class="s-seg" id="seg3"></div>
+                            <div class="s-seg" id="seg4"></div>
+                        </div>
+                        <div class="form-error" id="pwdError">Le mot de passe doit contenir au moins 8 caractères.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirmer le mot de passe</label>
+                        <div class="input-wrap">
+                            <input class="form-input" id="confirmPassword" name="ConfirmPassword" type="password"
+                                   placeholder="••••••••" autocomplete="new-password" required />
+                            <button type="button" class="input-toggle" id="toggleConfirm" aria-label="Afficher le mot de passe">👁</button>
+                        </div>
+                        <div class="form-error" id="confirmError">Les mots de passe ne correspondent pas.</div>
+                    </div>
+
+                    <p class="terms-text">
+                        En créant un compte, vous acceptez nos
+                        <a href="#">Conditions d'utilisation</a> et notre
+                        <a href="#">Politique de confidentialité</a>.
+                    </p>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="btn-text">Créer mon compte →</span>
+                        <span class="btn-loader"><div class="spinner"></div></span>
+                    </button>
+
+                </form>
+
+                <div class="divider"><span class="divider-text">Déjà inscrit ?</span></div>
+
+                <div class="login-row">
+                    <a href="/Login/Index">Se connecter</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePwd').addEventListener('click', function () {
+            const p = document.getElementById('password');
+            const h = p.type === 'password';
+            p.type = h ? 'text' : 'password';
+            this.textContent = h ? '🙈' : '👁';
+        });
+
+        document.getElementById('toggleConfirm').addEventListener('click', function () {
+            const p = document.getElementById('confirmPassword');
+            const h = p.type === 'password';
+            p.type = h ? 'text' : 'password';
+            this.textContent = h ? '🙈' : '👁';
+        });
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function () {
+            const v = this.value;
+            let score = 0;
+            if (v.length >= 8) score++;
+            if (/[A-Z]/.test(v)) score++;
+            if (/[0-9]/.test(v)) score++;
+            if (/[^A-Za-z0-9]/.test(v)) score++;
+
+            for (let i = 1; i <= 4; i++) {
+                const seg = document.getElementById('seg' + i);
+                seg.className = 's-seg' + (i <= score ? ' strength-' + score : '');
+            }
+        });
+
+        // Form submit
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const fields = {
+                firstName:       document.getElementById('firstName'),
+                lastName:        document.getElementById('lastName'),
+                email:           document.getElementById('email'),
+                phoneNumber:     document.getElementById('phoneNumber'),
+                password:        document.getElementById('password'),
+                confirmPassword: document.getElementById('confirmPassword'),
+            };
+
+            const errors = {
+                firstName:       document.getElementById('firstNameError'),
+                lastName:        document.getElementById('lastNameError'),
+                email:           document.getElementById('emailError'),
+                phone:           document.getElementById('phoneError'),
+                password:        document.getElementById('pwdError'),
+                confirm:         document.getElementById('confirmError'),
+            };
+
+            const alertBox = document.getElementById('alertError');
+            const btn = document.getElementById('submitBtn');
+
+            // Reset
+            Object.values(fields).forEach(f => f.classList.remove('error'));
+            Object.values(errors).forEach(e => e.classList.remove('visible'));
+            alertBox.classList.remove('visible');
+
+            // Validate
+            let valid = true;
+
+            if (!fields.firstName.value.trim()) {
+                fields.firstName.classList.add('error');
+                errors.firstName.classList.add('visible');
+                valid = false;
+            }
+            if (!fields.lastName.value.trim()) {
+                fields.lastName.classList.add('error');
+                errors.lastName.classList.add('visible');
+                valid = false;
+            }
+            if (!fields.email.value || !/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(fields.email.value)) {
+                fields.email.classList.add('error');
+                errors.email.classList.add('visible');
+                valid = false;
+            }
+            if (fields.phoneNumber.value && !/^\+?[\d\s\-()]{7,}$/.test(fields.phoneNumber.value)) {
+                fields.phoneNumber.classList.add('error');
+                errors.phone.classList.add('visible');
+                valid = false;
+            }
+            if (!fields.password.value || fields.password.value.length < 8) {
+                fields.password.classList.add('error');
+                errors.password.classList.add('visible');
+                valid = false;
+            }
+            if (fields.confirmPassword.value !== fields.password.value) {
+                fields.confirmPassword.classList.add('error');
+                errors.confirm.classList.add('visible');
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/Auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        firstName:       fields.firstName.value.trim(),
+                        lastName:        fields.lastName.value.trim(),
+                        email:           fields.email.value.trim(),
+                        phoneNumber:     fields.phoneNumber.value.trim(),
+                        password:        fields.password.value,
+                        confirmPassword: fields.confirmPassword.value,
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    if (data.token) localStorage.setItem('token', data.token);
+                    window.location.href = '/Home/Index';
+                } else {
+                    document.getElementById('alertMsg').textContent = data.message || 'Une erreur est survenue. Veuillez réessayer.';
+                    alertBox.classList.add('visible');
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                document.getElementById('alertMsg').textContent = 'Erreur de connexion. Veuillez réessayer.';
+                alertBox.classList.add('visible');
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>
