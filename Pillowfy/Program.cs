@@ -112,6 +112,10 @@ builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IChambreService, ChambreService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 
+builder.Services.AddScoped<PaiementService>();
+builder.Services.AddScoped<AvisService>();
+builder.Services.AddScoped<StatistiqueService>();
+
 var app = builder.Build();
 
 // ===================== MIDDLEWARE =====================

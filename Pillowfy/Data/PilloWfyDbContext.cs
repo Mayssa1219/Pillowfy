@@ -17,6 +17,7 @@ namespace Pillowfy.Data
         public DbSet<Chambre> Chambres { get; set; }
         public DbSet<Avis> Avis { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Paiement> Paiements { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,6 +44,43 @@ namespace Pillowfy.Data
                 .WithMany(h => h.Chambres)
                 .HasForeignKey(c => c.HotelId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // ── Fluent API : Paiement ──────────────────────────────────
+            modelBuilder.Entity<Paiement>(e =>
+            {
+                e.Property(p => p.Montant)
+                    .HasColumnType("decimal(10,2)");
+
+                e.Property(p => p.Methode)
+                    .HasConversion<string>();
+
+                e.Property(p => p.Statut)
+                    .HasConversion<string>();
+
+                // 1 Reservation = 1 Paiement max
+                e.HasOne(p => p.Reservation)
+                    .WithOne()
+                    .HasForeignKey<Paiement>(p => p.ReservationId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ── Fluent API : Avis ──────────────────────────────────────
+            modelBuilder.Entity<Avis>(e =>
+            {
+                // 1 user = 1 seul avis par hotel
+                e.HasIndex(a => new { a.UserId, a.HotelId })
+                    .IsUnique();
+
+                e.HasOne(a => a.Hotel)
+                    .WithMany()
+                    .HasForeignKey(a => a.HotelId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(a => a.User)
+                    .WithMany()
+                    .HasForeignKey(a => a.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 }
