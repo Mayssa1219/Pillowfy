@@ -627,15 +627,17 @@
                 });
                 const data = await res.json();
 
-                if (data.success) {
-                    localStorage.setItem('token', data.token);
-                    window.location.href = '/Home/Index';
-                } else {
-                    document.getElementById('alertMsg').textContent = data.message || 'Identifiants incorrects. Veuillez réessayer.';
-                    alert.classList.add('visible');
-                    btn.classList.remove('loading');
-                    btn.disabled = false;
-                }
+                      if (data.success) {
+            // Sauvegarde dans localStorage
+            localStorage.setItem('token', data.token);
+
+            // Sauvegarde dans cookie (expire dans 24h)
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
+            document.cookie = `token=${encodeURIComponent(data.token)}; expires=${expires}; path=/; SameSite=Strict`;
+
+            // Redirection vers l'espace client
+            window.location.href = '/Client/Dashboard';
+        }
             } catch (err) {
                 document.getElementById('alertMsg').textContent = 'Erreur de connexion. Veuillez réessayer.';
                 alert.classList.add('visible');

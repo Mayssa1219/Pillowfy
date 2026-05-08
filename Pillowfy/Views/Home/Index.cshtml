@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.383.0/umd/lucide.min.js"></script>
 
     <style>
         *, *::before, *::after {
@@ -29,7 +30,6 @@
             --cream-dk: #F0EBE1;
             --white: #FFFFFF;
             --teal: #1A6B6B;
-            --teal-lt: #E6F2F2;
             --radius-lg: 20px;
             --radius-xl: 32px;
             --shadow-sm: 0 2px 12px rgba(15,22,33,0.08);
@@ -49,7 +49,6 @@
             overflow-x: hidden;
         }
 
-            /* ───── NOISE TEXTURE OVERLAY ───── */
             body::before {
                 content: '';
                 position: fixed;
@@ -59,7 +58,7 @@
                 z-index: 0;
             }
 
-        /* ───── NAVBAR ───── */
+        /* ── NAVBAR ── */
         nav {
             position: fixed;
             top: 0;
@@ -83,7 +82,6 @@
             text-decoration: none;
         }
 
-       
         .nav-brand-icon {
             width: 36px;
             height: 36px;
@@ -109,7 +107,6 @@
             font-weight: 500;
             color: var(--ink-60);
             text-decoration: none;
-            letter-spacing: 0.3px;
             transition: color .2s;
         }
 
@@ -131,7 +128,6 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 0.88rem;
             font-weight: 600;
-            letter-spacing: 0.2px;
             text-decoration: none;
             cursor: pointer;
             border: none;
@@ -186,7 +182,7 @@
             font-size: 0.96rem;
         }
 
-        /* ───── HERO ───── */
+        /* ── HERO ── */
         .hero {
             position: relative;
             min-height: 100vh;
@@ -203,7 +199,6 @@
             z-index: 0;
         }
 
-            /* Decorative lines */
             .hero-bg-pattern::after {
                 content: '';
                 position: absolute;
@@ -219,7 +214,7 @@
         .hero-content {
             position: relative;
             z-index: 1;
-            max-width: 660px;
+            max-width: 580px;
         }
 
         .hero-eyebrow {
@@ -313,7 +308,290 @@
             margin-top: 4px;
         }
 
-        /* ───── SECTION COMMON ───── */
+        /* ── CAROUSEL SECTION ── */
+        .carousel-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 0;
+            background: var(--ink);
+            overflow: hidden;
+        }
+
+            .carousel-section::before {
+                content: '';
+                position: absolute;
+                left: -5%;
+                top: -30%;
+                width: 400px;
+                height: 400px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.10) 0%, transparent 65%);
+                pointer-events: none;
+            }
+
+        .carousel-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .carousel-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: rgba(201,169,110,0.7);
+            margin-bottom: 0.8rem;
+        }
+
+            .carousel-eyebrow::before, .carousel-eyebrow::after {
+                content: '';
+                display: block;
+                width: 24px;
+                height: 1px;
+                background: rgba(201,169,110,0.4);
+            }
+
+        .carousel-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            color: var(--white);
+            line-height: 1.2;
+        }
+
+            .carousel-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        /* Main carousel */
+        .carousel-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .carousel-track-outer {
+            overflow: hidden;
+            margin: 0 3.5rem;
+            border-radius: var(--radius-xl);
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 1.2rem;
+            transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+        }
+
+        .carousel-slide {
+            min-width: calc(33.333% - 0.8rem);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3;
+            flex-shrink: 0;
+        }
+
+            .carousel-slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
+            .carousel-slide:hover img {
+                transform: scale(1.05);
+            }
+
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15,22,33,0.75) 0%, transparent 55%);
+        }
+
+        .slide-info {
+            position: absolute;
+            bottom: 1.2rem;
+            left: 1.2rem;
+            right: 1.2rem;
+        }
+
+        .slide-tag {
+            display: inline-block;
+            background: rgba(201,169,110,0.25);
+            border: 1px solid rgba(201,169,110,0.4);
+            color: var(--gold-lt);
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 100px;
+            margin-bottom: 0.4rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .slide-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.05rem;
+            color: var(--white);
+            line-height: 1.3;
+        }
+
+        .slide-location {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.55);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .slide-location svg {
+                width: 11px;
+                height: 11px;
+            }
+
+        /* Carousel controls */
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .carousel-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+            .carousel-btn:hover {
+                background: var(--gold);
+                border-color: var(--gold);
+                color: var(--ink);
+            }
+
+            .carousel-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+
+        .carousel-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .carousel-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            cursor: pointer;
+            transition: all .2s;
+            border: none;
+            padding: 0;
+        }
+
+            .carousel-dot.active {
+                width: 20px;
+                border-radius: 3px;
+                background: var(--gold);
+            }
+
+        /* Auto-scroll strip */
+        .carousel-strip {
+            margin-top: 3rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .carousel-strip::before,
+            .carousel-strip::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 120px;
+                z-index: 2;
+                pointer-events: none;
+            }
+
+            .carousel-strip::before {
+                left: 0;
+                background: linear-gradient(to right, var(--ink), transparent);
+            }
+
+            .carousel-strip::after {
+                right: 0;
+                background: linear-gradient(to left, var(--ink), transparent);
+            }
+
+        .strip-track {
+            display: flex;
+            gap: 1rem;
+            animation: stripScroll 30s linear infinite;
+            width: max-content;
+        }
+
+            .strip-track:hover {
+                animation-play-state: paused;
+            }
+
+        @@keyframes stripScroll {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .strip-item {
+            width: 220px;
+            height: 130px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+            .strip-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.4s;
+            }
+
+            .strip-item:hover img {
+                transform: scale(1.08);
+            }
+
+        .strip-item-label {
+            position: absolute;
+            bottom: 8px;
+            left: 10px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--white);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+
+        /* ── SECTIONS ── */
         section {
             position: relative;
             z-index: 1;
@@ -321,10 +599,6 @@
 
         .section-pad {
             padding: 6rem 3.5rem;
-        }
-
-        .section-pad-sm {
-            padding: 4rem 3.5rem;
         }
 
         .label-tag {
@@ -368,7 +642,7 @@
             max-width: 520px;
         }
 
-        /* ───── FEATURES GRID ───── */
+        /* Features */
         .features-section {
             background: var(--white);
         }
@@ -390,7 +664,6 @@
             border-radius: var(--radius-xl);
             padding: 2.2rem 1.8rem;
             transition: all .28s cubic-bezier(.4,0,.2,1);
-            cursor: default;
         }
 
             .feature-card:hover {
@@ -403,12 +676,7 @@
             .feature-card.featured {
                 background: var(--ink);
                 border-color: var(--ink);
-                color: var(--white);
             }
-
-                .feature-card.featured .feature-icon-wrap {
-                    background: rgba(255,255,255,0.1);
-                }
 
                 .feature-card.featured .feature-title {
                     color: var(--white);
@@ -416,6 +684,10 @@
 
                 .feature-card.featured .feature-desc {
                     color: rgba(255,255,255,0.55);
+                }
+
+                .feature-card.featured .feature-icon-wrap {
+                    background: rgba(255,255,255,0.1);
                 }
 
         .feature-icon-wrap {
@@ -426,8 +698,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
             margin-bottom: 1.4rem;
+            color: var(--gold);
+        }
+
+            .feature-icon-wrap svg {
+                width: 22px;
+                height: 22px;
+            }
+
+        .feature-card.featured .feature-icon-wrap {
+            color: rgba(255,255,255,0.7);
         }
 
         .feature-title {
@@ -444,7 +725,7 @@
             color: var(--ink-60);
         }
 
-        /* ───── HOW IT WORKS ───── */
+        /* Steps */
         .steps-section {
             background: var(--cream);
         }
@@ -457,19 +738,12 @@
             margin-top: 4rem;
         }
 
-        .step-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
         .step-item {
             display: flex;
             gap: 1.5rem;
             align-items: flex-start;
             padding: 1.8rem 0;
             border-bottom: 1px solid var(--cream-dk);
-            cursor: pointer;
             transition: all .2s;
         }
 
@@ -480,6 +754,7 @@
             .step-item:hover .step-num {
                 background: var(--gold);
                 color: var(--white);
+                border-color: var(--gold);
             }
 
         .step-num {
@@ -497,9 +772,6 @@
             transition: all .2s;
         }
 
-        .step-content {
-        }
-
         .step-title {
             font-weight: 600;
             font-size: 1rem;
@@ -514,20 +786,12 @@
             line-height: 1.6;
         }
 
-        .steps-visual {
-            position: relative;
-        }
-
         .steps-visual-card {
             background: var(--white);
             border-radius: var(--radius-xl);
             padding: 2rem;
             box-shadow: var(--shadow-lg);
             border: 1px solid rgba(201,169,110,0.12);
-        }
-
-        .dashboard-preview {
-            width: 100%;
         }
 
         .dash-header {
@@ -550,7 +814,6 @@
             font-weight: 600;
             padding: 4px 10px;
             border-radius: 100px;
-            letter-spacing: 0.5px;
         }
 
         .dash-rooms {
@@ -607,7 +870,7 @@
             margin-top: 2px;
         }
 
-        /* ───── CTA STRIP ───── */
+        /* CTA */
         .cta-section {
             background: var(--ink);
             padding: 5rem 3.5rem;
@@ -663,7 +926,7 @@
             flex-shrink: 0;
         }
 
-        /* ───── FOOTER ───── */
+        /* Footer */
         footer {
             background: var(--cream-dk);
             padding: 2.5rem 3.5rem;
@@ -702,7 +965,6 @@
                 color: var(--ink);
             }
 
-        /* ───── ANIMATIONS ───── */
         @@keyframes fadeUp {
             from {
                 opacity: 0;
@@ -715,7 +977,6 @@
             }
         }
 
-        /* ───── RESPONSIVE ───── */
         @@media (max-width: 900px) {
             nav {
                 padding: 1rem 1.5rem;
@@ -736,10 +997,6 @@
 
             .section-pad {
                 padding: 4rem 1.5rem;
-            }
-
-            .section-pad-sm {
-                padding: 3rem 1.5rem;
             }
 
             .features-grid {
@@ -763,6 +1020,14 @@
             footer {
                 padding: 2rem 1.5rem;
             }
+
+            .carousel-track-outer {
+                margin: 0 1.5rem;
+            }
+
+            .carousel-slide {
+                min-width: calc(100% - 0.8rem);
+            }
         }
     </style>
 </head>
@@ -775,13 +1040,13 @@
             <span class="nav-brand-name">Pillowfy</span>
         </a>
         <div class="nav-links">
-            <a href="#fonctionnalites" class="nav-link">Fonctionnalités</a>
-            <a href="#comment-ca-marche" class="nav-link">Comment ça marche</a>
+            <a href="#fonctionnalites" class="nav-link">Fonctionnalites</a>
+            <a href="#comment-ca-marche" class="nav-link">Comment ca marche</a>
             <a href="/swagger" class="nav-link">API</a>
         </div>
         <div class="nav-cta">
             <a href="/Login/Index" class="btn btn-ghost">Connexion</a>
-            <a href="/Register/Index" class="btn btn-primary">Créer un compte →</a>
+            <a href="/Register/Index" class="btn btn-primary">Creer un compte</a>
         </div>
     </nav>
 
@@ -791,22 +1056,21 @@
         <div class="hero-content">
             <div class="hero-eyebrow">
                 <span class="hero-eyebrow-dot"></span>
-                Plateforme de gestion hôtelière
+                Plateforme de gestion hoteliere
             </div>
             <h1 class="hero-title">
-                Gérez votre hôtel<br>
-                avec <em>élégance</em><br>
-                & précision
+                Gerez votre hotel<br>
+                avec <em>elegance</em><br>
+                & precision
             </h1>
             <p class="hero-desc">
-                Pillowfy centralise vos chambres, réservations et paiements dans une interface intuitive conçue pour les professionnels de l'hôtellerie.
+                Pillowfy centralise vos chambres, reservations et paiements dans une interface intuitive concue pour les professionnels de l'hotellerie.
             </p>
             <div class="hero-actions">
-                <a href="/Account/Register" class="btn btn-gold btn-lg">Commencer gratuitement</a>
+                <a href="/Register/Index" class="btn btn-gold btn-lg">Commencer gratuitement</a>
                 <a href="/swagger" class="btn btn-ghost btn-lg">Explorer l'API</a>
             </div>
         </div>
-
         <div class="hero-stats">
             <div class="stat-card">
                 <div class="stat-number">98%</div>
@@ -818,7 +1082,176 @@
             </div>
             <div class="stat-card">
                 <div class="stat-number">+500</div>
-                <div class="stat-label">Hôtels partenaires</div>
+                <div class="stat-label">Hotels partenaires</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CAROUSEL SECTION ── -->
+    <section class="carousel-section">
+        <div class="carousel-header">
+            <div class="carousel-eyebrow">Nos etablissements partenaires</div>
+            <h2 class="carousel-title">Des hotels d'exception<br>geres avec <em>Pillowfy</em></h2>
+        </div>
+
+        <div class="carousel-wrapper">
+            <div class="carousel-track-outer">
+                <div class="carousel-track" id="carouselTrack">
+
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80" alt="Hotel lobby">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-info">
+                            <span class="slide-tag">Luxe</span>
+                            <div class="slide-name">Grand Palace Hotel</div>
+                            <div class="slide-location">
+                                <i data-lucide="map-pin"></i> Paris, France
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80" alt="Hotel pool">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-info">
+                            <span class="slide-tag">Resort</span>
+                            <div class="slide-name">Azure Bay Resort</div>
+                            <div class="slide-location">
+                                <i data-lucide="map-pin"></i> Santorini, Grece
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80" alt="Hotel room">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-info">
+                            <span class="slide-tag">Boutique</span>
+                            <div class="slide-name">The Ivory Suite</div>
+                            <div class="slide-location">
+                                <i data-lucide="map-pin"></i> Dubai, EAU
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80" alt="Hotel exterior">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-info">
+                            <span class="slide-tag">Historique</span>
+                            <div class="slide-name">Villa Belvedere</div>
+                            <div class="slide-location">
+                                <i data-lucide="map-pin"></i> Florence, Italie
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80" alt="Hotel spa">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-info">
+                            <span class="slide-tag">Spa & Wellness</span>
+                            <div class="slide-name">Serenity Mountain Lodge</div>
+                            <div class="slide-location">
+                                <i data-lucide="map-pin"></i> Zurich, Suisse
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?w=800&q=80" alt="Hotel bar">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-info">
+                            <span class="slide-tag">Urban</span>
+                            <div class="slide-name">Metropolitan Hotel</div>
+                            <div class="slide-location">
+                                <i data-lucide="map-pin"></i> New York, USA
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="carousel-controls">
+                <button class="carousel-btn" id="prevBtn">
+                    <i data-lucide="chevron-left"></i>
+                </button>
+                <div class="carousel-dots" id="carouselDots"></div>
+                <button class="carousel-btn" id="nextBtn">
+                    <i data-lucide="chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Auto-scroll strip -->
+        <div class="carousel-strip" style="margin-top: 3rem;">
+            <div class="strip-track">
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80" alt="">
+                    <span class="strip-item-label">Piscine infinity</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=400&q=80" alt="">
+                    <span class="strip-item-label">Suite prestige</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&q=80" alt="">
+                    <span class="strip-item-label">Restaurant gastronomique</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&q=80" alt="">
+                    <span class="strip-item-label">Spa & bien-etre</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80" alt="">
+                    <span class="strip-item-label">Vue panoramique</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1455587734955-081b22074882?w=400&q=80" alt="">
+                    <span class="strip-item-label">Lobby design</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=400&q=80" alt="">
+                    <span class="strip-item-label">Chambre deluxe</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1535827841776-24afc1e255ac?w=400&q=80" alt="">
+                    <span class="strip-item-label">Terrasse privee</span>
+                </div>
+                <!-- Duplicate for infinite scroll -->
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80" alt="">
+                    <span class="strip-item-label">Piscine infinity</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=400&q=80" alt="">
+                    <span class="strip-item-label">Suite prestige</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&q=80" alt="">
+                    <span class="strip-item-label">Restaurant gastronomique</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&q=80" alt="">
+                    <span class="strip-item-label">Spa & bien-etre</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80" alt="">
+                    <span class="strip-item-label">Vue panoramique</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1455587734955-081b22074882?w=400&q=80" alt="">
+                    <span class="strip-item-label">Lobby design</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=400&q=80" alt="">
+                    <span class="strip-item-label">Chambre deluxe</span>
+                </div>
+                <div class="strip-item">
+                    <img src="https://images.unsplash.com/photo-1535827841776-24afc1e255ac?w=400&q=80" alt="">
+                    <span class="strip-item-label">Terrasse privee</span>
+                </div>
             </div>
         </div>
     </section>
@@ -826,110 +1259,105 @@
     <!-- FEATURES -->
     <section id="fonctionnalites" class="features-section section-pad">
         <div class="features-header">
-            <span class="label-tag">Fonctionnalités</span>
+            <span class="label-tag">Fonctionnalites</span>
             <h2 class="section-title">Tout ce dont vous<br><em>avez besoin</em></h2>
-            <p class="section-desc">Une suite d'outils pensée pour simplifier la gestion quotidienne et booster vos performances.</p>
+            <p class="section-desc">Une suite d'outils pensee pour simplifier la gestion quotidienne et booster vos performances.</p>
         </div>
-
         <div class="features-grid">
             <div class="feature-card featured">
-                <div class="feature-icon-wrap">🔐</div>
-                <div class="feature-title">Sécurité avancée</div>
-                <div class="feature-desc">Authentification JWT robuste, gestion fine des rôles et accès, conformité RGPD garantie.</div>
+                <div class="feature-icon-wrap"><i data-lucide="shield-check"></i></div>
+                <div class="feature-title">Securite avancee</div>
+                <div class="feature-desc">Authentification JWT robuste, gestion fine des roles et acces, conformite RGPD garantie.</div>
             </div>
             <div class="feature-card">
-                <div class="feature-icon-wrap">📋</div>
-                <div class="feature-title">Gestion centralisée</div>
-                <div class="feature-desc">Suivi en temps réel des chambres, réservations, clients et paiements depuis un seul tableau de bord.</div>
+                <div class="feature-icon-wrap"><i data-lucide="layout-dashboard"></i></div>
+                <div class="feature-title">Gestion centralisee</div>
+                <div class="feature-desc">Suivi en temps reel des chambres, reservations, clients et paiements depuis un seul tableau de bord.</div>
             </div>
             <div class="feature-card">
-                <div class="feature-icon-wrap">⚡</div>
+                <div class="feature-icon-wrap"><i data-lucide="zap"></i></div>
                 <div class="feature-title">API REST performante</div>
-                <div class="feature-desc">Intégrez facilement vos systèmes existants grâce à notre API documentée, rapide et fiable.</div>
+                <div class="feature-desc">Integrez facilement vos systemes existants grace a notre API documentee, rapide et fiable.</div>
             </div>
             <div class="feature-card">
-                <div class="feature-icon-wrap">📊</div>
+                <div class="feature-icon-wrap"><i data-lucide="bar-chart-3"></i></div>
                 <div class="feature-title">Analytiques & rapports</div>
                 <div class="feature-desc">Visualisez vos KPIs, taux d'occupation et revenus avec des tableaux de bord interactifs.</div>
             </div>
             <div class="feature-card">
-                <div class="feature-icon-wrap">🔔</div>
+                <div class="feature-icon-wrap"><i data-lucide="bell"></i></div>
                 <div class="feature-title">Notifications intelligentes</div>
-                <div class="feature-desc">Alertes automatiques pour les arrivées, départs, paiements en attente et événements critiques.</div>
+                <div class="feature-desc">Alertes automatiques pour les arrivees, departs, paiements en attente et evenements critiques.</div>
             </div>
             <div class="feature-card">
-                <div class="feature-icon-wrap">🌐</div>
-                <div class="feature-title">Multi-établissements</div>
-                <div class="feature-desc">Gérez plusieurs hôtels depuis un compte unique avec une séparation claire des données.</div>
+                <div class="feature-icon-wrap"><i data-lucide="globe"></i></div>
+                <div class="feature-title">Multi-etablissements</div>
+                <div class="feature-desc">Gerez plusieurs hotels depuis un compte unique avec une separation claire des donnees.</div>
             </div>
         </div>
     </section>
 
     <!-- HOW IT WORKS -->
     <section id="comment-ca-marche" class="steps-section section-pad">
-        <span class="label-tag">Comment ça marche</span>
-        <h2 class="section-title">Opérationnel en<br><em>quelques minutes</em></h2>
-
+        <span class="label-tag">Comment ca marche</span>
+        <h2 class="section-title">Operationnel en<br><em>quelques minutes</em></h2>
         <div class="steps-grid">
             <div class="step-list">
                 <div class="step-item">
                     <div class="step-num">1</div>
-                    <div class="step-content">
-                        <div class="step-title">Créez votre compte</div>
-                        <div class="step-desc">Inscription rapide en moins de 2 minutes. Aucune carte bancaire requise pour démarrer.</div>
+                    <div>
+                        <div class="step-title">Creez votre compte</div>
+                        <div class="step-desc">Inscription rapide en moins de 2 minutes. Aucune carte bancaire requise.</div>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">2</div>
-                    <div class="step-content">
-                        <div class="step-title">Configurez votre hôtel</div>
-                        <div class="step-desc">Ajoutez vos chambres, tarifs et équipements grâce à notre interface guidée intuitive.</div>
+                    <div>
+                        <div class="step-title">Configurez votre hotel</div>
+                        <div class="step-desc">Ajoutez vos chambres, tarifs et equipements via notre interface guidee.</div>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">3</div>
-                    <div class="step-content">
-                        <div class="step-title">Acceptez vos réservations</div>
-                        <div class="step-desc">Recevez et gérez les réservations en temps réel avec confirmation automatique par e-mail.</div>
+                    <div>
+                        <div class="step-title">Acceptez vos reservations</div>
+                        <div class="step-desc">Recevez et gerez les reservations en temps reel avec confirmation automatique.</div>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">4</div>
-                    <div class="step-content">
+                    <div>
                         <div class="step-title">Suivez vos performances</div>
-                        <div class="step-desc">Analysez vos revenus, taux d'occupation et satisfaction client depuis votre tableau de bord.</div>
+                        <div class="step-desc">Analysez vos revenus et taux d'occupation depuis votre tableau de bord.</div>
                     </div>
                 </div>
             </div>
-
-            <div class="steps-visual">
+            <div>
                 <div class="steps-visual-card">
-                    <div class="dashboard-preview">
-                        <div class="dash-header">
-                            <span class="dash-title">Tableau de bord — Hôtel Lumière</span>
-                            <span class="dash-badge">● En ligne</span>
+                    <div class="dash-header">
+                        <span class="dash-title">Tableau de bord — Hotel Lumiere</span>
+                        <span class="dash-badge">En ligne</span>
+                    </div>
+                    <div class="dash-rooms">
+                        <div class="dash-room room-occ">101 — Occupee</div>
+                        <div class="dash-room room-free">102 — Libre</div>
+                        <div class="dash-room room-occ">103 — Occupee</div>
+                        <div class="dash-room room-maint">104 — Entretien</div>
+                        <div class="dash-room room-free">105 — Libre</div>
+                        <div class="dash-room room-occ">106 — Occupee</div>
+                    </div>
+                    <div class="dash-metric-row">
+                        <div class="dash-metric">
+                            <div class="dash-metric-val">78%</div>
+                            <div class="dash-metric-lbl">Taux d'occupation</div>
                         </div>
-                        <div class="dash-rooms">
-                            <div class="dash-room room-occ">101 — Occupée</div>
-                            <div class="dash-room room-free">102 — Libre</div>
-                            <div class="dash-room room-occ">103 — Occupée</div>
-                            <div class="dash-room room-maint">104 — Entretien</div>
-                            <div class="dash-room room-free">105 — Libre</div>
-                            <div class="dash-room room-occ">106 — Occupée</div>
+                        <div class="dash-metric">
+                            <div class="dash-metric-val">12</div>
+                            <div class="dash-metric-lbl">Arrivees aujourd'hui</div>
                         </div>
-                        <div class="dash-metric-row">
-                            <div class="dash-metric">
-                                <div class="dash-metric-val">78%</div>
-                                <div class="dash-metric-lbl">Taux d'occupation</div>
-                            </div>
-                            <div class="dash-metric">
-                                <div class="dash-metric-val">12</div>
-                                <div class="dash-metric-lbl">Arrivées aujourd'hui</div>
-                            </div>
-                            <div class="dash-metric">
-                                <div class="dash-metric-val">3 480 €</div>
-                                <div class="dash-metric-lbl">Revenus du jour</div>
-                            </div>
+                        <div class="dash-metric">
+                            <div class="dash-metric-val">3 480 EUR</div>
+                            <div class="dash-metric-lbl">Revenus du jour</div>
                         </div>
                     </div>
                 </div>
@@ -941,11 +1369,11 @@
     <section class="cta-section">
         <div class="cta-inner">
             <div class="cta-text">
-                <span class="label-tag">Prêt à démarrer ?</span>
-                <h2 class="cta-title">Rejoignez +500 hôtels<br>qui font confiance à <em>Pillowfy</em></h2>
+                <span class="label-tag">Pret a demarrer ?</span>
+                <h2 class="cta-title">Rejoignez +500 hotels<br>qui font confiance a <em>Pillowfy</em></h2>
             </div>
             <div class="cta-actions">
-                <a href="/Account/Register" class="btn btn-gold btn-lg">Créer un compte gratuit</a>
+                <a href="/Register/Index" class="btn btn-gold btn-lg">Creer un compte gratuit</a>
                 <a href="/Login/Index" class="btn btn-outline-gold btn-lg">Se connecter</a>
             </div>
         </div>
@@ -954,13 +1382,62 @@
     <!-- FOOTER -->
     <footer>
         <div class="footer-brand">Pillowfy</div>
-        <div class="footer-copy">© 2026 Pillowfy. Tous droits réservés.</div>
+        <div class="footer-copy">2026 Pillowfy. Tous droits reserves.</div>
         <div class="footer-links">
             <a href="/swagger" class="footer-link">API Docs</a>
-            <a href="#" class="footer-link">Confidentialité</a>
+            <a href="#" class="footer-link">Confidentialite</a>
             <a href="#" class="footer-link">Contact</a>
         </div>
     </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // ── CAROUSEL ──
+        const track = document.getElementById('carouselTrack');
+        const slides = track.querySelectorAll('.carousel-slide');
+        const dotsContainer = document.getElementById('carouselDots');
+        const slidesPerView = window.innerWidth < 900 ? 1 : 3;
+        const totalGroups = Math.ceil(slides.length / slidesPerView);
+        let current = 0;
+        let autoTimer;
+
+        // Create dots
+        for (let i = 0; i < totalGroups; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+            dot.addEventListener('click', () => goTo(i));
+            dotsContainer.appendChild(dot);
+        }
+
+        function goTo(index) {
+            current = (index + totalGroups) % totalGroups;
+            const slideWidth = slides[0].offsetWidth + 19.2;
+            track.style.transform = `translateX(-${current * slidesPerView * slideWidth}px)`;
+            document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === current);
+            });
+        }
+
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        document.getElementById('nextBtn').addEventListener('click', () => { next(); resetAuto(); });
+        document.getElementById('prevBtn').addEventListener('click', () => { prev(); resetAuto(); });
+
+        function startAuto() { autoTimer = setInterval(next, 4000); }
+        function resetAuto() { clearInterval(autoTimer); startAuto(); }
+
+        startAuto();
+
+        // Touch support
+        let touchStartX = 0;
+        track.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+        track.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) { diff > 0 ? next() : prev(); resetAuto(); }
+        });
+    </script>
 
 </body>
 </html>

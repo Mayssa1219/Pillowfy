@@ -1,0 +1,1919 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Mon espace</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.383.0/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: rgba(201,169,110,0.12);
+            --gold-mid: rgba(201,169,110,0.25);
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --sidebar: #0B1120;
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            padding: 1.6rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            border-right: 1px solid rgba(255,255,255,0.04);
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+            .sidebar-brand img {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+
+        .sidebar-section-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 0 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 1.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.42);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            transition: all .16s;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.82);
+            }
+
+            .nav-item.active {
+                background: rgba(201,169,110,0.14);
+                color: var(--gold);
+            }
+
+        .nav-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(201,169,110,0.18);
+        }
+
+        .nav-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--gold);
+            color: var(--ink);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 100px;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 0.55rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #b8924f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.9rem;
+            color: var(--ink);
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.28);
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.32);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-logout:hover {
+                border-color: rgba(220,38,38,0.4);
+                color: #f87171;
+                background: rgba(220,38,38,0.06);
+            }
+
+            .btn-logout svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: 240px;
+            padding: 2rem 2.4rem;
+            flex: 1;
+            max-width: calc(100vw - 240px);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .topbar-left h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+            .topbar-left h1 em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .topbar-left p {
+            font-size: 0.83rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-online {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--white);
+            border: 1px solid rgba(201,169,110,0.2);
+            border-radius: 100px;
+            padding: 0.38rem 0.85rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--teal);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        /* ── HERO ── */
+        .hero-card {
+            background: var(--ink);
+            border-radius: var(--radius-xl);
+            padding: 1.8rem 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero-card::before {
+                content: '';
+                position: absolute;
+                right: -5%;
+                top: -55%;
+                width: 320px;
+                height: 320px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.18) 0%, transparent 65%);
+            }
+
+            .hero-card::after {
+                content: '';
+                position: absolute;
+                left: 28%;
+                bottom: -45%;
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                border: 1px solid rgba(201,169,110,0.07);
+            }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(201,169,110,0.14);
+            border: 1px solid rgba(201,169,110,0.22);
+            border-radius: 100px;
+            padding: 3px 11px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 1;
+        }
+
+            .hero-text h2 {
+                font-family: 'DM Serif Display', serif;
+                font-size: 1.45rem;
+                color: var(--white);
+                margin-bottom: 4px;
+            }
+
+                .hero-text h2 em {
+                    color: var(--gold);
+                    font-style: italic;
+                }
+
+            .hero-text p {
+                font-size: 0.83rem;
+                color: rgba(255,255,255,0.4);
+                max-width: 320px;
+                line-height: 1.5;
+            }
+
+        .hero-actions {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.58rem 1.2rem;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all .18s;
+        }
+
+            .btn svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--ink);
+        }
+
+            .btn-gold:hover {
+                background: #b8924f;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(201,169,110,0.3);
+            }
+
+        .btn-outline {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.65);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+            .btn-outline:hover {
+                background: rgba(255,255,255,0.12);
+                color: var(--white);
+            }
+
+        /* ── RÉSERVATION ACTIVE ── */
+        .reservation-banner {
+            background: linear-gradient(135deg, #0E2D2D 0%, #0B1120 100%);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.4rem;
+            border: 1px solid rgba(26,107,107,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .reservation-banner::before {
+                content: '';
+                position: absolute;
+                right: 10%;
+                top: -80%;
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(26,107,107,0.25) 0%, transparent 70%);
+            }
+
+        .res-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .res-room-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(26,107,107,0.25);
+            border: 1px solid rgba(26,107,107,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+            .res-room-icon svg {
+                width: 22px;
+                height: 22px;
+                color: #4ECDC4;
+            }
+
+        .res-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 3px;
+        }
+
+        .res-room {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--white);
+        }
+
+        .res-dates {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.45);
+            margin-top: 2px;
+        }
+
+        .res-status-group {
+            display: flex;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .res-stat {
+            text-align: center;
+        }
+
+        .res-stat-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--white);
+        }
+
+        .res-stat-lbl {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+            margin-top: 2px;
+        }
+
+        .res-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .res-actions {
+            display: flex;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-teal {
+            background: rgba(26,107,107,0.3);
+            color: #4ECDC4;
+            border: 1px solid rgba(26,107,107,0.45);
+            border-radius: 100px;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+            .btn-teal:hover {
+                background: rgba(26,107,107,0.5);
+            }
+
+            .btn-teal svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        /* ── STATS ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.3rem 1.4rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all .2s;
+        }
+
+            .stat-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-2px);
+                border-color: rgba(201,169,110,0.22);
+            }
+
+        .stat-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+            .stat-icon-wrap svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .stat-icon-wrap.gold {
+                background: var(--gold-lt);
+                color: #9A722E;
+            }
+
+            .stat-icon-wrap.teal {
+                background: var(--teal-lt);
+                color: var(--teal);
+            }
+
+            .stat-icon-wrap.green {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .stat-icon-wrap.rose {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+        .stat-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--ink-30);
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        /* ── GRIDS ── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .main-grid-wide {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.1rem;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.98rem;
+            color: var(--ink);
+        }
+
+        .card-link {
+            font-size: 0.76rem;
+            color: var(--gold);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .card-link:hover {
+                text-decoration: underline;
+            }
+
+        /* ── SÉJOURS ── */
+        .stay-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+        }
+
+            .stay-item:last-child {
+                border-bottom: none;
+            }
+
+        .stay-thumb {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            background: var(--gold-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .stay-hotel {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .stay-dates {
+            font-size: 0.74rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .stay-meta {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .stay-price {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .stay-nights {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .stay-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-top: 4px;
+        }
+
+            .stay-badge.done {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .stay-badge.upcoming {
+                background: var(--gold-lt);
+                color: #9A722E;
+            }
+
+            .stay-badge.cancelled {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+        /* ── SERVICES ── */
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.8rem;
+            border-radius: 12px;
+            background: var(--bg);
+            cursor: pointer;
+            transition: all .16s;
+            border: 1px solid transparent;
+        }
+
+            .service-item:hover {
+                background: var(--gold-lt);
+                border-color: rgba(201,169,110,0.2);
+                transform: translateY(-1px);
+            }
+
+        .service-ic {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .service-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .service-status {
+            font-size: 0.7rem;
+            color: var(--ink-60);
+            margin-top: 1px;
+        }
+
+        /* ── FACTURES ── */
+        .invoice-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+        }
+
+            .invoice-row:last-child {
+                border-bottom: none;
+            }
+
+        .invoice-num {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .invoice-date {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .invoice-amount {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .invoice-dl {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .15s;
+            border: none;
+            color: var(--ink-60);
+        }
+
+            .invoice-dl:hover {
+                background: var(--gold-lt);
+                color: var(--gold);
+            }
+
+            .invoice-dl svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        /* ── MESSAGERIE ── */
+        .msg-item {
+            display: flex;
+            gap: 10px;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+        }
+
+            .msg-item:last-child {
+                border-bottom: none;
+            }
+
+        .msg-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+            .msg-dot.open {
+                background: var(--gold);
+            }
+
+            .msg-dot.closed {
+                background: #22c55e;
+            }
+
+            .msg-dot.pending {
+                background: var(--rose);
+            }
+
+        .msg-subject {
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .msg-preview {
+            font-size: 0.74rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .msg-time {
+            margin-left: auto;
+            font-size: 0.7rem;
+            color: var(--ink-30);
+            white-space: nowrap;
+        }
+
+        /* ── ACTIONS RAPIDES ── */
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0.8rem;
+            border-radius: 11px;
+            background: var(--bg);
+            margin-bottom: 7px;
+            text-decoration: none;
+            transition: all .16s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+            .quick-action:hover {
+                background: var(--gold-lt);
+                transform: translateX(3px);
+            }
+
+            .quick-action:last-child {
+                margin-bottom: 0;
+            }
+
+        .qa-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            color: var(--ink-60);
+        }
+
+            .qa-icon svg {
+                width: 15px;
+                height: 15px;
+            }
+
+        .qa-label {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .qa-sub {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+        }
+
+        .qa-arrow {
+            margin-left: auto;
+            color: var(--ink-30);
+        }
+
+            .qa-arrow svg {
+                width: 15px;
+                height: 15px;
+            }
+
+        /* ── FIDÉLITÉ ── */
+        .loyalty-card {
+            background: linear-gradient(135deg, #1A3A2A 0%, #0B1120 100%);
+            border-radius: var(--radius-xl);
+            padding: 1.4rem 1.6rem;
+            border: 1px solid rgba(201,169,110,0.15);
+            margin-bottom: 1rem;
+        }
+
+        .loyalty-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .loyalty-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.95rem;
+            color: var(--white);
+        }
+
+        .loyalty-tier {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 100px;
+            background: rgba(201,169,110,0.2);
+            color: var(--gold);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .loyalty-pts {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .loyalty-pts-label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.35);
+            margin-top: 2px;
+        }
+
+        .loyalty-bar-wrap {
+            margin-top: 1rem;
+        }
+
+        .loyalty-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.3);
+            margin-bottom: 5px;
+        }
+
+        .loyalty-bar {
+            height: 5px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .loyalty-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), #e8c080);
+            border-radius: 100px;
+            transition: width .8s ease;
+        }
+
+        /* ── AVIS ── */
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            font-size: 0.9rem;
+        }
+
+        .rating-hotel {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .rating-date {
+            font-size: 0.7rem;
+            color: var(--ink-60);
+            margin-left: auto;
+        }
+
+        .rating-comment {
+            font-size: 0.78rem;
+            color: var(--ink-60);
+            line-height: 1.5;
+        }
+
+        .btn-sm-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--gold-lt);
+            color: #9A722E;
+            border: 1px solid rgba(201,169,110,0.25);
+            border-radius: 100px;
+            padding: 5px 12px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all .15s;
+        }
+
+            .btn-sm-gold:hover {
+                background: var(--gold-mid);
+            }
+
+            .btn-sm-gold svg {
+                width: 12px;
+                height: 12px;
+            }
+
+        /* ── ANIMATIONS ── */
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(34,197,94,0.07);
+            }
+        }
+
+        .badge-dot {
+            animation: pulse 2s infinite;
+        }
+
+        .main > * {
+            animation: fadeUp 0.38s ease both;
+        }
+
+            .main > *:nth-child(2) {
+                animation-delay: 0.05s;
+            }
+
+            .main > *:nth-child(3) {
+                animation-delay: 0.10s;
+            }
+
+            .main > *:nth-child(4) {
+                animation-delay: 0.14s;
+            }
+
+            .main > *:nth-child(5) {
+                animation-delay: 0.18s;
+            }
+
+            .main > *:nth-child(6) {
+                animation-delay: 0.22s;
+            }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-grid-wide {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.4rem;
+                max-width: 100vw;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .main-grid, .main-grid-wide {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                flex-direction: column;
+                gap: 1.2rem;
+                align-items: flex-start;
+            }
+
+            .reservation-banner {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        @@media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/" class="sidebar-brand">
+                <img src="/Images/logo.png" alt="Pillowfy">
+                <span class="sidebar-brand-name">Pillowfy</span>
+            </a>
+
+            <div class="sidebar-section-label">Navigation</div>
+            <nav class="sidebar-nav">
+                <a href="/Client/Dashboard" class="nav-item active">
+                    <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
+                    Dashboard
+                </a>
+                <a href="/Client/Reservations" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="calendar-check"></i></span>
+                    Mes réservations
+                    <span class="nav-badge" id="nbReservations">1</span>
+                </a>
+                <a href="/Client/Sejours" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="bed-double"></i></span>
+                    Historique séjours
+                </a>
+                <a href="/Client/Factures" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="receipt"></i></span>
+                    Factures
+                </a>
+                <a href="/Client/Services" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="concierge-bell"></i></span>
+                    Services
+                </a>
+                <a href="/Client/Messages" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="message-square"></i></span>
+                    Messagerie
+                    <span class="nav-badge" id="nbMessages">2</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-section-label">Compte</div>
+            <nav class="sidebar-nav">
+                <a href="/Client/Profil" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="user"></i></span>
+                    Mon profil
+                </a>
+                <a href="/Client/Fidelite" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="star"></i></span>
+                    Fidélité
+                </a>
+                <a href="/Client/Avis" class="nav-item">
+                    <span class="nav-icon"><i data-lucide="message-circle"></i></span>
+                    Mes avis
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Chargement...</div>
+                        <div class="user-role" id="userRole">Client</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i data-lucide="log-out"></i> Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Bonjour, <em id="firstName">...</em> 👋</h1>
+                    <p id="dateLabel"></p>
+                </div>
+                <div class="topbar-right">
+                    <div class="badge-online">
+                        <span class="badge-dot"></span> En ligne
+                    </div>
+                </div>
+            </div>
+
+            <!-- HERO -->
+            <div class="hero-card">
+                <div class="hero-text">
+                    <div class="hero-tag"><i data-lucide="sparkles"></i> Votre espace hôtelier</div>
+                    <h2>Bienvenue sur <em>Pillowfy</em></h2>
+                    <p>Gérez vos réservations, accédez à vos factures et profitez de tous nos services depuis votre espace personnel.</p>
+                </div>
+                <div class="hero-actions">
+                    <a href="/Client/Reservations/New" class="btn btn-gold">
+                        <i data-lucide="plus"></i> Nouvelle réservation
+                    </a>
+                    <a href="/Client/Profil" class="btn btn-outline">
+                        <i data-lucide="user"></i> Mon profil
+                    </a>
+                </div>
+            </div>
+
+            <!-- RÉSERVATION ACTIVE -->
+            <div class="reservation-banner" id="reservationBanner">
+                <div class="res-left">
+                    <div class="res-room-icon"><i data-lucide="bed-double"></i></div>
+                    <div>
+                        <div class="res-label">Réservation en cours</div>
+                        <div class="res-room" id="resRoomName">Chambre Deluxe — Suite 204</div>
+                        <div class="res-dates" id="resDates">Arrivée : 10 mai · Départ : 14 mai 2026</div>
+                    </div>
+                </div>
+                <div class="res-status-group">
+                    <div class="res-stat">
+                        <div class="res-stat-val" id="resNights">4</div>
+                        <div class="res-stat-lbl">Nuits</div>
+                    </div>
+                    <div class="res-divider"></div>
+                    <div class="res-stat">
+                        <div class="res-stat-val" id="resGuests">2</div>
+                        <div class="res-stat-lbl">Personnes</div>
+                    </div>
+                    <div class="res-divider"></div>
+                    <div class="res-stat">
+                        <div class="res-stat-val" id="resPrice">480€</div>
+                        <div class="res-stat-lbl">Total</div>
+                    </div>
+                </div>
+                <div class="res-actions">
+                    <a href="/Client/Reservations" class="btn-teal"><i data-lucide="eye"></i> Voir détail</a>
+                    <a href="/Client/Reservations/Modify" class="btn-teal"><i data-lucide="pencil"></i> Modifier</a>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-wrap gold"><i data-lucide="calendar-check"></i></div>
+                    <div>
+                        <div class="stat-label">Réservations</div>
+                        <div class="stat-value" id="statResTotal">—</div>
+                        <div class="stat-sub">Total à ce jour</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap teal"><i data-lucide="bed-double"></i></div>
+                    <div>
+                        <div class="stat-label">Nuits passées</div>
+                        <div class="stat-value" id="statNuits">—</div>
+                        <div class="stat-sub">Depuis votre inscription</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap green"><i data-lucide="star"></i></div>
+                    <div>
+                        <div class="stat-label">Points fidélité</div>
+                        <div class="stat-value" id="statPoints">—</div>
+                        <div class="stat-sub">Niveau <span id="statTier">—</span></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap rose"><i data-lucide="receipt"></i></div>
+                    <div>
+                        <div class="stat-label">Total dépensé</div>
+                        <div class="stat-value" id="statDepense">—</div>
+                        <div class="stat-sub">Toutes réservations</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIDÉLITÉ + SERVICES -->
+            <div class="main-grid" style="margin-bottom:1rem;">
+                <div class="loyalty-card">
+                    <div class="loyalty-top">
+                        <div>
+                            <div class="loyalty-title">Programme Fidélité</div>
+                            <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:2px;">Pillowfy Rewards</div>
+                        </div>
+                        <div class="loyalty-tier" id="loyaltyTier">Gold</div>
+                    </div>
+                    <div class="loyalty-pts" id="loyaltyPts">1 240</div>
+                    <div class="loyalty-pts-label">points disponibles</div>
+                    <div class="loyalty-bar-wrap">
+                        <div class="loyalty-bar-labels">
+                            <span id="loyaltyLvlFrom">Gold</span>
+                            <span id="loyaltyLvlNext">250 pts pour Platinum</span>
+                        </div>
+                        <div class="loyalty-bar">
+                            <div class="loyalty-bar-fill" id="loyaltyFill" style="width:0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Services disponibles</span>
+                        <a href="/Client/Services" class="card-link">Voir tout →</a>
+                    </div>
+                    <div class="service-grid">
+                        <div class="service-item" onclick="window.location='/Client/Services/SpaWellness'">
+                            <div class="service-ic">🧖</div>
+                            <div><div class="service-name">Spa & Bien-être</div><div class="service-status">Ouvert · 9h–21h</div></div>
+                        </div>
+                        <div class="service-item" onclick="window.location='/Client/Services/Restaurant'">
+                            <div class="service-ic">🍽️</div>
+                            <div><div class="service-name">Restaurant</div><div class="service-status">Ouvert · 12h–23h</div></div>
+                        </div>
+                        <div class="service-item" onclick="window.location='/Client/Services/RoomService'">
+                            <div class="service-ic">🛎️</div>
+                            <div><div class="service-name">Room Service</div><div class="service-status">Disponible 24h/24</div></div>
+                        </div>
+                        <div class="service-item" onclick="window.location='/Client/Services/Navette'">
+                            <div class="service-ic">🚗</div>
+                            <div><div class="service-name">Navette aéroport</div><div class="service-status">Sur réservation</div></div>
+                        </div>
+                        <div class="service-item" onclick="window.location='/Client/Services/Piscine'">
+                            <div class="service-ic">🏊</div>
+                            <div><div class="service-name">Piscine</div><div class="service-status">Ouvert · 8h–20h</div></div>
+                        </div>
+                        <div class="service-item" onclick="window.location='/Client/Services/Concierge'">
+                            <div class="service-ic">🗝️</div>
+                            <div><div class="service-name">Conciergerie</div><div class="service-status">Disponible 24h/24</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HISTORIQUE + MESSAGES + ACTIONS -->
+            <div class="main-grid-wide">
+                <div style="display:flex;flex-direction:column;gap:1rem;">
+                    <!-- Historique séjours -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Historique des séjours</span>
+                            <a href="/Client/Sejours" class="card-link">Voir tout →</a>
+                        </div>
+                        <div class="stay-item">
+                            <div class="stay-thumb">🏨</div>
+                            <div>
+                                <div class="stay-hotel">Hôtel Pillowfy Paris</div>
+                                <div class="stay-dates">14 mars – 17 mars 2026</div>
+                                <div class="stay-badge upcoming">↗ À venir</div>
+                            </div>
+                            <div class="stay-meta">
+                                <div class="stay-price">360 €</div>
+                                <div class="stay-nights">3 nuits · Suite 204</div>
+                            </div>
+                        </div>
+                        <div class="stay-item">
+                            <div class="stay-thumb">🌴</div>
+                            <div>
+                                <div class="stay-hotel">Hôtel Pillowfy Nice</div>
+                                <div class="stay-dates">2 jan – 5 jan 2026</div>
+                                <div class="stay-badge done">✓ Terminé</div>
+                            </div>
+                            <div class="stay-meta">
+                                <div class="stay-price">270 €</div>
+                                <div class="stay-nights">3 nuits · Chambre mer</div>
+                            </div>
+                        </div>
+                        <div class="stay-item">
+                            <div class="stay-thumb">🏔️</div>
+                            <div>
+                                <div class="stay-hotel">Hôtel Pillowfy Lyon</div>
+                                <div class="stay-dates">10 nov – 12 nov 2025</div>
+                                <div class="stay-badge done">✓ Terminé</div>
+                            </div>
+                            <div class="stay-meta">
+                                <div class="stay-price">180 €</div>
+                                <div class="stay-nights">2 nuits · Standard</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Factures -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Dernières factures</span>
+                            <a href="/Client/Factures" class="card-link">Voir tout →</a>
+                        </div>
+                        <div class="invoice-row">
+                            <div>
+                                <div class="invoice-num">FAC-2026-0042</div>
+                                <div class="invoice-date">Séjour Nice · 5 jan 2026</div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="invoice-amount">270,00 €</div>
+                                <button class="invoice-dl" title="Télécharger"><i data-lucide="download"></i></button>
+                            </div>
+                        </div>
+                        <div class="invoice-row">
+                            <div>
+                                <div class="invoice-num">FAC-2025-0118</div>
+                                <div class="invoice-date">Séjour Lyon · 12 nov 2025</div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="invoice-amount">180,00 €</div>
+                                <button class="invoice-dl" title="Télécharger"><i data-lucide="download"></i></button>
+                            </div>
+                        </div>
+                        <div class="invoice-row">
+                            <div>
+                                <div class="invoice-num">FAC-2025-0089</div>
+                                <div class="invoice-date">Room Service · 10 nov 2025</div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="invoice-amount">42,50 €</div>
+                                <button class="invoice-dl" title="Télécharger"><i data-lucide="download"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:1rem;">
+                    <!-- Messagerie -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Messagerie</span>
+                            <a href="/Client/Messages" class="card-link">Voir tout →</a>
+                        </div>
+                        <div class="msg-item">
+                            <div class="msg-dot open"></div>
+                            <div style="flex:1;">
+                                <div class="msg-subject">Confirmation Room Service</div>
+                                <div class="msg-preview">Votre commande pour ce soir a bien été prise en compte...</div>
+                            </div>
+                            <div class="msg-time">10h32</div>
+                        </div>
+                        <div class="msg-item">
+                            <div class="msg-dot pending"></div>
+                            <div style="flex:1;">
+                                <div class="msg-subject">Demande de late check-out</div>
+                                <div class="msg-preview">Nous étudions votre demande, réponse sous 2h...</div>
+                            </div>
+                            <div class="msg-time">Hier</div>
+                        </div>
+                        <div class="msg-item">
+                            <div class="msg-dot closed"></div>
+                            <div style="flex:1;">
+                                <div class="msg-subject">Réservation spa confirmée</div>
+                                <div class="msg-preview">Votre rendez-vous du 10 mai à 15h est confirmé.</div>
+                            </div>
+                            <div class="msg-time">3 mai</div>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <a href="/Client/Messages/New" class="btn-sm-gold">
+                                <i data-lucide="plus"></i> Nouveau message
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Actions rapides -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Actions rapides</span>
+                        </div>
+                        <a href="/Client/Reservations/New" class="quick-action">
+                            <div class="qa-icon"><i data-lucide="plus-circle"></i></div>
+                            <div><div class="qa-label">Nouvelle réservation</div><div class="qa-sub">Réserver une chambre</div></div>
+                            <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                        </a>
+                        <a href="/Client/Profil" class="quick-action">
+                            <div class="qa-icon"><i data-lucide="user-pen"></i></div>
+                            <div><div class="qa-label">Modifier mon profil</div><div class="qa-sub">Mettre à jour vos informations</div></div>
+                            <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                        </a>
+                        <a href="/Client/Fidelite" class="quick-action">
+                            <div class="qa-icon"><i data-lucide="gift"></i></div>
+                            <div><div class="qa-label">Utiliser mes points</div><div class="qa-sub">Récompenses disponibles</div></div>
+                            <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                        </a>
+                        <a href="/Login/ForgotPassword" class="quick-action">
+                            <div class="qa-icon"><i data-lucide="lock-keyhole"></i></div>
+                            <div><div class="qa-label">Changer mon mot de passe</div><div class="qa-sub">Réinitialiser via e-mail</div></div>
+                            <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                        </a>
+                    </div>
+
+                    <!-- Dernier avis -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Mon dernier avis</span>
+                            <a href="/Client/Avis" class="card-link">Mes avis →</a>
+                        </div>
+                        <div class="rating-row">
+                            <div class="stars">
+                                <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+                            </div>
+                            <span class="rating-hotel">Pillowfy Nice</span>
+                            <span class="rating-date">5 jan 2026</span>
+                        </div>
+                        <div class="rating-comment">"Séjour parfait, chambre avec vue mer magnifique. Personnel très attentionné et petit-déjeuner excellent. Je reviendrai sans hésitation !"</div>
+                        <div style="margin-top:10px;">
+                            <button class="btn-sm-gold">
+                                <i data-lucide="star"></i> Laisser un avis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        /* ════════════════════════════════════════════════
+           SESSION MANAGER — Pillowfy
+        ════════════════════════════════════════════════ */
+        const SESSION = {
+            TOKEN_KEY:         'pillowfy_token',
+            REFRESH_TOKEN_KEY: 'pillowfy_refresh',
+            COOKIE_NAME:       'token',
+            LOGIN_URL:         '/Login/Index',
+            REFRESH_URL:       '/api/auth/refresh',
+            REFRESH_THRESHOLD: 5 * 60,
+            CHECK_INTERVAL:    60 * 1000,
+            WARN_BEFORE:       2 * 60,
+            CLAIMS: {
+                name:  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                email: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                role:  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
+            },
+            _heartbeatTimer: null,
+            _warnShown: false,
+
+            getToken() {
+                return this._readCookie(this.COOKIE_NAME) || localStorage.getItem(this.TOKEN_KEY);
+            },
+            getRefreshToken() {
+                return this._readCookie('refresh_token') || localStorage.getItem(this.REFRESH_TOKEN_KEY);
+            },
+            saveToken(token, rememberMe = false) {
+                const maxAge = rememberMe ? 30 * 24 * 3600 : 0;
+                document.cookie = `${this.COOKIE_NAME}=${encodeURIComponent(token)}; path=/; SameSite=Strict${maxAge ? '; Max-Age=' + maxAge : ''}`;
+                localStorage.setItem(this.TOKEN_KEY, token);
+            },
+            clearSession() {
+                localStorage.removeItem(this.TOKEN_KEY);
+                localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+                document.cookie = `${this.COOKIE_NAME}=; Max-Age=0; path=/; SameSite=Strict`;
+                document.cookie = `refresh_token=; Max-Age=0; path=/; SameSite=Strict`;
+                if (this._heartbeatTimer) clearInterval(this._heartbeatTimer);
+            },
+            parseJwt(token) {
+                try { return JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); }
+                catch { return null; }
+            },
+            secondsLeft(payload) {
+                if (!payload?.exp) return Infinity;
+                return payload.exp - Math.floor(Date.now() / 1000);
+            },
+            async tryRefresh() {
+                const refreshToken = this.getRefreshToken();
+                if (!refreshToken) return false;
+                try {
+                    const res = await fetch(this.REFRESH_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ refreshToken }),
+                        credentials: 'include'
+                    });
+                    if (!res.ok) return false;
+                    const data = await res.json();
+                    if (data.token) {
+                        this.saveToken(data.token);
+                        if (data.refreshToken) localStorage.setItem(this.REFRESH_TOKEN_KEY, data.refreshToken);
+                        console.info('[Session] Token rafraîchi avec succès.');
+                        return true;
+                    }
+                    return false;
+                } catch (e) {
+                    console.warn('[Session] Refresh échoué :', e);
+                    return false;
+                }
+            },
+            async check() {
+                const token = this.getToken();
+                if (!token) { this.redirectLogin('no_token'); return false; }
+                const p = this.parseJwt(token);
+                if (!p) { this.redirectLogin('invalid_token'); return false; }
+                const left = this.secondsLeft(p);
+                if (left <= 0) {
+                    const refreshed = await this.tryRefresh();
+                    if (!refreshed) { this.redirectLogin('expired'); return false; }
+                    return true;
+                }
+                if (left < this.REFRESH_THRESHOLD) this.tryRefresh();
+                if (left < this.WARN_BEFORE && !this._warnShown) {
+                    this._warnShown = true;
+                    this._showSessionWarning(Math.floor(left / 60));
+                }
+                return true;
+            },
+            redirectLogin(reason) {
+                this.clearSession();
+                const url = new URL(this.LOGIN_URL, window.location.origin);
+                url.searchParams.set('reason', reason);
+                url.searchParams.set('returnUrl', window.location.pathname);
+                window.location.href = url.toString();
+            },
+            _showSessionWarning(minsLeft) {
+                const toast = document.getElementById('sessionWarning');
+                if (!toast) return;
+                toast.querySelector('#warnMins').textContent = minsLeft + ' min';
+                toast.style.display = 'flex';
+                setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 10);
+            },
+            startHeartbeat() {
+                if (this._heartbeatTimer) clearInterval(this._heartbeatTimer);
+                this._heartbeatTimer = setInterval(() => this.check(), this.CHECK_INTERVAL);
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') { this._warnShown = false; this.check(); }
+                });
+                window.addEventListener('online', () => this.check());
+            },
+            _readCookie(name) {
+                const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return m ? decodeURIComponent(m[2]) : null;
+            }
+        };
+
+        /* ════════════════════════════════════════════════
+           DATE
+        ════════════════════════════════════════════════ */
+        (function () {
+            const now   = new Date();
+            const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+            const mois  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            document.getElementById('dateLabel').textContent =
+                jours[now.getDay()] + ' ' + now.getDate() + ' ' + mois[now.getMonth()] + ' ' + now.getFullYear();
+        })();
+
+        /* ════════════════════════════════════════════════
+           CHARGEMENT UTILISATEUR
+        ════════════════════════════════════════════════ */
+        async function loadUser() {
+            const ok = await SESSION.check();
+            if (!ok) {
+                // Pas de token valide — affichage démo (retirer en production)
+                document.getElementById('firstName').textContent     = 'Client';
+                document.getElementById('userName').textContent      = 'Utilisateur';
+                document.getElementById('userRole').textContent      = 'Customer';
+                document.getElementById('avatarInitial').textContent = 'C';
+                loadDashboardData(null);
+                return;
+            }
+
+            const token = SESSION.getToken();
+            const p     = SESSION.parseJwt(token);
+
+            const fullName  = p[SESSION.CLAIMS.name]  || '';
+            const email     = p[SESSION.CLAIMS.email] || '';
+            const role      = p[SESSION.CLAIMS.role]  || 'Customer';
+            const firstName = fullName.split(' ')[0]  || 'Client';
+
+            document.getElementById('firstName').textContent     = firstName;
+            document.getElementById('userName').textContent      = fullName || email;
+            document.getElementById('userRole').textContent      = role;
+            document.getElementById('avatarInitial').textContent = firstName.charAt(0).toUpperCase();
+
+            SESSION.startHeartbeat();
+            loadDashboardData(token);
+        }
+
+        /* ════════════════════════════════════════════════
+           DONNÉES DASHBOARD
+        ════════════════════════════════════════════════ */
+        async function loadDashboardData(token) {
+            try {
+                /* Décommentez pour brancher vos vraies API :
+                const headers = token ? { Authorization: 'Bearer ' + token } : {};
+                const [dashRes, resaRes] = await Promise.all([
+                    fetch('/api/client/dashboard',           { headers, credentials: 'include' }),
+                    fetch('/api/client/reservations/active', { headers, credentials: 'include' })
+                ]);
+                if (dashRes.status === 401) { SESSION.redirectLogin('unauthorized'); return; }
+                const dash = await dashRes.json();
+                const resa = await resaRes.json();
+                */
+
+                // ── Données démo ── (supprimer quand API branchée)
+                const dash = {
+                    reservationsTotal: 5,
+                    nuitsTotal:        12,
+                    pointsFidelite:    1240,
+                    tier:              'Gold',
+                    totalDepense:      '1 492 €',
+                    nextTierPts:       250,
+                    nextTierName:      'Platinum',
+                    loyaltyProgress:   83
+                };
+
+                document.getElementById('statResTotal').textContent   = dash.reservationsTotal;
+                document.getElementById('statNuits').textContent      = dash.nuitsTotal;
+                document.getElementById('statPoints').textContent     = dash.pointsFidelite.toLocaleString('fr-FR');
+                document.getElementById('statTier').textContent       = dash.tier;
+                document.getElementById('statDepense').textContent    = dash.totalDepense;
+                document.getElementById('loyaltyTier').textContent    = dash.tier;
+                document.getElementById('loyaltyPts').textContent     = dash.pointsFidelite.toLocaleString('fr-FR');
+                document.getElementById('loyaltyLvlFrom').textContent = dash.tier;
+                document.getElementById('loyaltyLvlNext').textContent = dash.nextTierPts + ' pts pour ' + dash.nextTierName;
+
+                // Animer la barre après un court délai
+                setTimeout(() => {
+                    document.getElementById('loyaltyFill').style.width = dash.loyaltyProgress + '%';
+                }, 300);
+
+            } catch (e) {
+                console.error('[Dashboard] Erreur chargement données :', e);
+            }
+        }
+
+        /* ════════════════════════════════════════════════
+           DÉCONNEXION
+        ════════════════════════════════════════════════ */
+        async function logout() {
+            try {
+                const token = SESSION.getToken();
+                if (token) {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    }).catch(() => {});
+                }
+            } finally {
+                SESSION.clearSession();
+                window.location.href = SESSION.LOGIN_URL;
+            }
+        }
+
+        /* ── Bouton "Rester connecté" dans le toast ── */
+        function extendSession() {
+            SESSION._warnShown = false;
+            SESSION.tryRefresh();
+            const toast = document.getElementById('sessionWarning');
+            if (toast) { toast.style.opacity = '0'; setTimeout(() => toast.style.display = 'none', 300); }
+        }
+
+        /* ════════════════════════════════════════════════
+           TOAST SESSION
+        ════════════════════════════════════════════════ */
+        (function injectToast() {
+            const style = document.createElement('style');
+            style.textContent = `
+                #sessionWarning {
+                    display:none; opacity:0; transform:translateY(10px);
+                    transition:opacity .3s, transform .3s;
+                    position:fixed; bottom:1.5rem; right:1.5rem; z-index:9999;
+                    background:#0F1621; border:1px solid rgba(201,169,110,0.3);
+                    border-radius:14px; padding:1rem 1.2rem;
+                    box-shadow:0 8px 32px rgba(15,22,33,0.28);
+                    align-items:center; gap:12px; max-width:340px;
+                    font-family:'DM Sans',sans-serif;
+                }
+                #sessionWarning .sw-ic { width:36px;height:36px;border-radius:10px;background:rgba(201,169,110,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#C9A96E; }
+                #sessionWarning .sw-ic svg { width:16px;height:16px; }
+                #sessionWarning .sw-body { flex:1; }
+                #sessionWarning .sw-title { font-size:.83rem;font-weight:600;color:#fff; }
+                #sessionWarning .sw-sub { font-size:.74rem;color:rgba(255,255,255,.4);margin-top:2px; }
+                #sessionWarning .sw-sub strong { color:#C9A96E; }
+                #sessionWarning .sw-btns { display:flex;gap:6px;margin-top:8px; }
+                #sessionWarning .sw-extend { background:#C9A96E;color:#0F1621;border:none;border-radius:100px;padding:5px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif; }
+                #sessionWarning .sw-out { background:transparent;color:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:5px 13px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif; }
+                #sessionWarning .sw-out:hover { color:#f87171;border-color:rgba(220,38,38,.35); }
+                #sessionWarning .sw-close { background:none;border:none;color:rgba(255,255,255,.22);cursor:pointer;font-size:1rem;padding:0 2px;align-self:flex-start;line-height:1; }
+            `;
+            document.head.appendChild(style);
+
+            document.body.insertAdjacentHTML('beforeend', `
+            <div id="sessionWarning" role="alert" aria-live="polite">
+                <div class="sw-ic"><i data-lucide="clock"></i></div>
+                <div class="sw-body">
+                    <div class="sw-title">Session expire bientôt</div>
+                    <div class="sw-sub">Il vous reste <strong id="warnMins">2 min</strong> — rester connecté ?</div>
+                    <div class="sw-btns">
+                        <button class="sw-extend" onclick="extendSession()">Rester connecté</button>
+                        <button class="sw-out" onclick="logout()">Se déconnecter</button>
+                    </div>
+                </div>
+                <button class="sw-close" onclick="this.closest('#sessionWarning').style.display='none'" aria-label="Fermer">✕</button>
+            </div>`);
+
+            // Re-render Lucide pour les icônes du toast injecté dynamiquement
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        })();
+
+        /* ════════════════════════════════════════════════
+           INIT — attendre que Lucide soit prêt
+        ════════════════════════════════════════════════ */
+        function init() {
+            if (typeof lucide === 'undefined') {
+                // Lucide pas encore chargé, on réessaie dans 50ms
+                setTimeout(init, 50);
+                return;
+            }
+            lucide.createIcons();
+            loadUser();
+        }
+
+        // Lancer dès que le DOM est prêt
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

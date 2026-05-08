@@ -50,6 +50,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<PilloWfyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<Pillowfy.Services.EmailService.IEmailService, Pillowfy.Services.EmailService.EmailService>();
+
 // Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
