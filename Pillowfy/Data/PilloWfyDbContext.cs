@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pillowfy.Models;
@@ -14,31 +14,35 @@ namespace Pillowfy.Data
         }
 
         public DbSet<Hotel> Hotels { get; set; }
-     
+        public DbSet<Chambre> Chambres { get; set; }
+        public DbSet<Avis> Avis { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Ignore<Chambre>();
-            modelBuilder.Ignore<Avis>();
             base.OnModelCreating(modelBuilder);
 
-            // Configuration Hotel
-            modelBuilder.Entity<Hotel>()
-                .HasOne(h => h.Owner)
-                .WithMany(u => u.Hotels)
-                .HasForeignKey(h => h.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // Reservation → Chambre
+            modelBuilder.Entity<Reservation>()
+                .HasOne(r => r.Chambre)
+                .WithMany(c => c.Reservations)
+                .HasForeignKey(r => r.ChambreId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Hotel>()
-                .Property(h => h.Rating)
-                .HasPrecision(3, 2);
+            // Reservation → User
+            modelBuilder.Entity<Reservation>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // Index
-            modelBuilder.Entity<Hotel>()
-                .HasIndex(h => h.Name);
-
-            modelBuilder.Entity<Hotel>()
-                .HasIndex(h => h.City);
+            // 🔥 AJOUT IMPORTANT
+            modelBuilder.Entity<Chambre>()
+                .HasOne(c => c.Hotel)
+                .WithMany(h => h.Chambres)
+                .HasForeignKey(c => c.HotelId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

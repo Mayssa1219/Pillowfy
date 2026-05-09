@@ -1,4 +1,4 @@
-namespace Pillowfy.DTOs.Hotel
+﻿namespace Pillowfy.DTOs.Hotel
 {
     public class HotelDto
     {
@@ -9,6 +9,7 @@ namespace Pillowfy.DTOs.Hotel
         public string City { get; set; }
         public string Country { get; set; }
         public decimal Rating { get; set; }
+        public string? ImageUrl { get; set; }  // ← ajouté
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

@@ -1,11 +1,16 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 namespace Pillowfy.DTOs.Auth
 {
     public class AuthResponseDto
     {
         public bool Success { get; set; }
+
         public string Message { get; set; }
+
         public string Token { get; set; }
+
+        public string? Role { get; set; } // ← AJOUTER ÇA
+
         public UserDto User { get; set; }
     }
 

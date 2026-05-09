@@ -97,51 +97,46 @@ namespace Pillowfy.Services
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto model)
         {
-            try
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+                return Fail("Email ou mot de passe incorrect.");
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, model.Password);
+
+            if (!passwordValid)
+                return Fail("Email ou mot de passe incorrect.");
+
+            // récupérer les rôles
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // générer le token
+            var token = GenerateJwtToken(user, roles);
+
+            return new AuthResponseDto
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null)
-                    return new AuthResponseDto
-                    {
-                        Success = false,
-                        Message = "Email ou mot de passe incorrect."
-                    };
+                Success = true,
+                Token = token,
+                Role = roles.FirstOrDefault(),
 
-                var passwordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
-                if (!passwordCorrect)
-                    return new AuthResponseDto
-                    {
-                        Success = false,
-                        Message = "Email ou mot de passe incorrect."
-                    };
-
-                var roles = await _userManager.GetRolesAsync(user);
-                var token = GenerateJwtToken(user, roles);
-
-                return new AuthResponseDto
+                User = new UserDto
                 {
-                    Success = true,
-                    Message = "Connexion réussie.",
-                    Token = token,
-                    User = new UserDto
-                    {
-                        Id = user.Id,
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        PhoneNumber = user.PhoneNumber,
-                        Roles = roles.ToList()
-                    }
-                };
-            }
-            catch (Exception ex)
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Roles = roles.ToList()
+                }
+            };
+        }
+
+        private AuthResponseDto Fail(string msg)
+        {
+            return new AuthResponseDto
             {
-                return new AuthResponseDto
-                {
-                    Success = false,
-                    Message = $"Erreur lors de la connexion: {ex.Message}"
-                };
-            }
+                Success = false,
+                Message = msg
+            };
         }
 
         public async Task<AuthResponseDto> AssignRoleAsync(string userId, string role)
@@ -282,32 +277,30 @@ namespace Pillowfy.Services
         }
         private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+            );
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
-            };
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName)
+    };
 
             foreach (var role in roles)
                 claims.Add(new Claim(ClaimTypes.Role, role));
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(24),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
-            };
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(24),
+                signingCredentials: creds
+            );
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
-}
+    }}

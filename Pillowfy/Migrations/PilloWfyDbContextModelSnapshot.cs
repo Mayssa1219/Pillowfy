@@ -237,6 +237,54 @@ namespace Pillowfy.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Pillowfy.Models.Avis", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Avis");
+                });
+
+            modelBuilder.Entity("Pillowfy.Models.Chambre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HotelId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("PricePerNight")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("Chambres");
+                });
+
             modelBuilder.Entity("Pillowfy.Models.Hotel", b =>
                 {
                     b.Property<int>("Id")
@@ -251,7 +299,7 @@ namespace Pillowfy.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -264,33 +312,73 @@ namespace Pillowfy.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Rating")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("decimal(3,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("City");
-
-                    b.HasIndex("Name");
-
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Hotels");
+                });
+
+            modelBuilder.Entity("Pillowfy.Models.Reservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChambreId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CheckIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CheckOut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NumberOfGuests")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChambreId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -344,6 +432,17 @@ namespace Pillowfy.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Pillowfy.Models.Chambre", b =>
+                {
+                    b.HasOne("Pillowfy.Models.Hotel", "Hotel")
+                        .WithMany("Chambres")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+                });
+
             modelBuilder.Entity("Pillowfy.Models.Hotel", b =>
                 {
                     b.HasOne("Pillowfy.Models.ApplicationUser", "Owner")
@@ -355,9 +454,38 @@ namespace Pillowfy.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("Pillowfy.Models.Reservation", b =>
+                {
+                    b.HasOne("Pillowfy.Models.Chambre", "Chambre")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ChambreId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Pillowfy.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Chambre");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Pillowfy.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Hotels");
+                });
+
+            modelBuilder.Entity("Pillowfy.Models.Chambre", b =>
+                {
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("Pillowfy.Models.Hotel", b =>
+                {
+                    b.Navigation("Chambres");
                 });
 #pragma warning restore 612, 618
         }

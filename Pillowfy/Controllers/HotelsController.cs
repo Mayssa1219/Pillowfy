@@ -20,13 +20,15 @@ namespace Pillowfy.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Owner,Admin")]
-        public async Task<ActionResult<HotelDto>> Create([FromBody] CreateHotelDto dto)
+        public async Task<ActionResult<HotelDto>> Create([FromForm] CreateHotelDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var result = await _hotelService.CreateAsync(dto, userId);
+
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
@@ -63,12 +65,13 @@ namespace Pillowfy.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner,Admin")]
-        public async Task<ActionResult<HotelDto>> Update(int id, [FromBody] CreateHotelDto dto)
+        public async Task<ActionResult<HotelDto>> Update(int id, [FromForm] CreateHotelDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             try
             {
                 var result = await _hotelService.UpdateAsync(id, dto, userId);
@@ -85,6 +88,7 @@ namespace Pillowfy.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             try
             {
                 await _hotelService.DeleteAsync(id, userId);

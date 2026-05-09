@@ -619,31 +619,53 @@
             btn.classList.add('loading');
             btn.disabled = true;
 
-            try {
-                const res = await fetch('/api/Auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailEl.value, password: pwdEl.value })
-                });
-                const data = await res.json();
+                   try {
+            const res = await fetch('/api/Auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: emailEl.value,
+                    password: pwdEl.value
+                })
+            });
 
-                      if (data.success) {
-            // Sauvegarde dans localStorage
-            localStorage.setItem('token', data.token);
+            const data = await res.json();
 
-            // Sauvegarde dans cookie (expire dans 24h)
-            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
-            document.cookie = `token=${encodeURIComponent(data.token)}; expires=${expires}; path=/; SameSite=Strict`;
+            console.log("LOGIN RESPONSE:", data); // 🔥 DEBUG IMPORTANT
 
-            // Redirection vers l'espace client
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || "Erreur de connexion");
+            }
+
+            const token = data.token;
+
+            if (!token) {
+                throw new Error("Token manquant");
+            }
+
+                   // Sauvegarde token
+        localStorage.setItem('pillowfy_token', token);
+
+        // Vérification du rôle
+        const role = data.role;
+
+        if (role === "Customer") {
             window.location.href = '/Client/Dashboard';
         }
-            } catch (err) {
-                document.getElementById('alertMsg').textContent = 'Erreur de connexion. Veuillez réessayer.';
-                alert.classList.add('visible');
-                btn.classList.remove('loading');
-                btn.disabled = false;
-            }
+        else if (role === "Owner") {
+            window.location.href = '/Owner/Dashboard';
+        }
+        else {
+            window.location.href = '/';
+        }
+
+        } catch (err) {
+            document.getElementById('alertMsg').textContent = err.message;
+            document.getElementById('alertError').classList.add('visible');
+
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
         });
     </script>
 

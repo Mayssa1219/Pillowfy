@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Pillowfy.Data;
+using Pillowfy.Interfaces;
 using Pillowfy.Models;
 using Pillowfy.Services;
 using System.Text;
@@ -109,6 +110,9 @@ builder.Services.AddCors(options =>
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
+builder.Services.AddScoped<IChambreService, ChambreService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var app = builder.Build();
 
