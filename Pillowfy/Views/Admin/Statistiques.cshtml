@@ -1,0 +1,401 @@
+﻿@model Pillowfy.DTOs.DashboardDto
+@{
+    ViewData["Title"] = "Statistiques";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Pillowfy Admin — Statistiques</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --cream: #FAF7F2;
+            --cream-dk: #F0EBE1;
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --sidebar-w: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans',sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            min-height: 100vh;
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            padding: 2rem 1.5rem;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 3rem;
+        }
+
+            .sidebar-brand img {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.3rem;
+            color: white;
+        }
+
+        .sidebar-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+            margin-bottom: 0.6rem;
+            margin-top: 1.5rem;
+            padding: 0 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            transition: all .2s;
+            margin-bottom: 2px;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: white;
+            }
+
+            .nav-item.active {
+                background: rgba(201,169,110,0.15);
+                color: var(--gold);
+            }
+
+            .nav-item .icon {
+                font-size: 1.1rem;
+                width: 20px;
+                text-align: center;
+            }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(201,169,110,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .admin-name {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .admin-role {
+            font-size: 0.72rem;
+            color: var(--gold);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            background: rgba(192,57,43,0.1);
+            border: 1px solid rgba(192,57,43,0.2);
+            border-radius: 10px;
+            color: #e74c3c;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all .2s;
+        }
+
+            .logout-btn:hover {
+                background: rgba(192,57,43,0.18);
+            }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            padding: 2.5rem;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-eyebrow {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 0.4rem;
+        }
+
+        .page-title {
+            font-family: 'DM Serif Display',serif;
+            font-size: 2rem;
+            color: var(--ink);
+        }
+
+            .page-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: var(--white);
+            border: 1px solid rgba(201,169,110,0.12);
+            border-radius: 16px;
+            padding: 1.8rem;
+        }
+
+            .chart-card.full {
+                grid-column: 1/-1;
+            }
+
+        .chart-title {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-bottom: 0.4rem;
+        }
+
+        .chart-sub {
+            font-size: 0.82rem;
+            color: var(--ink-60);
+            margin-bottom: 1.2rem;
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .kpi {
+            background: var(--white);
+            border: 1px solid rgba(201,169,110,0.12);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+        }
+
+        .kpi-val {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.8rem;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .kpi-lbl {
+            font-size: 0.78rem;
+            color: var(--ink-60);
+            margin-top: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="/Admin/Dashboard" class="sidebar-brand">
+            <img src="/Images/logo.png" alt="Pillowfy">
+            <span class="sidebar-brand-name">Pillowfy</span>
+        </a>
+        <div class="sidebar-label">Principal</div>
+        <a href="/Admin/Dashboard" class="nav-item"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-label">Gestion</div>
+        <a href="/Admin/Users" class="nav-item"><span class="icon">👥</span> Utilisateurs</a>
+        <a href="/Admin/Hotels" class="nav-item"><span class="icon">🏨</span> Hôtels</a>
+        <a href="/Admin/Statistiques" class="nav-item active"><span class="icon">📈</span> Statistiques</a>
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <div class="admin-avatar">A</div>
+                <div><div class="admin-name">Administrateur</div><div class="admin-role">Super Admin</div></div>
+            </div>
+            <a href="/Admin/Logout" class="logout-btn">🚪 Se déconnecter</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="page-eyebrow">Analyse</div>
+            <h1 class="page-title"><em>Statistiques</em> globales</h1>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-row">
+            <div class="kpi">
+                <div class="kpi-val">@Model.RevenuTotal.ToString("N0") TND</div>
+                <div class="kpi-lbl">💰 Revenu total</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-val">@Model.TauxOccupation%</div>
+                <div class="kpi-lbl">🛏️ Taux d'occupation</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-val">@Model.NoteMoyenneGlobale / 5</div>
+                <div class="kpi-lbl">⭐ Note moyenne</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-val">@Model.TotalReservations</div>
+                <div class="kpi-lbl">📅 Total réservations</div>
+            </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">Réservations par mois</div>
+                <div class="chart-sub">Évolution sur l'année en cours</div>
+                <canvas id="barChart" height="120"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Revenus par mois</div>
+                <div class="chart-sub">En TND</div>
+                <canvas id="lineChart" height="120"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Statut des réservations</div>
+                <div class="chart-sub">Répartition globale</div>
+                <canvas id="pieChart" height="120"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Top hôtels</div>
+                <div class="chart-sub">Par nombre de réservations</div>
+                <canvas id="hotelBar" height="120"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const mois    = [@Html.Raw(string.Join(",", Model.ReservationsParMois.Select(m => $"\"{m.Mois}\"")))];
+        const nbRes   = [@Html.Raw(string.Join(",", Model.ReservationsParMois.Select(m => m.NombreReservations)))];
+        const revenus = [@Html.Raw(string.Join(",", Model.ReservationsParMois.Select(m => m.Revenu)))];
+
+        // Bar — réservations
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: mois,
+                datasets: [{ label: 'Réservations', data: nbRes,
+                    backgroundColor: 'rgba(201,169,110,0.3)',
+                    borderColor: '#C9A96E', borderWidth: 2, borderRadius: 6 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } } }
+        });
+
+        // Line — revenus
+        new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: mois,
+                datasets: [{ label: 'Revenu (TND)', data: revenus,
+                    borderColor: '#1A6B6B', backgroundColor: 'rgba(26,107,107,0.08)',
+                    borderWidth: 2.5, tension: 0.4, fill: true,
+                    pointBackgroundColor: '#1A6B6B' }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } } }
+        });
+
+        // Pie — statuts
+        new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Confirmées', 'Annulées', 'En attente'],
+                datasets: [{ data: [
+                    @Model.ReservationsConfirmees,
+                    @Model.ReservationsAnnulees,
+                    @(Model.TotalReservations - Model.ReservationsConfirmees - Model.ReservationsAnnulees)
+                ],
+                backgroundColor: ['rgba(26,107,107,0.8)', 'rgba(192,57,43,0.7)', 'rgba(201,169,110,0.7)'],
+                borderWidth: 0 }]
+            },
+            options: { responsive: true,
+                plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Bar — top hôtels
+        const hotelLabels = [@Html.Raw(string.Join(",", Model.HotelsLesPlusReserves.Select(h => $"\"{h.HotelName}\"")))];
+        const hotelData   = [@Html.Raw(string.Join(",", Model.HotelsLesPlusReserves.Select(h => h.NombreReservations)))];
+
+        new Chart(document.getElementById('hotelBar'), {
+            type: 'bar',
+            data: {
+                labels: hotelLabels,
+                datasets: [{ label: 'Réservations', data: hotelData,
+                    backgroundColor: 'rgba(201,169,110,0.4)',
+                    borderColor: '#C9A96E', borderWidth: 2, borderRadius: 6 }]
+            },
+            options: { indexAxis: 'y', responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true } } }
+        });
+    </script>
+</body>
+</html>
