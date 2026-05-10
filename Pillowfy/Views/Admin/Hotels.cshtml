@@ -1,0 +1,474 @@
+﻿@model List<Pillowfy.Models.Hotel>
+@{
+    ViewData["Title"] = "Gestion Hôtels";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Pillowfy Admin — Hôtels</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --cream: #FAF7F2;
+            --cream-dk: #F0EBE1;
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --sidebar-w: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans',sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            min-height: 100vh;
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            padding: 2rem 1.5rem;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 3rem;
+        }
+
+            .sidebar-brand img {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.3rem;
+            color: white;
+        }
+
+        .sidebar-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+            margin-bottom: 0.6rem;
+            margin-top: 1.5rem;
+            padding: 0 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            transition: all .2s;
+            margin-bottom: 2px;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: white;
+            }
+
+            .nav-item.active {
+                background: rgba(201,169,110,0.15);
+                color: var(--gold);
+            }
+
+            .nav-item .icon {
+                font-size: 1.1rem;
+                width: 20px;
+                text-align: center;
+            }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(201,169,110,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .admin-name {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .admin-role {
+            font-size: 0.72rem;
+            color: var(--gold);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            background: rgba(192,57,43,0.1);
+            border: 1px solid rgba(192,57,43,0.2);
+            border-radius: 10px;
+            color: #e74c3c;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all .2s;
+        }
+
+            .logout-btn:hover {
+                background: rgba(192,57,43,0.18);
+            }
+
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            padding: 2.5rem;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-eyebrow {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 0.4rem;
+        }
+
+        .page-title {
+            font-family: 'DM Serif Display',serif;
+            font-size: 2rem;
+            color: var(--ink);
+        }
+
+            .page-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            padding: 0.65rem 1rem;
+            border: 1.5px solid var(--cream-dk);
+            border-radius: 10px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.9rem;
+            color: var(--ink);
+            background: var(--white);
+            outline: none;
+            width: 280px;
+            transition: border-color .2s;
+        }
+
+            .search-input:focus {
+                border-color: var(--gold);
+            }
+
+        .table-card {
+            background: var(--white);
+            border: 1px solid rgba(201,169,110,0.12);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--cream);
+        }
+
+        th {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--ink-60);
+            text-align: left;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--cream-dk);
+        }
+
+        td {
+            padding: 0.9rem 1rem;
+            font-size: 0.88rem;
+            color: var(--ink);
+            border-bottom: 1px solid rgba(240,235,225,0.6);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(201,169,110,0.03);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 100px;
+        }
+
+        .pill-active {
+            background: rgba(26,107,107,0.1);
+            color: var(--teal);
+        }
+
+        .pill-inactive {
+            background: rgba(15,22,33,0.06);
+            color: var(--ink-60);
+        }
+
+        .action-btn {
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .btn-deactivate {
+            background: rgba(192,57,43,0.1);
+            color: #c0392b;
+        }
+
+            .btn-deactivate:hover {
+                background: rgba(192,57,43,0.2);
+            }
+
+        .btn-activate {
+            background: rgba(26,107,107,0.1);
+            color: var(--teal);
+        }
+
+            .btn-activate:hover {
+                background: rgba(26,107,107,0.2);
+            }
+
+        .rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.82rem;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="/Admin/Dashboard" class="sidebar-brand">
+            <img src="/Images/logo.png" alt="Pillowfy">
+            <span class="sidebar-brand-name">Pillowfy</span>
+        </a>
+        <div class="sidebar-label">Principal</div>
+        <a href="/Admin/Dashboard" class="nav-item"><span class="icon">📊</span> Dashboard</a>
+        <div class="sidebar-label">Gestion</div>
+        <a href="/Admin/Users" class="nav-item"><span class="icon">👥</span> Utilisateurs</a>
+        <a href="/Admin/Hotels" class="nav-item active"><span class="icon">🏨</span> Hôtels</a>
+        <a href="/Admin/Statistiques" class="nav-item"><span class="icon">📈</span> Statistiques</a>
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <div class="admin-avatar">A</div>
+                <div><div class="admin-name">Administrateur</div><div class="admin-role">Super Admin</div></div>
+            </div>
+            <a href="/Admin/Logout" class="logout-btn">🚪 Se déconnecter</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="page-eyebrow">Gestion</div>
+            <h1 class="page-title">Gestion des <em>hôtels</em></h1>
+        </div>
+
+        <div class="toolbar">
+            <input type="text" class="search-input"
+                   placeholder="🔍 Rechercher un hôtel..."
+                   id="searchInput" onkeyup="filterTable()" />
+            <span style="font-size:0.85rem;color:var(--ink-60);">
+                @Model.Count hôtels au total —
+                @Model.Count(h => h.IsActive) actifs,
+                @Model.Count(h => !h.IsActive) désactivés
+            </span>
+        </div>
+
+        <div class="table-card">
+            <table id="hotelsTable">
+                <thead>
+                    <tr>
+                        <th>Hôtel</th>
+                        <th>Propriétaire</th>
+                        <th>Ville</th>
+                        <th>Rating</th>
+                        <th>Statut</th>
+                        <th>Créé le</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var hotel in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div style="font-weight:500">@hotel.Name</div>
+                                <div style="font-size:0.75rem;color:var(--ink-60)">@hotel.Address</div>
+                            </td>
+                            <td>
+                                <div>@hotel.Owner?.FirstName @hotel.Owner?.LastName</div>
+                                <div style="font-size:0.75rem;color:var(--ink-60)">@hotel.Owner?.Email</div>
+                            </td>
+                            <td>@hotel.City, @hotel.Country</td>
+                            <td>
+                                <span class="rating">⭐ @hotel.Rating.ToString("F1")</span>
+                            </td>
+                            <td>
+                                <span class="status-pill @(hotel.IsActive ? "pill-active" : "pill-inactive")">
+                                    @(hotel.IsActive ? "● Actif" : "○ Désactivé")
+                                </span>
+                            </td>
+                            <td style="color:var(--ink-60)">
+                                @hotel.CreatedAt.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                <form method="post" action="/Admin/ToggleHotel" style="display:inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="hotelId" value="@hotel.Id" />
+                                    <button type="submit"
+                                            class="action-btn @(hotel.IsActive ? "btn-deactivate" : "btn-activate")">
+                                        @(hotel.IsActive ? "🚫 Désactiver" : "✅ Activer")
+                                    </button>
+
+                                    <button type="button"
+                                            class="action-btn btn-delete"
+                                            onclick="confirmDeleteHotel(@hotel.Id, '@hotel.Name')">
+                                        🗑 Supprimer
+                                    </button>
+
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function filterTable() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('#hotelsTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+    </script>
+
+
+    <div id="deleteHotelModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+     z-index:999;align-items:center;justify-content:center;">
+        <div style="background:white;border-radius:16px;padding:2rem;max-width:400px;width:90%;margin:auto;margin-top:20vh;">
+            <h3 style="font-family:'DM Serif Display',serif;margin-bottom:0.5rem;">Supprimer l'hôtel</h3>
+            <p style="color:rgba(15,22,33,0.6);font-size:0.9rem;margin-bottom:1.5rem;">
+                Supprimer <strong id="deleteHotelName"></strong> ?
+                Toutes ses chambres et réservations seront supprimées. <strong>Irréversible.</strong>
+            </p>
+            <form method="post" action="/Admin/DeleteHotel">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="hotelId" id="deleteHotelId" />
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button type="button" onclick="closeHotelModal()"
+                            style="padding:0.6rem 1.2rem;border-radius:8px;border:1.5px solid #ddd;
+                               background:white;cursor:pointer;font-weight:500;">
+                        Annuler
+                    </button>
+                    <button type="submit"
+                            style="padding:0.6rem 1.2rem;border-radius:8px;border:none;
+                               background:#c0392b;color:white;cursor:pointer;font-weight:600;">
+                        🗑 Supprimer définitivement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function confirmDeleteHotel(hotelId, hotelName) {
+            document.getElementById('deleteHotelId').value = hotelId;
+            document.getElementById('deleteHotelName').textContent = hotelName;
+            document.getElementById('deleteHotelModal').style.display = 'flex';
+        }
+        function closeHotelModal() {
+            document.getElementById('deleteHotelModal').style.display = 'none';
+        }
+    </script>
+
+
+</body>
+</html>

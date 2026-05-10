@@ -121,6 +121,13 @@ builder.Services.AddScoped<PaiementService>();
 builder.Services.AddScoped<AvisService>();
 builder.Services.AddScoped<StatistiqueService>();
 
+// Cookie Auth pour les vues Admin (en plus du JWT)
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Admin/Login";
+    options.AccessDeniedPath = "/Admin/Login";
+});
+
 var app = builder.Build();
 
 // ===================== MIDDLEWARE =====================

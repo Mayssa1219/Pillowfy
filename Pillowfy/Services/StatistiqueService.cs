@@ -16,34 +16,52 @@ namespace Pillowfy.Services
 
         public async Task<DashboardAdminDto> GetDashboardAsync()
         {
+            // ── Réservations chargées en mémoire (avec Hotel inclus) ──
             var reservations = await _context.Reservations
                 .Include(r => r.Chambre).ThenInclude(c => c.Hotel)
                 .ToListAsync();
 
             var confirmees = reservations
-                .Where(r => r.Status == ReservationStatus.Confirmed).ToList();
+                .Where(r => r.Status == ReservationStatus.Confirmed)
+                .ToList();
 
-            var noteMoyenne = await _context.Avis.AnyAsync()
-                ? Math.Round(await _context.Avis
-                    .AverageAsync(a => (double)a.Note), 1)
-                : 0;
+            // ✅ CORRIGÉ : (double?) + ?? 0 — EF Core traduit parfaitement en SQL
+            var noteMoyenne = Math.Round(
+                await _context.Avis.AverageAsync(a => (double?)a.Note) ?? 0.0
+            , 1);
 
             int annee = DateTime.UtcNow.Year;
 
+            // ── Réservations par mois — déjà en mémoire, pas de problème ──
             var parMois = Enumerable.Range(1, 12).Select(mois =>
             {
                 var r = reservations
                     .Where(x => x.CheckIn.Year == annee
-                             && x.CheckIn.Month == mois).ToList();
+                             && x.CheckIn.Month == mois)
+                    .ToList();
+
                 return new ReservationsParMoisDto
                 {
                     Mois = new DateTime(annee, mois, 1).ToString("MMM yyyy"),
                     NombreReservations = r.Count,
                     Revenu = r.Where(x => x.Status == ReservationStatus.Confirmed)
-                               .Sum(x => x.TotalPrice)
+                                          .Sum(x => x.TotalPrice)
                 };
             }).ToList();
 
+            // ── Notes moyennes par hôtel — chargées en mémoire AVANT le GroupBy ──
+            // ✅ CORRIGÉ : on charge tous les avis en mémoire une seule fois
+            //             pour éviter le mélange EF Core / LINQ in-memory
+            var avisParHotel = await _context.Avis
+                .GroupBy(a => a.HotelId)
+                .Select(g => new
+                {
+                    HotelId = g.Key,
+                    NoteMoyenne = g.Average(a => (double)a.Note)
+                })
+                .ToListAsync();  // ← tout en SQL, résultat en mémoire
+
+            // ── Hôtels populaires — tout en mémoire maintenant ──
             var hotelsPopulaires = reservations
                 .Where(r => r.Chambre?.Hotel != null)
                 .GroupBy(r => new
@@ -52,26 +70,33 @@ namespace Pillowfy.Services
                     r.Chambre.Hotel.Name,
                     r.Chambre.Hotel.City
                 })
-                .Select(g => new HotelPopulaireDto
+                .Select(g =>
                 {
-                    HotelName = g.Key.Name,
-                    City = g.Key.City,
-                    NombreReservations = g.Count(),
-                    NoteMoyenne = _context.Avis
-                        .Where(a => a.HotelId == g.Key.Id)
-                        .Select(a => (double)a.Note)
-                        .DefaultIfEmpty(0).Average()
+                    // Lookup dans la liste déjà chargée — pas de requête SQL ici
+                    var note = avisParHotel
+                        .FirstOrDefault(a => a.HotelId == g.Key.Id)
+                        ?.NoteMoyenne ?? 0.0;
+
+                    return new HotelPopulaireDto
+                    {
+                        HotelName = g.Key.Name,
+                        City = g.Key.City,
+                        NombreReservations = g.Count(),
+                        NoteMoyenne = Math.Round(note, 1)
+                    };
                 })
                 .OrderByDescending(h => h.NombreReservations)
-                .Take(5).ToList();
+                .Take(5)
+                .ToList();
 
             return new DashboardAdminDto
             {
                 TotalReservations = reservations.Count,
                 ReservationsConfirmees = confirmees.Count,
                 ReservationsAnnulees = reservations
-                    .Count(r => r.Status == ReservationStatus.Cancelled),
+                                            .Count(r => r.Status == ReservationStatus.Cancelled),
                 RevenuTotal = confirmees.Sum(r => r.TotalPrice),
+                TauxOccupation = await GetTauxOccupationAsync(),
                 TotalHotels = await _context.Hotels.CountAsync(),
                 TotalChambres = await _context.Chambres.CountAsync(),
                 TotalClients = await _context.Users.CountAsync(),
@@ -93,12 +118,15 @@ namespace Pillowfy.Services
         {
             var total = await _context.Chambres.CountAsync();
             if (total == 0) return 0;
+
             var occupees = await _context.Reservations
                 .Where(r => r.Status == ReservationStatus.Confirmed
                          && r.CheckIn <= DateTime.UtcNow
                          && r.CheckOut >= DateTime.UtcNow)
                 .Select(r => r.ChambreId)
-                .Distinct().CountAsync();
+                .Distinct()
+                .CountAsync();
+
             return Math.Round((double)occupees / total * 100, 1);
         }
     }

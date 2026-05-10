@@ -1,0 +1,431 @@
+﻿@{
+    ViewData["Title"] = "Admin — Connexion";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy Admin — Connexion</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --cream: #FAF7F2;
+            --cream-dk: #F0EBE1;
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --error: #C0392B;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            /* Cercles décoratifs */
+            body::before {
+                content: '';
+                position: fixed;
+                bottom: -10%;
+                left: -10%;
+                width: 500px;
+                height: 500px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 65%);
+                pointer-events: none;
+            }
+
+            body::after {
+                content: '';
+                position: fixed;
+                top: 10%;
+                right: -5%;
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                border: 1px solid rgba(201,169,110,0.10);
+                pointer-events: none;
+            }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 1.5rem;
+            animation: fadeUp 0.55s ease both;
+        }
+
+        /* ── BRAND ── */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2.5rem;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--white);
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(201,169,110,0.15);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.2rem;
+        }
+
+            .eyebrow::before {
+                content: '';
+                display: block;
+                width: 18px;
+                height: 1.5px;
+                background: var(--gold);
+            }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            line-height: 1.15;
+            color: var(--white);
+            margin-bottom: 0.4rem;
+        }
+
+            .card-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .card-sub {
+            font-size: 0.88rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* ── ALERT ── */
+        .alert-error {
+            background: rgba(192,57,43,0.15);
+            border: 1px solid rgba(192,57,43,0.35);
+            color: #e74c3c;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── FORM ── */
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.82rem 1rem;
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--white);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+            .form-input::placeholder {
+                color: rgba(255,255,255,0.25);
+            }
+
+            .form-input:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+                background: rgba(255,255,255,0.08);
+            }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: rgba(255,255,255,0.3);
+            font-size: 1rem;
+            padding: 4px;
+            transition: color .2s;
+        }
+
+            .input-toggle:hover {
+                color: rgba(255,255,255,0.7);
+            }
+
+        /* ── BUTTON ── */
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.96rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .22s cubic-bezier(.4,0,.2,1);
+            margin-top: 0.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-submit:hover {
+                background: #b8924f;
+                box-shadow: 0 6px 28px rgba(201,169,110,0.30);
+                transform: translateY(-1px);
+            }
+
+            .btn-submit:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            .btn-submit .btn-text {
+                transition: opacity .2s;
+            }
+
+            .btn-submit .btn-loader {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity .2s;
+            }
+
+            .btn-submit.loading .btn-text {
+                opacity: 0;
+            }
+
+            .btn-submit.loading .btn-loader {
+                opacity: 1;
+            }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(15,22,33,0.3);
+            border-top-color: var(--ink);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        /* ── BACK LINK ── */
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 1.8rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.3);
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+            .back-link:hover {
+                color: rgba(255,255,255,0.6);
+            }
+
+        /* ── BADGE SÉCURITÉ ── */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.2);
+        }
+
+        /* ── ANIMATIONS ── */
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+
+        <!-- Brand -->
+        <a href="/" class="brand">
+            <img src="/Images/logo.png" alt="Pillowfy"
+                 style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
+            <span class="brand-name">Pillowfy</span>
+        </a>
+
+        <!-- Card -->
+        <div class="card">
+
+            <span class="eyebrow">Espace administrateur</span>
+            <h1 class="card-title">Accès <em>Admin</em></h1>
+            <p class="card-sub">
+                Connectez-vous pour accéder au panneau de contrôle.
+            </p>
+
+            <!-- Erreur serveur -->
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert-error">
+                    <span>⚠</span>
+                    <span>@ViewBag.Error</span>
+                </div>
+            }
+
+            <!-- Formulaire -->
+            <form method="post" action="/Admin/Login" id="adminForm">
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Adresse e-mail</label>
+                    <input class="form-input"
+                           id="email"
+                           name="email"
+                           type="email"
+                           placeholder="admin@pillowfy.com"
+                           autocomplete="email"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Mot de passe</label>
+                    <div class="input-wrap">
+                        <input class="form-input"
+                               id="password"
+                               name="password"
+                               type="password"
+                               placeholder="••••••••"
+                               autocomplete="current-password"
+                               required />
+                        <button type="button"
+                                class="input-toggle"
+                                id="togglePwd"
+                                aria-label="Afficher">
+                            👁
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="btn-text">Accéder au panneau →</span>
+                    <span class="btn-loader"><div class="spinner"></div></span>
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- Retour au site -->
+        <a href="/" class="back-link">← Retour au site</a>
+
+        <!-- Badge sécurité -->
+        <div class="security-badge">
+            🔒 Connexion sécurisée — Accès réservé aux administrateurs
+        </div>
+
+    </div>
+
+    <script>
+        // Toggle password
+        document.getElementById('togglePwd').addEventListener('click', function () {
+            const pwd = document.getElementById('password');
+            const hidden = pwd.type === 'password';
+            pwd.type = hidden ? 'text' : 'password';
+            this.textContent = hidden ? '🙈' : '👁';
+        });
+
+        // Loading state
+        document.getElementById('adminForm').addEventListener('submit', function () {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+        });
+    </script>
+
+</body>
+</html>
