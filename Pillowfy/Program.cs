@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Pillowfy.Data;
+using Pillowfy.Factory;
 using Pillowfy.Interfaces;
 using Pillowfy.Models;
 using Pillowfy.Services;
-using System.Text;
 using Pillowfy.Services.EmailService;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -113,6 +114,12 @@ builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IChambreService, ChambreService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+// Ajouter avec les autres services
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IChambreFactory, ChambreFactory>();
+builder.Services.AddScoped<PaiementService>();
+builder.Services.AddScoped<AvisService>();
+builder.Services.AddScoped<StatistiqueService>();
 
 var app = builder.Build();
 

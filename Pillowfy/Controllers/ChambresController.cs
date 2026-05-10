@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pillowfy.DTOs;
+using Pillowfy.Factory;
 using Pillowfy.Interfaces;
-using Pillowfy.Models;
 
 namespace Pillowfy.Controllers
 {
@@ -10,10 +11,12 @@ namespace Pillowfy.Controllers
     public class ChambresController : ControllerBase
     {
         private readonly IChambreService _service;
+        private readonly IChambreFactory _factory;
 
-        public ChambresController(IChambreService service)
+        public ChambresController(IChambreService service, IChambreFactory factory)
         {
             _service = service;
+            _factory = factory;
         }
 
         [HttpGet]
@@ -38,16 +41,7 @@ namespace Pillowfy.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ChambreCreateDto dto)
         {
-            var chambre = new Chambre
-            {
-                Name = dto.Name,
-                Description = dto.Description,
-                PricePerNight = dto.PricePerNight,
-                Capacity = dto.Capacity,
-                HotelId = dto.HotelId,
-                IsActive = true
-            };
-
+            var chambre = _factory.Create(dto);  // ← plus de new Chambre ici
             var result = await _service.CreateAsync(chambre);
             return Ok(result);
         }
@@ -56,6 +50,14 @@ namespace Pillowfy.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await _service.DeleteAsync(id));
+        }
+
+        [HttpGet("disponibles")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDisponibles()
+        {
+            var chambres = await _service.GetAllAsync();
+            return Ok(chambres);
         }
     }
 }

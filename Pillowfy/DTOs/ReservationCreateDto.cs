@@ -15,5 +15,7 @@ namespace Pillowfy.DTOs
 
         [Required]
         public int NumberOfGuests { get; set; }
+        // Points à utiliser (optionnel, 0 par défaut)
+        public int PointsUtilises { get; set; } = 0;
     }
 }

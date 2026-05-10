@@ -1,0 +1,1075 @@
+﻿@{
+    ViewData["Title"] = "Services";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: rgba(201,169,110,0.12);
+            --gold-mid: rgba(201,169,110,0.25);
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --sidebar: #0B1120;
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            padding: 1.6rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+            .sidebar-brand img {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+
+        .sidebar-section-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 0 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 1.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.42);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            transition: all .16s;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.82);
+            }
+
+            .nav-item.active {
+                background: rgba(201,169,110,0.14);
+                color: var(--gold);
+            }
+
+        .nav-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(201,169,110,0.18);
+        }
+
+        .nav-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 0.55rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #b8924f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.9rem;
+            color: var(--ink);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.28);
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.32);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-logout:hover {
+                border-color: rgba(220,38,38,0.4);
+                color: #f87171;
+                background: rgba(220,38,38,0.06);
+            }
+
+            .btn-logout svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: 240px;
+            padding: 2rem 2.4rem;
+            flex: 1;
+            max-width: calc(100vw - 240px);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .topbar-left h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+        }
+
+            .topbar-left h1 em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .topbar-left p {
+            font-size: 0.83rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+        }
+
+        /* ── HERO BANNER ── */
+        .services-hero {
+            background: var(--ink);
+            border-radius: var(--radius-xl);
+            padding: 2rem 2.4rem;
+            margin-bottom: 1.6rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(201,169,110,0.15);
+        }
+
+            .services-hero::before {
+                content: '';
+                position: absolute;
+                right: -60px;
+                top: -80px;
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 70%);
+            }
+
+        .services-hero-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .services-hero h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+            .services-hero h2 em {
+                color: var(--gold);
+                font-style: italic;
+            }
+
+        .services-hero p {
+            font-size: 0.83rem;
+            color: rgba(255,255,255,0.4);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--gold);
+        }
+
+        .hero-stat-lbl {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.3);
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── FILTRES ── */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 1.6rem;
+        }
+
+        .filter-btn {
+            padding: 0.42rem 1rem;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid rgba(15,22,33,0.12);
+            background: transparent;
+            color: var(--ink-60);
+            transition: all .16s;
+        }
+
+            .filter-btn.active {
+                background: var(--ink);
+                color: var(--white);
+                border-color: var(--ink);
+            }
+
+            .filter-btn:hover:not(.active) {
+                border-color: var(--gold);
+                color: var(--gold);
+            }
+
+        /* ── GRILLE SERVICES ── */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .service-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.6rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            transition: all .2s;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .service-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-3px);
+                border-color: rgba(201,169,110,0.25);
+            }
+
+            .service-card.unavailable {
+                opacity: 0.55;
+            }
+
+        .service-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .service-emoji {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .service-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+            .service-status-badge.open {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .service-status-badge.closed {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+            .service-status-badge.reservation {
+                background: var(--gold-lt);
+                color: #9A722E;
+            }
+
+            .service-status-badge.always {
+                background: var(--teal-lt);
+                color: var(--teal);
+            }
+
+        .service-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.05rem;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .service-cat {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--ink-30);
+            margin-bottom: 10px;
+        }
+
+        .service-desc {
+            font-size: 0.8rem;
+            color: var(--ink-60);
+            line-height: 1.55;
+            margin-bottom: 1rem;
+        }
+
+        .service-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .service-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.76rem;
+            color: var(--ink-60);
+        }
+
+            .service-meta-row svg {
+                width: 13px;
+                height: 13px;
+                color: var(--gold);
+                flex-shrink: 0;
+            }
+
+        /* ── SECTION HOTELS ── */
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--ink);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .section-title::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: rgba(15,22,33,0.07);
+            }
+
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .hotel-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            transition: all .2s;
+        }
+
+            .hotel-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-3px);
+                border-color: rgba(201,169,110,0.25);
+            }
+
+        .hotel-thumb {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, var(--gold-lt), var(--teal-lt));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hotel-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .hotel-card-body {
+            padding: 1.2rem;
+        }
+
+        .hotel-card-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+
+        .hotel-card-loc {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.73rem;
+            color: var(--ink-60);
+            margin-bottom: 10px;
+        }
+
+            .hotel-card-loc svg {
+                width: 11px;
+                height: 11px;
+            }
+
+        .hotel-services-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .hotel-service-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg);
+            border-radius: 100px;
+            padding: 3px 9px;
+            font-size: 0.7rem;
+            color: var(--ink-60);
+            border: 1px solid rgba(15,22,33,0.06);
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            background: var(--ink);
+            color: var(--white);
+            border-radius: 13px;
+            padding: 0.9rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.84rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all .3s;
+            pointer-events: none;
+        }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .toast.success {
+                border-left: 3px solid #22c55e;
+            }
+
+            .toast svg {
+                width: 16px;
+                height: 16px;
+            }
+
+        /* ── SKELETON ── */
+        .skeleton {
+            background: linear-gradient(90deg,rgba(15,22,33,0.06) 25%,rgba(15,22,33,0.10) 50%,rgba(15,22,33,0.06) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+
+        @@keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .main > * {
+            animation: fadeUp 0.38s ease both;
+        }
+
+            .main > *:nth-child(2) {
+                animation-delay: 0.05s;
+            }
+
+            .main > *:nth-child(3) {
+                animation-delay: 0.10s;
+            }
+
+            .main > *:nth-child(4) {
+                animation-delay: 0.14s;
+            }
+
+            .main > *:nth-child(5) {
+                animation-delay: 0.18s;
+            }
+
+        @@media (max-width: 1100px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hotels-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.4rem;
+                max-width: 100vw;
+            }
+
+            .services-hero-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @@media (max-width: 600px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hotels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/" class="sidebar-brand">
+                <img src="/Images/logo.png" alt="Pillowfy">
+                <span class="sidebar-brand-name">Pillowfy</span>
+            </a>
+            <div class="sidebar-content">
+                <div class="sidebar-section-label">Navigation</div>
+                <nav class="sidebar-nav">
+                    <a href="/Client/Dashboard" class="nav-item"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard</a>
+                    <a href="/Client/ListeHotels" class="nav-item"><span class="nav-icon"><i data-lucide="building-2"></i></span> Hôtels</a>
+                    <a href="/Client/ListeReservations" class="nav-item"><span class="nav-icon"><i data-lucide="calendar-check"></i></span> Mes réservations</a>
+                    <a href="/Client/Sejours" class="nav-item"><span class="nav-icon"><i data-lucide="bed-double"></i></span> Historique séjours</a>
+                    <a href="/Client/Factures" class="nav-item"><span class="nav-icon"><i data-lucide="receipt"></i></span> Factures</a>
+                    <a href="/Client/Services" class="nav-item active"><span class="nav-icon"><i data-lucide="concierge-bell"></i></span> Services</a>
+                </nav>
+                <div class="sidebar-section-label">Compte</div>
+                <nav class="sidebar-nav">
+                    <a href="/Client/Profil" class="nav-item"><span class="nav-icon"><i data-lucide="user"></i></span> Mon profil</a>
+                    <a href="/Client/Fidelite" class="nav-item"><span class="nav-icon"><i data-lucide="star"></i></span> Fidélité</a>
+                    <a href="/Client/Avis" class="nav-item"><span class="nav-icon"><i data-lucide="message-circle"></i></span> Mes avis</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <div>
+                        <div class="user-name" id="userName">Chargement...</div>
+                        <div class="user-role" id="userRole">Client</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()"><i data-lucide="log-out"></i> Déconnexion</button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Nos <em>services</em></h1>
+                    <p id="dateLabel"></p>
+                </div>
+            </div>
+
+            <!-- HERO -->
+            <div class="services-hero">
+                <div class="services-hero-inner">
+                    <div>
+                        <h2>Tout pour votre <em>confort</em></h2>
+                        <p>Découvrez l'ensemble des services disponibles dans nos établissements Pillowfy. Du spa à la conciergerie, chaque détail est pensé pour votre bien-être.</p>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-val">9</div>
+                            <div class="hero-stat-lbl">Services</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-val">3</div>
+                            <div class="hero-stat-lbl">Hôtels</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-val">24/7</div>
+                            <div class="hero-stat-lbl">Disponible</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTRES -->
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="setFilter('all', this)">Tous</button>
+                <button class="filter-btn" onclick="setFilter('Bien-être', this)">🧖 Bien-être</button>
+                <button class="filter-btn" onclick="setFilter('Restauration', this)">🍽️ Restauration</button>
+                <button class="filter-btn" onclick="setFilter('Transport', this)">🚗 Transport</button>
+                <button class="filter-btn" onclick="setFilter('Loisirs', this)">🏊 Loisirs</button>
+                <button class="filter-btn" onclick="setFilter('Assistance', this)">🛎️ Assistance</button>
+            </div>
+
+            <!-- SERVICES GRID -->
+            <div class="services-grid" id="servicesGrid">
+
+                <!-- Spa & Bien-être -->
+                <div class="service-card" data-cat="Bien-être">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🧖</div>
+                        <span class="service-status-badge open">● Ouvert</span>
+                    </div>
+                    <div class="service-cat">Bien-être</div>
+                    <div class="service-name">Spa & Bien-être</div>
+                    <div class="service-desc">Profitez de nos soins relaxants, massages thérapeutiques et bains à remous dans un cadre luxueux. Offrez-vous une parenthèse de détente absolue.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Ouvert de 9h à 21h</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Disponible dans tous nos hôtels</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Sur réservation recommandée</div>
+                    </div>
+                </div>
+
+                <!-- Restaurant -->
+                <div class="service-card" data-cat="Restauration">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🍽️</div>
+                        <span class="service-status-badge open">● Ouvert</span>
+                    </div>
+                    <div class="service-cat">Restauration</div>
+                    <div class="service-name">Restaurant Gastronomique</div>
+                    <div class="service-desc">Savourez une cuisine raffinée élaborée par nos chefs étoilés. Menu du terroir revisité, carte des vins d'exception et ambiance feutrée.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Déjeuner 12h–14h · Dîner 19h–23h</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Hôtel Atlas & Hôtel Médina</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Réservation conseillée le week-end</div>
+                    </div>
+                </div>
+
+                <!-- Room Service -->
+                <div class="service-card" data-cat="Restauration">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🛎️</div>
+                        <span class="service-status-badge always">● 24h/24</span>
+                    </div>
+                    <div class="service-cat">Restauration</div>
+                    <div class="service-name">Room Service</div>
+                    <div class="service-desc">Commandez directement dans votre chambre depuis notre application ou par téléphone. Petit-déjeuner, repas ou encas, livrés en 30 minutes.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Disponible 24h/24 · 7j/7</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Tous les hôtels</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Livraison en 30 min garantie</div>
+                    </div>
+                </div>
+
+                <!-- Navette aéroport -->
+                <div class="service-card" data-cat="Transport">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🚗</div>
+                        <span class="service-status-badge reservation">Sur réservation</span>
+                    </div>
+                    <div class="service-cat">Transport</div>
+                    <div class="service-name">Navette Aéroport</div>
+                    <div class="service-desc">Service de transfert privé entre l'aéroport et l'hôtel. Chauffeurs professionnels, véhicules climatisés et suivi de vol en temps réel.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Selon horaires de vol</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Tous les hôtels</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Réservation 24h à l'avance requise</div>
+                    </div>
+                </div>
+
+                <!-- Piscine -->
+                <div class="service-card" data-cat="Loisirs">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🏊</div>
+                        <span class="service-status-badge open">● Ouvert</span>
+                    </div>
+                    <div class="service-cat">Loisirs</div>
+                    <div class="service-name">Piscine & Aqua-Zone</div>
+                    <div class="service-desc">Piscine intérieure chauffée et bassin extérieur avec vue panoramique. Transats, bar piscine et maître-nageur disponibles pour votre sécurité.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Ouvert de 8h à 20h</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Hôtel Atlas & Hôtel Jasmin</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Accès inclus pour les résidents</div>
+                    </div>
+                </div>
+
+                <!-- Conciergerie -->
+                <div class="service-card" data-cat="Assistance">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🗝️</div>
+                        <span class="service-status-badge always">● 24h/24</span>
+                    </div>
+                    <div class="service-cat">Assistance</div>
+                    <div class="service-name">Conciergerie</div>
+                    <div class="service-desc">Notre équipe de conciergerie est à votre disposition pour organiser visites, réservations de spectacles, locations de voitures et toutes vos demandes spéciales.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Disponible 24h/24 · 7j/7</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Tous les hôtels</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Service exclusif Gold & Platinum</div>
+                    </div>
+                </div>
+
+                <!-- Salle de sport -->
+                <div class="service-card" data-cat="Loisirs">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🏋️</div>
+                        <span class="service-status-badge open">● Ouvert</span>
+                    </div>
+                    <div class="service-cat">Loisirs</div>
+                    <div class="service-name">Salle de Sport</div>
+                    <div class="service-desc">Équipements cardio et musculation de dernière génération. Coach sportif disponible sur demande pour un programme personnalisé.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Ouvert de 6h à 22h</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Hôtel Atlas & Hôtel Médina</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Accès inclus pour les résidents</div>
+                    </div>
+                </div>
+
+                <!-- Blanchisserie -->
+                <div class="service-card" data-cat="Assistance">
+                    <div class="service-card-top">
+                        <div class="service-emoji">👔</div>
+                        <span class="service-status-badge open">● Ouvert</span>
+                    </div>
+                    <div class="service-cat">Assistance</div>
+                    <div class="service-name">Blanchisserie & Pressing</div>
+                    <div class="service-desc">Service de lavage, repassage et pressing express disponible tous les jours. Retour de vos vêtements en 4 heures chrono pour les demandes urgentes.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Dépôt 7h–20h · Retour 4h</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Tous les hôtels</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Service express disponible</div>
+                    </div>
+                </div>
+
+                <!-- Petit-déjeuner -->
+                <div class="service-card" data-cat="Restauration">
+                    <div class="service-card-top">
+                        <div class="service-emoji">🍳</div>
+                        <span class="service-status-badge open">● Ouvert</span>
+                    </div>
+                    <div class="service-cat">Restauration</div>
+                    <div class="service-name">Petit-Déjeuner Buffet</div>
+                    <div class="service-desc">Buffet gourmand avec produits frais et locaux, viennoiseries artisanales, fruits de saison, jus pressés et café d'origine. Un réveil de luxe chaque matin.</div>
+                    <div class="service-meta">
+                        <div class="service-meta-row"><i data-lucide="clock"></i> Servi de 7h à 10h30</div>
+                        <div class="service-meta-row"><i data-lucide="map-pin"></i> Tous les hôtels</div>
+                        <div class="service-meta-row"><i data-lucide="info"></i> Offert aux membres Gold & Platinum</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECTION HÔTELS -->
+            <div class="section-title">Nos établissements</div>
+
+            <div class="hotels-grid" id="hotelsGrid">
+
+                <!-- Hôtel Atlas -->
+                <div class="hotel-card">
+                    <div class="hotel-thumb">🏨</div>
+                    <div class="hotel-card-body">
+                        <div class="hotel-card-name">Hôtel Atlas</div>
+                        <div class="hotel-card-loc"><i data-lucide="map-pin"></i> Tunis, Tunisie</div>
+                        <div class="hotel-services-list">
+                            <span class="hotel-service-tag">🧖 Spa</span>
+                            <span class="hotel-service-tag">🍽️ Restaurant</span>
+                            <span class="hotel-service-tag">🏊 Piscine</span>
+                            <span class="hotel-service-tag">🏋️ Sport</span>
+                            <span class="hotel-service-tag">🛎️ Room Service</span>
+                            <span class="hotel-service-tag">🗝️ Conciergerie</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hôtel Médina -->
+                <div class="hotel-card">
+                    <div class="hotel-thumb">🏩</div>
+                    <div class="hotel-card-body">
+                        <div class="hotel-card-name">Hôtel Médina</div>
+                        <div class="hotel-card-loc"><i data-lucide="map-pin"></i> Sousse, Tunisie</div>
+                        <div class="hotel-services-list">
+                            <span class="hotel-service-tag">🍽️ Restaurant</span>
+                            <span class="hotel-service-tag">🏋️ Sport</span>
+                            <span class="hotel-service-tag">🛎️ Room Service</span>
+                            <span class="hotel-service-tag">🗝️ Conciergerie</span>
+                            <span class="hotel-service-tag">👔 Pressing</span>
+                            <span class="hotel-service-tag">🚗 Navette</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hôtel Jasmin -->
+                <div class="hotel-card">
+                    <div class="hotel-thumb">🌴</div>
+                    <div class="hotel-card-body">
+                        <div class="hotel-card-name">Hôtel Jasmin</div>
+                        <div class="hotel-card-loc"><i data-lucide="map-pin"></i> Hammamet, Tunisie</div>
+                        <div class="hotel-services-list">
+                            <span class="hotel-service-tag">🧖 Spa</span>
+                            <span class="hotel-service-tag">🏊 Piscine</span>
+                            <span class="hotel-service-tag">🛎️ Room Service</span>
+                            <span class="hotel-service-tag">🍳 Petit-déj</span>
+                            <span class="hotel-service-tag">🚗 Navette</span>
+                            <span class="hotel-service-tag">👔 Pressing</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <div class="toast" id="toast"><i data-lucide="check-circle"></i><span id="toastMsg"></span></div>
+
+    <script>
+        /* ── SESSION ── */
+        const SESSION = {
+            TOKEN_KEY: 'pillowfy_token', COOKIE_NAME: 'token', LOGIN_URL: '/Login/Index',
+            CLAIMS: {
+                name:  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                email: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                role:  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+            },
+            getToken()  { return this._readCookie(this.COOKIE_NAME) || localStorage.getItem(this.TOKEN_KEY); },
+            parseJwt(t) { try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; } },
+            clearSession() { localStorage.removeItem(this.TOKEN_KEY); document.cookie = `${this.COOKIE_NAME}=; Max-Age=0; path=/; SameSite=Strict`; },
+            redirectLogin(r) { this.clearSession(); window.location.href = this.LOGIN_URL + '?reason=' + r; },
+            _readCookie(n) { const m = document.cookie.match(new RegExp('(^| )' + n + '=([^;]+)')); return m ? decodeURIComponent(m[2]) : null; }
+        };
+
+        /* ── DATE LABEL ── */
+        (function () {
+            const now = new Date();
+            const j = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+            const m = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            document.getElementById('dateLabel').textContent = j[now.getDay()] + ' ' + now.getDate() + ' ' + m[now.getMonth()] + ' ' + now.getFullYear();
+        })();
+
+        /* ── FILTRE ── */
+        function setFilter(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.service-card').forEach(card => {
+                if (cat === 'all' || card.dataset.cat === cat) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        /* ── INIT ── */
+        async function init() {
+            if (typeof lucide === 'undefined') { setTimeout(init, 50); return; }
+            lucide.createIcons();
+
+            const token = SESSION.getToken();
+            if (!token) { SESSION.redirectLogin('no_token'); return; }
+            const p = SESSION.parseJwt(token);
+            if (!p) { SESSION.redirectLogin('invalid'); return; }
+
+            const fn = (p[SESSION.CLAIMS.name] || '').split(' ')[0] || 'Client';
+            document.getElementById('userName').textContent      = p[SESSION.CLAIMS.name] || p[SESSION.CLAIMS.email] || '';
+            document.getElementById('userRole').textContent      = p[SESSION.CLAIMS.role] || 'Client';
+            document.getElementById('avatarInitial').textContent = fn.charAt(0).toUpperCase();
+        }
+
+        async function logout() {
+            try {
+                const token = SESSION.getToken();
+                if (token) await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include' }).catch(() => {});
+            } finally {
+                SESSION.clearSession();
+                window.location.href = SESSION.LOGIN_URL;
+            }
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
+    </script>
+</body>
+</html>

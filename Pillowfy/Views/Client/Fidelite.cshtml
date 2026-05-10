@@ -1,0 +1,1192 @@
+﻿@{
+    ViewData["Title"] = "Fidélité";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Programme Fidélité</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: rgba(201,169,110,0.12);
+            --gold-mid: rgba(201,169,110,0.25);
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --sidebar: #0B1120;
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+            --bronze: #CD7F32;
+            --bronze-lt: rgba(205,127,50,0.12);
+            --silver: #A8A9AD;
+            --silver-lt: rgba(168,169,173,0.12);
+            --platinum: #E5E4E2;
+            --platinum-lt: rgba(229,228,226,0.15);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            padding: 1.6rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+            .sidebar-brand img {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+
+        .sidebar-section-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 0 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 1.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.42);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            transition: all .16s;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.82);
+            }
+
+            .nav-item.active {
+                background: rgba(201,169,110,0.14);
+                color: var(--gold);
+            }
+
+        .nav-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(201,169,110,0.18);
+        }
+
+        .nav-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 0.55rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #b8924f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.9rem;
+            color: var(--ink);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.28);
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.32);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-logout:hover {
+                border-color: rgba(220,38,38,0.4);
+                color: #f87171;
+                background: rgba(220,38,38,0.06);
+            }
+
+            .btn-logout svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        /* MAIN */
+        .main {
+            margin-left: 240px;
+            padding: 2rem 2.4rem;
+            flex: 1;
+            max-width: calc(100vw - 240px);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .topbar-left h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+        }
+
+            .topbar-left h1 em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .topbar-left p {
+            font-size: 0.83rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+        }
+
+        /* HERO FIDÉLITÉ */
+        .fidelity-hero {
+            background: linear-gradient(135deg, #0B1120 0%, #1A2A1A 100%);
+            border-radius: var(--radius-xl);
+            padding: 2.2rem 2.4rem;
+            margin-bottom: 1.4rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(201,169,110,0.15);
+        }
+
+            .fidelity-hero::before {
+                content: '';
+                position: absolute;
+                right: -60px;
+                top: -80px;
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 70%);
+            }
+
+            .fidelity-hero::after {
+                content: '';
+                position: absolute;
+                left: 30%;
+                bottom: -60px;
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                border: 1px solid rgba(201,169,110,0.06);
+            }
+
+        .fidelity-hero-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .fidelity-hero-left {
+        }
+
+        .fidelity-tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 14px;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+            .fidelity-tier-badge.Bronze {
+                background: rgba(205,127,50,0.18);
+                color: var(--bronze);
+                border: 1px solid rgba(205,127,50,0.3);
+            }
+
+            .fidelity-tier-badge.Silver {
+                background: rgba(168,169,173,0.15);
+                color: var(--silver);
+                border: 1px solid rgba(168,169,173,0.3);
+            }
+
+            .fidelity-tier-badge.Gold {
+                background: rgba(201,169,110,0.18);
+                color: var(--gold);
+                border: 1px solid rgba(201,169,110,0.3);
+            }
+
+            .fidelity-tier-badge.Platinum {
+                background: rgba(229,228,226,0.12);
+                color: #d4d4d4;
+                border: 1px solid rgba(229,228,226,0.25);
+            }
+
+        .fidelity-pts-big {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3.2rem;
+            color: var(--white);
+            line-height: 1;
+        }
+
+            .fidelity-pts-big span {
+                font-size: 1.2rem;
+                color: var(--gold);
+                margin-left: 6px;
+            }
+
+        .fidelity-pts-sub {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.38);
+            margin-top: 6px;
+        }
+
+        .fidelity-progress-wrap {
+            margin-top: 1.4rem;
+        }
+
+        .fidelity-progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 6px;
+        }
+
+        .fidelity-progress-bar {
+            height: 7px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 100px;
+            overflow: hidden;
+            width: 360px;
+            max-width: 100%;
+        }
+
+        .fidelity-progress-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--gold), #e8c080);
+            transition: width 1s ease;
+        }
+
+        .fidelity-hero-right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .fidelity-stat-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 1rem 1.3rem;
+            text-align: center;
+            min-width: 110px;
+        }
+
+        .fidelity-stat-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--white);
+        }
+
+        .fidelity-stat-lbl {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.3);
+            margin-top: 3px;
+        }
+
+        /* PALIERS */
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .tier-card {
+            background: var(--white);
+            border-radius: 18px;
+            padding: 1.3rem;
+            border: 2px solid transparent;
+            transition: all .2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .tier-card.current {
+                box-shadow: 0 0 0 2px var(--gold), var(--shadow-md);
+            }
+
+                .tier-card.current::after {
+                    content: 'Votre niveau';
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: var(--gold);
+                    color: var(--ink);
+                    font-size: 0.6rem;
+                    font-weight: 700;
+                    padding: 2px 8px;
+                    border-radius: 100px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+
+            .tier-card.locked {
+                opacity: 0.55;
+            }
+
+        .tier-medal {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .tier-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+
+        .tier-range {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-bottom: 10px;
+        }
+
+        .tier-perks {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .tier-perk {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.76rem;
+            color: var(--ink-60);
+        }
+
+            .tier-perk svg {
+                width: 12px;
+                height: 12px;
+                color: var(--teal);
+                flex-shrink: 0;
+            }
+
+            .tier-perk.locked-perk {
+                color: var(--ink-30);
+            }
+
+                .tier-perk.locked-perk svg {
+                    color: var(--ink-30);
+                }
+
+        /* HISTORIQUE POINTS */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+        }
+
+            .history-item:last-child {
+                border-bottom: none;
+            }
+
+        .history-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+            .history-icon.earn {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .history-icon.spend {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+            .history-icon svg {
+                width: 16px;
+                height: 16px;
+            }
+
+        .history-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .history-date {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .history-pts {
+            margin-left: auto;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+            .history-pts.earn {
+                color: #16a34a;
+            }
+
+            .history-pts.spend {
+                color: var(--rose);
+            }
+
+        /* AVANTAGES */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.9rem;
+            background: var(--bg);
+            border-radius: 13px;
+            border: 1px solid transparent;
+            transition: all .16s;
+        }
+
+            .benefit-item:hover {
+                border-color: var(--gold-mid);
+                background: var(--gold-lt);
+            }
+
+        .benefit-ic {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .benefit-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .benefit-desc {
+            font-size: 0.7rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        /* SKELETON */
+        .skeleton {
+            background: linear-gradient(90deg,rgba(15,22,33,0.06) 25%,rgba(15,22,33,0.10) 50%,rgba(15,22,33,0.06) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            background: var(--ink);
+            color: var(--white);
+            border-radius: 13px;
+            padding: 0.9rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.84rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all .3s;
+            pointer-events: none;
+        }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .toast.success {
+                border-left: 3px solid #22c55e;
+            }
+
+            .toast.error {
+                border-left: 3px solid var(--rose);
+            }
+
+            .toast svg {
+                width: 16px;
+                height: 16px;
+            }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.2rem;
+        }
+
+        @@keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .main > * {
+            animation: fadeUp 0.38s ease both;
+        }
+
+            .main > *:nth-child(2) {
+                animation-delay: 0.05s;
+            }
+
+            .main > *:nth-child(3) {
+                animation-delay: 0.10s;
+            }
+
+            .main > *:nth-child(4) {
+                animation-delay: 0.14s;
+            }
+
+        @@media (max-width: 1100px) {
+            .tiers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.4rem;
+                max-width: 100vw;
+            }
+
+            .fidelity-hero-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .fidelity-hero-right {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 600px) {
+            .tiers-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fidelity-progress-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/" class="sidebar-brand">
+                <img src="/Images/logo.png" alt="Pillowfy">
+                <span class="sidebar-brand-name">Pillowfy</span>
+            </a>
+            <div class="sidebar-content">
+                <div class="sidebar-section-label">Navigation</div>
+                <nav class="sidebar-nav">
+                    <a href="/Client/Dashboard" class="nav-item"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard</a>
+                    <a href="/Client/ListeHotels" class="nav-item"><span class="nav-icon"><i data-lucide="building-2"></i></span> Hôtels</a>
+                    <a href="/Client/ListeReservations" class="nav-item"><span class="nav-icon"><i data-lucide="calendar-check"></i></span> Mes réservations</a>
+                    <a href="/Client/Sejours" class="nav-item"><span class="nav-icon"><i data-lucide="bed-double"></i></span> Historique séjours</a>
+                    <a href="/Client/Factures" class="nav-item"><span class="nav-icon"><i data-lucide="receipt"></i></span> Factures</a>
+                    <a href="/Client/Services" class="nav-item"><span class="nav-icon"><i data-lucide="concierge-bell"></i></span> Services</a>
+                </nav>
+                <div class="sidebar-section-label">Compte</div>
+                <nav class="sidebar-nav">
+                    <a href="/Client/Profil" class="nav-item"><span class="nav-icon"><i data-lucide="user"></i></span> Mon profil</a>
+                    <a href="/Client/Fidelite" class="nav-item active"><span class="nav-icon"><i data-lucide="star"></i></span> Fidélité</a>
+                    <a href="/Client/Avis" class="nav-item"><span class="nav-icon"><i data-lucide="message-circle"></i></span> Mes avis</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <div>
+                        <div class="user-name" id="userName">Chargement...</div>
+                        <div class="user-role" id="userRole">Client</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()"><i data-lucide="log-out"></i> Déconnexion</button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Programme <em>Fidélité</em></h1>
+                    <p id="dateLabel"></p>
+                </div>
+            </div>
+
+            <!-- HERO -->
+            <div class="fidelity-hero" id="heroSection" style="display:none;">
+                <div class="fidelity-hero-inner">
+                    <div class="fidelity-hero-left">
+                        <div class="fidelity-tier-badge" id="heroBadge">—</div>
+                        <div class="fidelity-pts-big" id="heroPts">— <span>pts</span></div>
+                        <div class="fidelity-pts-sub" id="heroPtsSub">points disponibles</div>
+                        <div class="fidelity-progress-wrap">
+                            <div class="fidelity-progress-labels">
+                                <span id="progressFrom">—</span>
+                                <span id="progressTo">—</span>
+                            </div>
+                            <div class="fidelity-progress-bar">
+                                <div class="fidelity-progress-fill" id="progressFill" style="width:0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fidelity-hero-right">
+                        <div class="fidelity-stat-box">
+                            <div class="fidelity-stat-val" id="statNuits">—</div>
+                            <div class="fidelity-stat-lbl">Nuits passées</div>
+                        </div>
+                        <div class="fidelity-stat-box">
+                            <div class="fidelity-stat-val" id="statDepense">—</div>
+                            <div class="fidelity-stat-lbl">Total dépensé</div>
+                        </div>
+                        <div class="fidelity-stat-box">
+                            <div class="fidelity-stat-val" id="statRes">—</div>
+                            <div class="fidelity-stat-lbl">Réservations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HERO SKELETON -->
+            <div class="skeleton" id="heroSkeleton" style="height:200px;border-radius:22px;margin-bottom:1.4rem;"></div>
+
+            <!-- PALIERS -->
+            <div class="tiers-grid" id="tiersGrid">
+                <div class="skeleton" style="height:180px;border-radius:18px;"></div>
+                <div class="skeleton" style="height:180px;border-radius:18px;"></div>
+                <div class="skeleton" style="height:180px;border-radius:18px;"></div>
+                <div class="skeleton" style="height:180px;border-radius:18px;"></div>
+            </div>
+
+            <!-- HISTORIQUE + AVANTAGES -->
+            <div class="main-grid" style="margin-top:1.2rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Historique des points</span>
+                    </div>
+                    <div id="historyList">
+                        <div class="skeleton" style="height:52px;margin-bottom:8px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:52px;margin-bottom:8px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:52px;border-radius:10px;"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Vos avantages</span>
+                    </div>
+                    <div class="benefits-grid" id="benefitsList">
+                        <div class="skeleton" style="height:60px;border-radius:13px;"></div>
+                        <div class="skeleton" style="height:60px;border-radius:13px;"></div>
+                        <div class="skeleton" style="height:60px;border-radius:13px;"></div>
+                        <div class="skeleton" style="height:60px;border-radius:13px;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="toast" id="toast"><i data-lucide="check-circle" id="toastIcon"></i><span id="toastMsg"></span></div>
+
+    <script>
+        /* ══════════════════════════════════════
+           SESSION
+        ══════════════════════════════════════ */
+        const SESSION = {
+            TOKEN_KEY: 'pillowfy_token', COOKIE_NAME: 'token', LOGIN_URL: '/Login/Index',
+            CLAIMS: {
+                name:  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                email: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                role:  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+            },
+            getToken()  { return this._readCookie(this.COOKIE_NAME) || localStorage.getItem(this.TOKEN_KEY); },
+            parseJwt(t) { try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; } },
+            clearSession() { localStorage.removeItem(this.TOKEN_KEY); document.cookie = `${this.COOKIE_NAME}=; Max-Age=0; path=/; SameSite=Strict`; },
+            redirectLogin(r) { this.clearSession(); window.location.href = this.LOGIN_URL + '?reason=' + r; },
+            _readCookie(n) { const m = document.cookie.match(new RegExp('(^| )' + n + '=([^;]+)')); return m ? decodeURIComponent(m[2]) : null; }
+        };
+
+        /* ══════════════════════════════════════
+           DONNÉES PALIERS
+        ══════════════════════════════════════ */
+        const TIERS = [
+            {
+                name: 'Bronze', medal: '🥉', range: '0 – 499 pts',
+                color: '#CD7F32',
+                perks: ['Accès espace membre', 'Offres exclusives email', 'Support prioritaire']
+            },
+            {
+                name: 'Silver', medal: '🥈', range: '500 – 999 pts',
+                color: '#A8A9AD',
+                perks: ['Tout Bronze inclus', 'Late check-out offert', 'Remise 5% sur services', 'Accès lounge']
+            },
+            {
+                name: 'Gold', medal: '🥇', range: '1 000 – 1 999 pts',
+                color: '#C9A96E',
+                perks: ['Tout Silver inclus', 'Petit-déjeuner offert', 'Surclassement chambre', 'Remise 10% sur séjour']
+            },
+            {
+                name: 'Platinum', medal: '💎', range: '2 000+ pts',
+                color: '#E5E4E2',
+                perks: ['Tout Gold inclus', 'Conciergerie dédiée', 'Nuit gratuite / an', 'Accès spa offert']
+            }
+        ];
+
+        const BENEFITS_BY_TIER = {
+            Bronze:   [{ ic:'📧', name:'Offres exclusives', desc:'Newsletter VIP' }, { ic:'🎧', name:'Support prioritaire', desc:'Réponse sous 2h' }],
+            Silver:   [{ ic:'📧', name:'Offres exclusives', desc:'Newsletter VIP' }, { ic:'🎧', name:'Support prioritaire', desc:'Réponse sous 2h' }, { ic:'🛋️', name:'Late check-out', desc:'Jusqu\'à 14h' }, { ic:'🏛️', name:'Accès lounge', desc:'Dans tous nos hôtels' }],
+            Gold:     [{ ic:'📧', name:'Offres exclusives', desc:'Newsletter VIP' }, { ic:'🎧', name:'Support prioritaire', desc:'Réponse sous 2h' }, { ic:'🛋️', name:'Late check-out', desc:'Jusqu\'à 14h' }, { ic:'🏛️', name:'Accès lounge', desc:'Dans tous nos hôtels' }, { ic:'🍳', name:'Petit-déjeuner', desc:'Offert chaque matin' }, { ic:'⬆️', name:'Surclassement', desc:'Selon disponibilité' }],
+            Platinum: [{ ic:'📧', name:'Offres exclusives', desc:'Newsletter VIP' }, { ic:'🎧', name:'Support prioritaire', desc:'Réponse sous 2h' }, { ic:'🛋️', name:'Late check-out', desc:'Jusqu\'à 14h' }, { ic:'🏛️', name:'Accès lounge', desc:'Dans tous nos hôtels' }, { ic:'🍳', name:'Petit-déjeuner', desc:'Offert chaque matin' }, { ic:'⬆️', name:'Surclassement', desc:'Selon disponibilité' }, { ic:'🛎️', name:'Conciergerie', desc:'Service dédié 24h/24' }, { ic:'🌿', name:'Spa offert', desc:'1 accès / séjour' }]
+        };
+
+        /* ══════════════════════════════════════
+           DATE LABEL
+        ══════════════════════════════════════ */
+        (function () {
+            const now = new Date();
+            const j = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+            const m = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            document.getElementById('dateLabel').textContent = j[now.getDay()] + ' ' + now.getDate() + ' ' + m[now.getMonth()] + ' ' + now.getFullYear();
+        })();
+
+        /* ══════════════════════════════════════
+           INIT
+        ══════════════════════════════════════ */
+        async function init() {
+            if (typeof lucide === 'undefined') { setTimeout(init, 50); return; }
+            lucide.createIcons();
+
+            const token = SESSION.getToken();
+            if (!token) { SESSION.redirectLogin('no_token'); return; }
+            const p = SESSION.parseJwt(token);
+            if (!p)   { SESSION.redirectLogin('invalid'); return; }
+
+            const fn = (p[SESSION.CLAIMS.name] || '').split(' ')[0] || 'Client';
+            document.getElementById('userName').textContent      = p[SESSION.CLAIMS.name] || p[SESSION.CLAIMS.email] || '';
+            document.getElementById('userRole').textContent      = p[SESSION.CLAIMS.role] || 'Client';
+            document.getElementById('avatarInitial').textContent = fn.charAt(0).toUpperCase();
+
+            await loadData(token);
+        }
+
+        /* ══════════════════════════════════════
+           CHARGER DONNÉES
+        ══════════════════════════════════════ */
+               async function loadData(token) {
+            try {
+                const res = await fetch('/api/client/dashboard', {
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    credentials: 'include'
+                });
+                if (res.status === 401) { SESSION.redirectLogin('unauthorized'); return; }
+                if (!res.ok) {
+                    const errText = await res.text();
+                    console.error('❌ Dashboard error:', errText);
+                    throw new Error(errText);
+                }
+
+                const dash = await res.json();
+                console.log('✅ Dashboard data:', dash);
+
+                const reservations = dash.dernieresReservations ?? dash.DernieresReservations ?? [];
+                const points       = dash.pointsFidelite        ?? dash.PointsFidelite        ?? 0;
+                const tier         = dash.tier                  ?? dash.Tier                  ?? 'Bronze';
+
+                renderHero(dash);
+                renderTiers(tier);
+                renderHistory(reservations, points);
+                renderBenefits(tier);
+
+            } catch(e) {
+                console.error('💥 Exception:', e);
+                showToast('Impossible de charger les données.', 'error');
+            } finally {
+                document.getElementById('heroSkeleton').style.display = 'none';
+            }
+        }
+
+        /* ══════════════════════════════════════
+           HERO
+        ══════════════════════════════════════ */
+                    function renderHero(dash) {
+            const tier     = dash.tier     ?? dash.Tier     ?? 'Bronze';
+            const pts      = dash.pointsFidelite ?? dash.PointsFidelite ?? 0;
+            const prog     = dash.loyaltyProgress ?? dash.LoyaltyProgress ?? 0;
+            const nextPts  = dash.nextTierPts  ?? dash.NextTierPts  ?? 0;
+            const nextName = dash.nextTierName ?? dash.NextTierName ?? '';
+
+            const badge    = document.getElementById('heroBadge');
+            const tierData = TIERS.find(t => t.name === tier) || TIERS[0];
+            badge.textContent = tierData.medal + ' ' + tier;
+            badge.className   = 'fidelity-tier-badge ' + tier;
+
+            document.getElementById('heroPts').innerHTML        = pts.toLocaleString('fr-FR') + ' <span>pts</span>';
+            document.getElementById('progressFrom').textContent = tier;
+            document.getElementById('progressTo').textContent   = nextPts > 0 ? nextPts + ' pts → ' + nextName : '✓ Niveau maximum';
+
+            setTimeout(() => {
+                document.getElementById('progressFill').style.width = prog + '%';
+            }, 300);
+
+            document.getElementById('statNuits').textContent   = dash.nuitsTotal        ?? dash.NuitsTotal        ?? '—';
+            document.getElementById('statDepense').textContent = dash.totalDepense      ?? dash.TotalDepense      ?? '—';
+            document.getElementById('statRes').textContent     = dash.reservationsTotal ?? dash.ReservationsTotal ?? '—';
+
+            document.getElementById('heroSection').style.display = 'block';
+        }
+        /* ══════════════════════════════════════
+           PALIERS
+        ══════════════════════════════════════ */
+        function renderTiers(currentTier) {
+            const tierOrder = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+            const currentIdx = tierOrder.indexOf(currentTier);
+
+            document.getElementById('tiersGrid').innerHTML = TIERS.map((t, i) => {
+                const isCurrent = t.name === currentTier;
+                const isLocked  = i > currentIdx;
+                const perks = t.perks.map(p => `
+                    <div class="tier-perk ${isLocked ? 'locked-perk' : ''}">
+                        <i data-lucide="${isLocked ? 'lock' : 'check'}"></i>
+                        ${p}
+                    </div>`).join('');
+
+                return `
+                    <div class="tier-card ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}">
+                        <div class="tier-medal">${t.medal}</div>
+                        <div class="tier-name">${t.name}</div>
+                        <div class="tier-range">${t.range}</div>
+                        <div class="tier-perks">${perks}</div>
+                    </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        /* ══════════════════════════════════════
+           HISTORIQUE POINTS
+        ══════════════════════════════════════ */
+                 function renderTiers(currentTier) {
+            currentTier = currentTier ?? 'Bronze';
+            const tierOrder  = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+            const currentIdx = tierOrder.indexOf(currentTier);
+
+            document.getElementById('tiersGrid').innerHTML = TIERS.map((t, i) => {
+                const isCurrent = t.name === currentTier;
+                const isLocked  = i > currentIdx;
+                const perks = t.perks.map(p => `
+                    <div class="tier-perk ${isLocked ? 'locked-perk' : ''}">
+                        <i data-lucide="${isLocked ? 'lock' : 'check'}"></i>
+                        ${p}
+                    </div>`).join('');
+
+                return `
+                    <div class="tier-card ${isCurrent ? 'current' : ''} ${isLocked ? 'locked' : ''}">
+                        <div class="tier-medal">${t.medal}</div>
+                        <div class="tier-name">${t.name}</div>
+                        <div class="tier-range">${t.range}</div>
+                        <div class="tier-perks">${perks}</div>
+                    </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function renderHistory(reservations, totalPts) {
+            const list = document.getElementById('historyList');
+
+            if (!reservations || !reservations.length) {
+                list.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--ink-60);font-size:0.84rem;">Aucune activité pour le moment.</div>`;
+                return;
+            }
+
+            const items = reservations
+                .filter(r => (r.status ?? r.Status) !== 'Cancelled')
+                .map(r => {
+                    const pts    = Math.round(r.totalPrice ?? r.TotalPrice ?? 0);
+                    const checkIn = r.checkIn ?? r.CheckIn;
+                    const date   = new Date(checkIn).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+                    const name   = r.hotelName ?? r.HotelName ?? r.chambreName ?? r.ChambreName ?? '—';
+                    return `
+                        <div class="history-item">
+                            <div class="history-icon earn"><i data-lucide="trending-up"></i></div>
+                            <div>
+                                <div class="history-label">${name}</div>
+                                <div class="history-date">Séjour · ${date}</div>
+                            </div>
+                            <div class="history-pts earn">+${pts.toLocaleString('fr-FR')} pts</div>
+                        </div>`;
+                });
+
+            items.push(`
+                <div class="history-item" style="border-top:2px solid rgba(201,169,110,0.15);margin-top:4px;">
+                    <div class="history-icon" style="background:var(--gold-lt);color:var(--gold);"><i data-lucide="star"></i></div>
+                    <div>
+                        <div class="history-label" style="color:var(--ink);">Total cumulé</div>
+                        <div class="history-date">Depuis votre inscription</div>
+                    </div>
+                    <div class="history-pts earn" style="color:var(--gold);">${totalPts.toLocaleString('fr-FR')} pts</div>
+                </div>`);
+
+            list.innerHTML = items.join('');
+            lucide.createIcons();
+        }
+
+        /* ══════════════════════════════════════
+           AVANTAGES
+        ══════════════════════════════════════ */
+        function renderBenefits(tier) {
+            const benefits = BENEFITS_BY_TIER[tier] || BENEFITS_BY_TIER['Bronze'];
+            document.getElementById('benefitsList').innerHTML = benefits.map(b => `
+                <div class="benefit-item">
+                    <div class="benefit-ic">${b.ic}</div>
+                    <div>
+                        <div class="benefit-name">${b.name}</div>
+                        <div class="benefit-desc">${b.desc}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        /* ══════════════════════════════════════
+           HELPERS
+        ══════════════════════════════════════ */
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            document.getElementById('toastIcon').setAttribute('data-lucide', type === 'success' ? 'check-circle' : 'alert-circle');
+            t.className = 'toast ' + type;
+            lucide.createIcons();
+            requestAnimationFrame(() => t.classList.add('show'));
+            setTimeout(() => t.classList.remove('show'), 4000);
+        }
+
+        async function logout() {
+            try {
+                const token = SESSION.getToken();
+                if (token) await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include' }).catch(() => {});
+            } finally {
+                SESSION.clearSession();
+                window.location.href = SESSION.LOGIN_URL;
+            }
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
+    </script>
+</body>
+</html>

@@ -12,5 +12,10 @@
         public int NumberOfGuests { get; set; }
         public decimal TotalPrice { get; set; }
         public string Status { get; set; }
+
+        // Nouveaux champs remise
+        public decimal PrixBase { get; set; }
+        public decimal RemisePoints { get; set; }
+        public int PointsUtilises { get; set; }
     }
 }

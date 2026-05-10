@@ -1,0 +1,1186 @@
+﻿@{
+    ViewData["Title"] = "Hôtels";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Nos hôtels</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: rgba(201,169,110,0.12);
+            --gold-mid: rgba(201,169,110,0.25);
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --sidebar: #0B1120;
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            padding: 1.6rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            border-right: 1px solid rgba(255,255,255,0.04);
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+            .sidebar-brand img {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+
+        .sidebar-section-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 0 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 1.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.42);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            transition: all .16s;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.82);
+            }
+
+            .nav-item.active {
+                background: rgba(201,169,110,0.14);
+                color: var(--gold);
+            }
+
+        .nav-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(201,169,110,0.18);
+        }
+
+        .nav-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--gold);
+            color: var(--ink);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 100px;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(201,169,110,0.3) transparent;
+        }
+
+            .sidebar-content::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .sidebar-content::-webkit-scrollbar-thumb {
+                background: rgba(201,169,110,0.3);
+                border-radius: 20px;
+            }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 0.55rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #b8924f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.9rem;
+            color: var(--ink);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.28);
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.32);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-logout:hover {
+                border-color: rgba(220,38,38,0.4);
+                color: #f87171;
+                background: rgba(220,38,38,0.06);
+            }
+
+            .btn-logout svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        /* MAIN */
+        .main {
+            margin-left: 240px;
+            padding: 2rem 2.4rem;
+            flex: 1;
+            max-width: calc(100vw - 240px);
+        }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .topbar-left h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+        }
+
+            .topbar-left h1 em {
+                font-style: italic;
+                color: var(--gold);
+            }
+
+        .topbar-left p {
+            font-size: 0.83rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.58rem 1.2rem;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all .18s;
+        }
+
+            .btn svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--ink);
+        }
+
+            .btn-gold:hover {
+                background: #b8924f;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(201,169,110,0.3);
+            }
+
+        .btn-danger {
+            background: rgba(220,38,38,0.10);
+            color: #f87171;
+            border: 1px solid rgba(220,38,38,0.25);
+        }
+
+            .btn-danger:hover {
+                background: rgba(220,38,38,0.20);
+            }
+
+        /* SEARCH BAR */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.72rem 1.1rem;
+            border: 1.5px solid rgba(15,22,33,0.10);
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--ink);
+            background: var(--white);
+            outline: none;
+            transition: border-color .15s;
+            box-shadow: var(--shadow-sm);
+        }
+
+            .search-input:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 3px rgba(201,169,110,0.10);
+            }
+
+        .search-btn {
+            padding: 0.72rem 1.4rem;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .16s;
+        }
+
+            .search-btn:hover {
+                background: #b8924f;
+            }
+
+            .search-btn svg {
+                width: 14px;
+                height: 14px;
+            }
+
+        /* STATS */
+        .stats-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-pill {
+            background: var(--white);
+            border-radius: 100px;
+            padding: 0.55rem 1.1rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.82rem;
+            color: var(--ink-60);
+        }
+
+            .stat-pill strong {
+                color: var(--ink);
+                font-family: 'DM Serif Display', serif;
+                font-size: 1rem;
+            }
+
+            .stat-pill svg {
+                width: 14px;
+                height: 14px;
+                color: var(--gold);
+            }
+
+        /* GRID HÔTELS */
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+        }
+
+        .hotel-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            transition: all .2s;
+            cursor: pointer;
+            animation: fadeUp .35s ease both;
+        }
+
+            .hotel-card:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-md);
+                border-color: rgba(201,169,110,0.25);
+            }
+
+        .hotel-card-img {
+            width: 100%;
+            height: 180px;
+            background: var(--gold-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .hotel-card-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .hotel-card-img .rating-badge {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: rgba(15,22,33,0.7);
+                backdrop-filter: blur(6px);
+                border-radius: 100px;
+                padding: 3px 9px;
+                font-size: 0.72rem;
+                font-weight: 700;
+                color: var(--white);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+        .hotel-card-body {
+            padding: 1.2rem;
+        }
+
+        .hotel-card-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.05rem;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .hotel-card-loc {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.76rem;
+            color: var(--ink-60);
+            margin-bottom: 8px;
+        }
+
+            .hotel-card-loc svg {
+                width: 12px;
+                height: 12px;
+            }
+
+        .hotel-card-desc {
+            font-size: 0.78rem;
+            color: var(--ink-60);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .hotel-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hotel-card-rooms {
+            font-size: 0.74rem;
+            color: var(--ink-60);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .hotel-card-rooms svg {
+                width: 12px;
+                height: 12px;
+                color: var(--teal);
+            }
+
+        .hotel-card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all .15s;
+            text-decoration: none;
+        }
+
+            .hotel-card-btn:hover {
+                background: #b8924f;
+            }
+
+            .hotel-card-btn svg {
+                width: 12px;
+                height: 12px;
+            }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,22,33,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+
+            .modal-overlay.open {
+                display: flex;
+            }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            max-width: 720px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeUp .25s ease;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 220px;
+            background: var(--gold-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            overflow: hidden;
+        }
+
+            .modal-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .modal-body {
+            padding: 1.8rem;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .modal-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--ink);
+        }
+
+        .modal-loc {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: var(--ink-60);
+            margin-top: 4px;
+        }
+
+            .modal-loc svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        .modal-close {
+            background: var(--bg);
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-60);
+            flex-shrink: 0;
+            transition: all .15s;
+        }
+
+            .modal-close:hover {
+                background: var(--gold-lt);
+                color: var(--gold);
+            }
+
+            .modal-close svg {
+                width: 14px;
+                height: 14px;
+            }
+
+        .modal-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .modal-stars {
+            font-size: 0.9rem;
+        }
+
+        .modal-rating-val {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .modal-rating-count {
+            font-size: 0.76rem;
+            color: var(--ink-60);
+        }
+
+        .modal-desc {
+            font-size: 0.84rem;
+            color: var(--ink-60);
+            line-height: 1.6;
+            margin-bottom: 1.4rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+
+        .modal-chambres-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-chambres-count {
+            font-size: 0.76rem;
+            color: var(--ink-60);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .modal-chambre-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.9rem 1rem;
+            border: 1px solid rgba(201,169,110,0.15);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all .15s;
+        }
+
+            .modal-chambre-item:hover {
+                border-color: var(--gold);
+                background: var(--gold-lt);
+            }
+
+        .modal-chambre-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .modal-chambre-cap {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .modal-chambre-cap svg {
+                width: 11px;
+                height: 11px;
+            }
+
+        .modal-chambre-price {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+            .modal-chambre-price span {
+                font-size: 0.7rem;
+                color: var(--ink-60);
+                font-family: 'DM Sans', sans-serif;
+            }
+
+        .modal-chambre-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all .15s;
+        }
+
+            .modal-chambre-btn:hover {
+                background: #b8924f;
+                transform: translateY(-1px);
+            }
+
+            .modal-chambre-btn svg {
+                width: 12px;
+                height: 12px;
+            }
+
+        /* EMPTY / SKELETON */
+        .skeleton {
+            background: linear-gradient(90deg,rgba(15,22,33,0.06) 25%,rgba(15,22,33,0.10) 50%,rgba(15,22,33,0.06) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+            gap: 10px;
+            grid-column: 1/-1;
+        }
+
+            .empty-state svg {
+                width: 40px;
+                height: 40px;
+                color: var(--ink-30);
+            }
+
+            .empty-state p {
+                font-size: 0.86rem;
+                color: var(--ink-60);
+            }
+
+        @@keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @@media (max-width: 1100px) {
+            .hotels-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @@media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.4rem;
+                max-width: 100vw;
+            }
+        }
+
+        @@media (max-width: 600px) {
+            .hotels-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/" class="sidebar-brand">
+                <img src="/Images/logo.png" alt="Pillowfy">
+                <span class="sidebar-brand-name">Pillowfy</span>
+            </a>
+            <div class="sidebar-content">
+                <div class="sidebar-section-label">Navigation</div>
+                <nav class="sidebar-nav">
+                    <a href="/Client/Dashboard" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
+                    </a>
+                    <a href="/Client/ListeHotels" class="nav-item active">
+                        <span class="nav-icon"><i data-lucide="building-2"></i></span> Hôtels
+                    </a>
+                    <a href="/Client/Reservations" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="calendar-check"></i></span>
+                        Mes réservations
+                        <span class="nav-badge" id="nbReservations" style="display:none;"></span>
+                    </a>
+                    <a href="/Client/Sejours" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="bed-double"></i></span> Historique séjours
+                    </a>
+                    <a href="/Client/Factures" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="receipt"></i></span> Factures
+                    </a>
+                    <a href="/Client/Services" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="concierge-bell"></i></span> Services
+                    </a>
+                </nav>
+                <div class="sidebar-section-label">Compte</div>
+                <nav class="sidebar-nav">
+                    <a href="/Client/Profil" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="user"></i></span> Mon profil
+                    </a>
+                    <a href="/Client/Fidelite" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="star"></i></span> Fidélité
+                    </a>
+                    <a href="/Client/Avis" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="message-circle"></i></span> Mes avis
+                    </a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <div>
+                        <div class="user-name" id="userName">Chargement...</div>
+                        <div class="user-role" id="userRole">Client</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i data-lucide="log-out"></i> Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Nos <em>hôtels</em></h1>
+                    <p>Découvrez nos établissements et réservez votre séjour idéal.</p>
+                </div>
+                <div class="topbar-right">
+                    <a href="/Client/NewReservation" class="btn btn-gold">
+                        <i data-lucide="plus"></i> Nouvelle réservation
+                    </a>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <i data-lucide="log-out"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATS ROW -->
+            <div class="stats-row" id="statsRow" style="display:none;">
+                <div class="stat-pill">
+                    <i data-lucide="building-2"></i>
+                    <strong id="statHotels">—</strong> hôtels
+                </div>
+                <div class="stat-pill">
+                    <i data-lucide="bed-double"></i>
+                    <strong id="statChambres">—</strong> chambres disponibles
+                </div>
+            </div>
+
+            <!-- SEARCH -->
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="Rechercher un hôtel, une ville, un pays..."
+                       oninput="filterHotels()">
+                <button class="search-btn" onclick="filterHotels()">
+                    <i data-lucide="search"></i> Rechercher
+                </button>
+            </div>
+
+            <!-- GRID -->
+            <div class="hotels-grid" id="hotelsGrid">
+                <div class="skeleton" style="height:300px;border-radius:22px;"></div>
+                <div class="skeleton" style="height:300px;border-radius:22px;"></div>
+                <div class="skeleton" style="height:300px;border-radius:22px;"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL DÉTAIL HÔTEL -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" id="modal">
+            <div class="modal-img" id="modalImg">🏨</div>
+            <div class="modal-body">
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-name" id="modalName">—</div>
+                        <div class="modal-loc">
+                            <i data-lucide="map-pin"></i>
+                            <span id="modalLoc">—</span>
+                        </div>
+                    </div>
+                    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="modal-rating" id="modalRating"></div>
+                <div class="modal-desc" id="modalDesc">—</div>
+                <div class="modal-chambres-title">
+                    Chambres disponibles
+                    <span class="modal-chambres-count" id="modalChambresCount"></span>
+                </div>
+                <div id="modalChambres">
+                    <div class="skeleton" style="height:60px;margin-bottom:8px;border-radius:12px;"></div>
+                    <div class="skeleton" style="height:60px;border-radius:12px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SESSION = {
+            TOKEN_KEY:'pillowfy_token', COOKIE_NAME:'token', LOGIN_URL:'/Login/Index',
+            CLAIMS:{
+                name:'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                email:'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                role:'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+            },
+            getToken(){ return this._readCookie(this.COOKIE_NAME)||localStorage.getItem(this.TOKEN_KEY); },
+            parseJwt(t){ try{ return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }catch{ return null; } },
+            clearSession(){ localStorage.removeItem(this.TOKEN_KEY); document.cookie=`${this.COOKIE_NAME}=; Max-Age=0; path=/; SameSite=Strict`; },
+            _readCookie(n){ const m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m?decodeURIComponent(m[2]):null; }
+        };
+
+        let allHotels   = [];
+        let allChambres = [];
+
+        async function init(){
+            if(typeof lucide==='undefined'){ setTimeout(init,50); return; }
+            lucide.createIcons();
+
+            const token = SESSION.getToken();
+            if(!token){ window.location.href = SESSION.LOGIN_URL; return; }
+
+            const p = SESSION.parseJwt(token);
+            if(p){
+                const firstName = (p[SESSION.CLAIMS.name]||'').split(' ')[0]||'Client';
+                document.getElementById('userName').textContent      = p[SESSION.CLAIMS.name]||p[SESSION.CLAIMS.email]||'';
+                document.getElementById('userRole').textContent      = p[SESSION.CLAIMS.role]||'Client';
+                document.getElementById('avatarInitial').textContent = firstName.charAt(0).toUpperCase();
+            }
+
+            // Badge réservations actives
+            loadReservationsBadge(token);
+
+            const [hotelsRes, chambresRes] = await Promise.all([
+                fetch('/api/hotels',               { headers:{'Authorization':'Bearer '+token}, credentials:'include' }),
+                fetch('/api/chambres/disponibles', { headers:{'Authorization':'Bearer '+token}, credentials:'include' })
+            ]);
+
+            if(hotelsRes.ok)   allHotels   = await hotelsRes.json();
+            if(chambresRes.ok) allChambres = await chambresRes.json();
+
+            // Stats
+            document.getElementById('statHotels').textContent   = allHotels.length;
+            document.getElementById('statChambres').textContent = allChambres.length;
+            document.getElementById('statsRow').style.display   = 'flex';
+
+            renderHotels(allHotels);
+            lucide.createIcons();
+        }
+
+        async function loadReservationsBadge(token){
+            try{
+                const res = await fetch('/api/client/reservations',{ headers:{'Authorization':'Bearer '+token}, credentials:'include' });
+                if(!res.ok) return;
+                const list  = await res.json();
+                const today = new Date();
+                const nb    = list.filter(r => r.status==='Confirmed' && new Date(r.checkOut)>today).length;
+                const badge = document.getElementById('nbReservations');
+                if(badge){ badge.textContent=nb; badge.style.display=nb>0?'':'none'; }
+            } catch{}
+        }
+
+        function renderHotels(hotels){
+            const grid = document.getElementById('hotelsGrid');
+            if(!hotels.length){
+                grid.innerHTML = `<div class="empty-state"><i data-lucide="building-2"></i><p>Aucun hôtel trouvé.</p></div>`;
+                lucide.createIcons(); return;
+            }
+            grid.innerHTML = hotels.map((h, idx) => {
+                const chambresHotel = allChambres.filter(c => c.hotelId===h.id || c.hotelName===h.name);
+                const ratingHtml = h.rating
+                    ? `<div class="rating-badge">⭐ ${h.rating.toFixed(1)}</div>`
+                    : '';
+                return `
+                <div class="hotel-card" onclick="openModal(${h.id})" style="animation-delay:${idx*0.05}s;">
+                    <div class="hotel-card-img">
+                        ${h.imageUrl ? `<img src="${h.imageUrl}" alt="${h.name}">` : '🏨'}
+                        ${ratingHtml}
+                    </div>
+                    <div class="hotel-card-body">
+                        <div class="hotel-card-name">${h.name}</div>
+                        <div class="hotel-card-loc"><i data-lucide="map-pin"></i> ${h.city}, ${h.country}</div>
+                        <div class="hotel-card-desc">${h.description || 'Aucune description disponible.'}</div>
+                        <div class="hotel-card-footer">
+                            <div class="hotel-card-rooms">
+                                <i data-lucide="bed-double"></i>
+                                ${chambresHotel.length} chambre${chambresHotel.length!==1?'s':''} dispo.
+                            </div>
+                            <button class="hotel-card-btn" onclick="event.stopPropagation();openModal(${h.id})">
+                                <i data-lucide="eye"></i> Voir
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function filterHotels(){
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allHotels.filter(h =>
+                h.name.toLowerCase().includes(q) ||
+                h.city.toLowerCase().includes(q) ||
+                h.country.toLowerCase().includes(q) ||
+                (h.description||'').toLowerCase().includes(q)
+            );
+            renderHotels(filtered);
+        }
+
+        function openModal(hotelId){
+            const h = allHotels.find(h => h.id===hotelId);
+            if(!h) return;
+
+            document.getElementById('modalName').textContent = h.name;
+            document.getElementById('modalLoc').textContent  = h.address
+                ? h.address+', '+h.city+', '+h.country
+                : h.city+', '+h.country;
+            document.getElementById('modalDesc').textContent = h.description||'Aucune description disponible.';
+
+            const modalImg = document.getElementById('modalImg');
+            modalImg.innerHTML = h.imageUrl ? `<img src="${h.imageUrl}" alt="${h.name}">` : '🏨';
+
+            // Rating
+            const ratingEl = document.getElementById('modalRating');
+            if(h.rating){
+                const stars = '⭐'.repeat(Math.round(h.rating));
+                ratingEl.innerHTML = `<span class="modal-stars">${stars}</span><span class="modal-rating-val">${h.rating.toFixed(1)}</span><span class="modal-rating-count">/ 5</span>`;
+            } else {
+                ratingEl.innerHTML = `<span style="font-size:0.78rem;color:var(--ink-60);">Pas encore noté</span>`;
+            }
+
+            // Chambres
+            const chambres = allChambres.filter(c => c.hotelId===h.id || c.hotelName===h.name);
+            document.getElementById('modalChambresCount').textContent = chambres.length
+                ? `(${chambres.length} disponible${chambres.length>1?'s':''})`
+                : '';
+
+            const modalChambres = document.getElementById('modalChambres');
+            if(!chambres.length){
+                modalChambres.innerHTML = `<div style="text-align:center;padding:1.2rem;font-size:0.82rem;color:var(--ink-60);background:var(--bg);border-radius:12px;">Aucune chambre disponible pour le moment.</div>`;
+            } else {
+                modalChambres.innerHTML = chambres.map(c => `
+                    <div class="modal-chambre-item">
+                        <div>
+                            <div class="modal-chambre-name">${c.name}</div>
+                            <div class="modal-chambre-cap">
+                                <i data-lucide="users"></i> ${c.capacity} pers. max
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="modal-chambre-price">
+                                ${c.pricePerNight.toLocaleString('fr-FR')} €
+                                <span>/nuit</span>
+                            </div>
+                            <button class="modal-chambre-btn" onclick="reserverChambre(${c.id})">
+                                <i data-lucide="plus"></i> Réserver
+                            </button>
+                        </div>
+                    </div>`).join('');
+            }
+
+            document.getElementById('modalOverlay').classList.add('open');
+            lucide.createIcons();
+        }
+
+        function closeModal(event){
+            if(event.target===document.getElementById('modalOverlay')){
+                document.getElementById('modalOverlay').classList.remove('open');
+            }
+        }
+
+        function reserverChambre(chambreId){
+            window.location.href = '/Client/Reservations/New?chambreId='+chambreId;
+        }
+
+        async function logout(){
+            try{
+                const token=SESSION.getToken();
+                if(token) await fetch('/api/auth/logout',{method:'POST',headers:{'Authorization':'Bearer '+token},credentials:'include'}).catch(()=>{});
+            } finally { SESSION.clearSession(); window.location.href=SESSION.LOGIN_URL; }
+        }
+
+        if(document.readyState==='loading'){
+            document.addEventListener('DOMContentLoaded',init);
+        } else { init(); }
+    </script>
+</body>
+</html>

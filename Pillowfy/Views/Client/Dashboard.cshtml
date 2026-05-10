@@ -47,7 +47,7 @@
             min-height: 100vh;
         }
 
-        /* ── SIDEBAR ── */
+        /* SIDEBAR */
         .sidebar {
             width: 240px;
             background: var(--sidebar);
@@ -229,7 +229,32 @@
                 height: 13px;
             }
 
-        /* ── MAIN ── */
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 6px;
+            margin-right: -6px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(201,169,110,0.3) transparent;
+        }
+
+            .sidebar-content::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .sidebar-content::-webkit-scrollbar-thumb {
+                background: rgba(201,169,110,0.3);
+                border-radius: 20px;
+            }
+
+                .sidebar-content::-webkit-scrollbar-thumb:hover {
+                    background: var(--gold);
+                }
+
+        /* MAIN */
         .main {
             margin-left: 240px;
             padding: 2rem 2.4rem;
@@ -287,9 +312,10 @@
             height: 6px;
             border-radius: 50%;
             background: #22c55e;
+            animation: pulse 2s infinite;
         }
 
-        /* ── HERO ── */
+        /* HERO */
         .hero-card {
             background: var(--ink);
             border-radius: var(--radius-xl);
@@ -369,6 +395,7 @@
             gap: 8px;
         }
 
+        /* BUTTONS */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -422,7 +449,59 @@
                 color: #fca5a5;
             }
 
-        /* ── RÉSERVATION ACTIVE ── */
+        .btn-teal {
+            background: rgba(26,107,107,0.3);
+            color: #4ECDC4;
+            border: 1px solid rgba(26,107,107,0.45);
+            border-radius: 100px;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+            .btn-teal:hover {
+                background: rgba(26,107,107,0.5);
+            }
+
+            .btn-teal svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        .btn-sm-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--gold-lt);
+            color: #9A722E;
+            border: 1px solid rgba(201,169,110,0.25);
+            border-radius: 100px;
+            padding: 5px 12px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all .15s;
+            text-decoration: none;
+        }
+
+            .btn-sm-gold:hover {
+                background: var(--gold-mid);
+            }
+
+            .btn-sm-gold svg {
+                width: 12px;
+                height: 12px;
+            }
+
+        /* RESERVATION BANNER */
         .reservation-banner {
             background: linear-gradient(135deg, #0E2D2D 0%, #0B1120 100%);
             border-radius: var(--radius-xl);
@@ -529,33 +608,7 @@
             z-index: 1;
         }
 
-        .btn-teal {
-            background: rgba(26,107,107,0.3);
-            color: #4ECDC4;
-            border: 1px solid rgba(26,107,107,0.45);
-            border-radius: 100px;
-            padding: 0.5rem 1.1rem;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            transition: all .16s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-        }
-
-            .btn-teal:hover {
-                background: rgba(26,107,107,0.5);
-            }
-
-            .btn-teal svg {
-                width: 13px;
-                height: 13px;
-            }
-
-        /* ── STATS ── */
+        /* STATS */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -637,7 +690,7 @@
             margin-top: 2px;
         }
 
-        /* ── GRIDS ── */
+        /* GRIDS */
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -683,7 +736,7 @@
                 text-decoration: underline;
             }
 
-        /* ── SÉJOURS ── */
+        /* SÉJOURS */
         .stay-item {
             display: flex;
             align-items: center;
@@ -770,7 +823,7 @@
                 color: var(--rose);
             }
 
-        /* ── TAUX D'OCCUPATION ── */
+        /* OCCUPATION */
         .occ-item {
             padding: 0.75rem 0;
             border-bottom: 1px solid rgba(15,22,33,0.05);
@@ -828,17 +881,30 @@
                 background: linear-gradient(90deg, #C0596A, #e87f8e);
             }
 
-        /* ── FIDÉLITÉ ── */
+        /* FIDÉLITÉ */
         .loyalty-card {
-            background: linear-gradient(135deg, #1A3A2A 0%, #0B1120 100%);
+            background: linear-gradient(135deg, #0E2D1E 0%, #0B1120 100%);
             border-radius: var(--radius-xl);
             padding: 1.4rem 1.6rem;
             border: 1px solid rgba(201,169,110,0.15);
+            position: relative;
+            overflow: hidden;
         }
+
+            .loyalty-card::before {
+                content: '';
+                position: absolute;
+                right: -40px;
+                top: -40px;
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, transparent 70%);
+            }
 
         .loyalty-top {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             margin-bottom: 1rem;
         }
@@ -852,19 +918,43 @@
         .loyalty-tier {
             font-size: 0.68rem;
             font-weight: 700;
-            padding: 3px 10px;
+            padding: 4px 12px;
             border-radius: 100px;
-            background: rgba(201,169,110,0.2);
-            color: var(--gold);
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
+            border: 1px solid;
         }
+
+            .loyalty-tier.Bronze {
+                background: rgba(205,127,50,0.18);
+                color: #CD7F32;
+                border-color: rgba(205,127,50,0.3);
+            }
+
+            .loyalty-tier.Silver {
+                background: rgba(168,169,173,0.18);
+                color: #B8B9BD;
+                border-color: rgba(168,169,173,0.3);
+            }
+
+            .loyalty-tier.Gold {
+                background: rgba(201,169,110,0.20);
+                color: var(--gold);
+                border-color: rgba(201,169,110,0.3);
+            }
+
+            .loyalty-tier.Platinum {
+                background: rgba(229,228,226,0.12);
+                color: #d4d4d4;
+                border-color: rgba(229,228,226,0.2);
+            }
 
         .loyalty-pts {
             font-family: 'DM Serif Display', serif;
-            font-size: 2rem;
+            font-size: 2.4rem;
             color: var(--gold);
             line-height: 1;
+            margin-bottom: 2px;
         }
 
         .loyalty-pts-label {
@@ -899,6 +989,35 @@
             transition: width .8s ease;
         }
 
+        .loyalty-remise-box {
+            margin-top: 1rem;
+            background: rgba(201,169,110,0.08);
+            border: 1px solid rgba(201,169,110,0.18);
+            border-radius: 11px;
+            padding: 0.8rem 1rem;
+            display: none;
+        }
+
+        .loyalty-remise-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .loyalty-remise-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+        }
+
+        .loyalty-remise-hint {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.25);
+            margin-top: 6px;
+        }
+
         .btn-loyalty {
             display: flex;
             align-items: center;
@@ -927,7 +1046,7 @@
                 height: 13px;
             }
 
-        /* ── SERVICES ── */
+        /* SERVICES */
         .service-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -977,7 +1096,7 @@
             margin-top: 1px;
         }
 
-        /* ── ACTIONS RAPIDES ── */
+        /* ACTIONS RAPIDES */
         .quick-action {
             display: flex;
             align-items: center;
@@ -1042,7 +1161,7 @@
                 height: 15px;
             }
 
-        /* ── AVIS ── */
+        /* AVIS */
         .rating-row {
             display: flex;
             align-items: center;
@@ -1077,38 +1196,219 @@
             line-height: 1.5;
         }
 
-        .btn-sm-gold {
+        /* HOTELS */
+        .hotel-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+            cursor: pointer;
+            transition: all .16s;
+            border-radius: 8px;
+        }
+
+            .hotel-item:last-child {
+                border-bottom: none;
+            }
+
+            .hotel-item:hover {
+                background: var(--gold-lt);
+                padding-left: 6px;
+            }
+
+        .hotel-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: var(--gold-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+            .hotel-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .hotel-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .hotel-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hotel-location {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .hotel-rating {
+            font-size: 0.72rem;
+            margin-top: 3px;
+        }
+
+        .hotel-action {
+            color: var(--ink-30);
+            flex-shrink: 0;
+        }
+
+            .hotel-action svg {
+                width: 15px;
+                height: 15px;
+            }
+
+        /* CHAMBRES */
+        .chambre-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+            cursor: pointer;
+            transition: all .16s;
+        }
+
+            .chambre-item:last-child {
+                border-bottom: none;
+            }
+
+            .chambre-item:hover {
+                background: var(--gold-lt);
+                padding-left: 6px;
+                border-radius: 8px;
+            }
+
+        .chambre-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: var(--teal-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+            .chambre-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .chambre-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chambre-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chambre-hotel, .chambre-capacity {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .chambre-price {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .chambre-price-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .chambre-price-lbl {
+            font-size: 0.68rem;
+            color: var(--ink-60);
+            margin-top: 1px;
+        }
+
+        .chambre-book-btn {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            background: var(--gold-lt);
-            color: #9A722E;
-            border: 1px solid rgba(201,169,110,0.25);
+            gap: 4px;
+            margin-top: 6px;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
             border-radius: 100px;
-            padding: 5px 12px;
-            font-size: 0.76rem;
-            font-weight: 600;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
             cursor: pointer;
             font-family: 'DM Sans', sans-serif;
             transition: all .15s;
         }
 
-            .btn-sm-gold:hover {
-                background: var(--gold-mid);
+            .chambre-book-btn:hover {
+                background: #b8924f;
+                transform: translateY(-1px);
             }
 
-            .btn-sm-gold svg {
-                width: 12px;
-                height: 12px;
+            .chambre-book-btn svg {
+                width: 11px;
+                height: 11px;
             }
 
-        /* ── SKELETON ── */
+        /* SKELETON */
         .skeleton {
             background: linear-gradient(90deg, rgba(15,22,33,0.06) 25%, rgba(15,22,33,0.10) 50%, rgba(15,22,33,0.06) 75%);
             background-size: 200% 100%;
             animation: shimmer 1.4s infinite;
             border-radius: 6px;
         }
+
+        /* EMPTY STATE */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            gap: 8px;
+        }
+
+            .empty-state svg {
+                width: 32px;
+                height: 32px;
+                color: var(--ink-30);
+            }
+
+            .empty-state p {
+                font-size: 0.82rem;
+                color: var(--ink-60);
+                text-align: center;
+            }
 
         @@keyframes shimmer {
             0% {
@@ -1120,7 +1420,6 @@
             }
         }
 
-        /* ── ANIMATIONS ── */
         @@keyframes fadeUp {
             from {
                 opacity: 0;
@@ -1141,10 +1440,6 @@
             50% {
                 box-shadow: 0 0 0 5px rgba(34,197,94,0.07);
             }
-        }
-
-        .badge-dot {
-            animation: pulse 2s infinite;
         }
 
         .main > * {
@@ -1171,29 +1466,6 @@
                 animation-delay: 0.22s;
             }
 
-        /* ── EMPTY STATE ── */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 1rem;
-            gap: 8px;
-        }
-
-            .empty-state svg {
-                width: 32px;
-                height: 32px;
-                color: var(--ink-30);
-            }
-
-            .empty-state p {
-                font-size: 0.82rem;
-                color: var(--ink-60);
-                text-align: center;
-            }
-
-        /* ── RESPONSIVE ── */
         @@media (max-width: 1200px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1251,100 +1523,58 @@
                 grid-template-columns: 1fr;
             }
         }
-        /* ── SCROLLBAR SIDEBAR ── */
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 6px;
-            margin-right: -6px;
-            display: flex;
-            flex-direction: column;
-            gap: 1.4rem;
-        }
-
-            /* Personnalisation jolie de la scrollbar (pour Chrome/Edge/Safari) */
-            .sidebar-content::-webkit-scrollbar {
-                width: 6px;
-            }
-
-            .sidebar-content::-webkit-scrollbar-thumb {
-                background: rgba(201, 169, 110, 0.3);
-                border-radius: 20px;
-            }
-
-                .sidebar-content::-webkit-scrollbar-thumb:hover {
-                    background: var(--gold);
-                }
-
-        /* Pour Firefox */
-        .sidebar-content {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(201, 169, 110, 0.3) transparent;
-        }
     </style>
 </head>
 <body>
     <div class="layout">
 
         <!-- SIDEBAR -->
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <a href="/" class="sidebar-brand">
                 <img src="/Images/logo.png" alt="Pillowfy">
                 <span class="sidebar-brand-name">Pillowfy</span>
             </a>
-
-            <!-- Contenu scrollable -->
             <div class="sidebar-content">
-
                 <div class="sidebar-section-label">Navigation</div>
                 <nav class="sidebar-nav">
                     <a href="/Client/Dashboard" class="nav-item active">
-                        <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
-                        Dashboard
+                        <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
                     </a>
-                    <a href="/Client/Reservations" class="nav-item">
+                    <a href="/Client/ListeHotels" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="building-2"></i></span> Hôtels
+                    </a>
+                    <a href="/Client/ListeReservations" class="nav-item">
                         <span class="nav-icon"><i data-lucide="calendar-check"></i></span>
                         Mes réservations
                         <span class="nav-badge" id="nbReservations" style="display:none;"></span>
                     </a>
                     <a href="/Client/Sejours" class="nav-item">
-                        <span class="nav-icon"><i data-lucide="bed-double"></i></span>
-                        Historique séjours
+                        <span class="nav-icon"><i data-lucide="bed-double"></i></span> Historique séjours
                     </a>
                     <a href="/Client/Factures" class="nav-item">
-                        <span class="nav-icon"><i data-lucide="receipt"></i></span>
-                        Factures
+                        <span class="nav-icon"><i data-lucide="receipt"></i></span> Factures
                     </a>
                     <a href="/Client/Services" class="nav-item">
-                        <span class="nav-icon"><i data-lucide="concierge-bell"></i></span>
-                        Services
+                        <span class="nav-icon"><i data-lucide="concierge-bell"></i></span> Services
                     </a>
                 </nav>
-
                 <div class="sidebar-section-label">Compte</div>
                 <nav class="sidebar-nav">
                     <a href="/Client/Profil" class="nav-item">
-                        <span class="nav-icon"><i data-lucide="user"></i></span>
-                        Mon profil
+                        <span class="nav-icon"><i data-lucide="user"></i></span> Mon profil
                     </a>
                     <a href="/Client/Fidelite" class="nav-item">
-                        <span class="nav-icon"><i data-lucide="star"></i></span>
-                        Fidélité
+                        <span class="nav-icon"><i data-lucide="star"></i></span> Fidélité
                     </a>
-                    <a href="/Client/Avis" class="nav-item">
-                        <span class="nav-icon"><i data-lucide="message-circle"></i></span>
-                        Mes avis
+                    <a href="/Client/ListeAvis" class="nav-item">
+                        <span class="nav-icon"><i data-lucide="message-circle"></i></span> Mes avis
                     </a>
                 </nav>
-
             </div>
-
-            <!-- Footer toujours visible -->
             <div class="sidebar-footer">
                 <div class="user-card">
                     <div class="user-avatar" id="avatarInitial">?</div>
-                    <div class="user-info">
+                    <div>
                         <div class="user-name" id="userName">Chargement...</div>
                         <div class="user-role" id="userRole">Client</div>
                     </div>
@@ -1354,6 +1584,7 @@
                 </button>
             </div>
         </aside>
+
         <!-- MAIN -->
         <main class="main">
 
@@ -1364,10 +1595,7 @@
                     <p id="dateLabel"></p>
                 </div>
                 <div class="topbar-right">
-                    <div class="badge-online">
-                        <span class="badge-dot"></span> En ligne
-                    </div>
-                    <!-- BOUTON DÉCONNEXION TOPBAR -->
+                    <div class="badge-online"><span class="badge-dot"></span> En ligne</div>
                     <button class="btn btn-danger" onclick="logout()">
                         <i data-lucide="log-out"></i> Déconnexion
                     </button>
@@ -1379,19 +1607,19 @@
                 <div class="hero-text">
                     <div class="hero-tag"><i data-lucide="sparkles"></i> Votre espace hôtelier</div>
                     <h2>Bienvenue sur <em>Pillowfy</em></h2>
-                    <p>Gérez vos réservations, accédez à vos factures et profitez de tous nos services depuis votre espace personnel.</p>
+                    <p>Gérez vos réservations, accédez à vos factures et profitez de tous nos services.</p>
                 </div>
                 <div class="hero-actions">
-                    <a href="/Client/Reservations/New" class="btn btn-gold">
+                    <a href="/Client/NewReservation" class="btn btn-gold">
                         <i data-lucide="plus"></i> Nouvelle réservation
                     </a>
-                    <a href="/Client/Profil" class="btn btn-outline">
-                        <i data-lucide="user"></i> Mon profil
+                    <a href="/Client/ListeHotels" class="btn btn-outline">
+                        <i data-lucide="building-2"></i> Voir les hôtels
                     </a>
                 </div>
             </div>
 
-            <!-- RÉSERVATION ACTIVE -->
+            <!-- RÉSERVATION ACTIVE — FIX : HTML statique, id sur le bouton Modifier -->
             <div class="reservation-banner" id="reservationBanner" style="display:none;">
                 <div class="res-left">
                     <div class="res-room-icon"><i data-lucide="bed-double"></i></div>
@@ -1418,8 +1646,12 @@
                     </div>
                 </div>
                 <div class="res-actions">
-                    <a href="/Client/Reservations" class="btn-teal"><i data-lucide="eye"></i> Voir détail</a>
-                    <a href="/Client/Reservations/Modify" class="btn-teal"><i data-lucide="pencil"></i> Modifier</a>
+                    <a href="/Client/ListeReservations" class="btn-teal">
+                        <i data-lucide="eye"></i> Voir détail
+                    </a>
+                    <a href="#" class="btn-teal" id="btnModifier">
+                        <i data-lucide="pencil"></i> Modifier
+                    </a>
                 </div>
             </div>
 
@@ -1462,14 +1694,14 @@
             <!-- FIDÉLITÉ + OCCUPATION + SERVICES -->
             <div class="main-grid" style="margin-bottom:1rem;">
 
-                <!-- Fidélité -->
+                <!-- FIDÉLITÉ — FIX : badge coloré + bloc remise -->
                 <div class="loyalty-card">
                     <div class="loyalty-top">
                         <div>
                             <div class="loyalty-title">Programme Fidélité</div>
                             <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:2px;">Pillowfy Rewards</div>
                         </div>
-                        <div class="loyalty-tier" id="loyaltyTier">—</div>
+                        <div class="loyalty-tier Bronze" id="loyaltyTier">—</div>
                     </div>
                     <div class="loyalty-pts" id="loyaltyPts">—</div>
                     <div class="loyalty-pts-label">points disponibles</div>
@@ -1482,30 +1714,40 @@
                             <div class="loyalty-bar-fill" id="loyaltyFill" style="width:0%;"></div>
                         </div>
                     </div>
+
+                    <!-- BLOC REMISE -->
+                    <div class="loyalty-remise-box" id="loyaltyRemiseBox">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div>
+                                <div class="loyalty-remise-label">Remise disponible</div>
+                                <div class="loyalty-remise-val" id="loyaltyRemiseDispo">—</div>
+                            </div>
+                            <a href="/Client/NewReservation" id="loyaltyBtnUtiliser"
+                               style="background:var(--gold);color:var(--ink);border:none;border-radius:100px;padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap;">
+                                <i data-lucide="tag" style="width:12px;height:12px;"></i> Utiliser
+                            </a>
+                        </div>
+                        <div class="loyalty-remise-hint">100 pts = 10 € · applicable à votre prochaine réservation</div>
+                    </div>
+
                     <a href="/Client/Fidelite" class="btn-loyalty">
-                        <i data-lucide="gift"></i> Utiliser mes points
+                        <i data-lucide="gift"></i> Voir mon programme
                     </a>
                 </div>
 
-                <!-- Taux d'occupation -->
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">Taux d'occupation</span>
                         <a href="/Admin/Hotels" class="card-link">Détails →</a>
                     </div>
                     <div id="occupancyList">
-                        <div style="padding:0.5rem 0;">
-                            <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:5px;width:100%;margin-bottom:16px;"></div>
-                            <div class="skeleton" style="height:14px;width:50%;margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:5px;width:100%;margin-bottom:16px;"></div>
-                            <div class="skeleton" style="height:14px;width:70%;margin-bottom:8px;"></div>
-                            <div class="skeleton" style="height:5px;width:100%;"></div>
-                        </div>
+                        <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="height:5px;width:100%;margin-bottom:16px;"></div>
+                        <div class="skeleton" style="height:14px;width:50%;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="height:5px;width:100%;"></div>
                     </div>
                 </div>
 
-                <!-- Services -->
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">Services disponibles</span>
@@ -1522,7 +1764,7 @@
                         </div>
                         <div class="service-item" onclick="window.location='/Client/Services/RoomService'">
                             <div class="service-ic">🛎️</div>
-                            <div><div class="service-name">Room Service</div><div class="service-status">Disponible 24h/24</div></div>
+                            <div><div class="service-name">Room Service</div><div class="service-status">24h/24</div></div>
                         </div>
                         <div class="service-item" onclick="window.location='/Client/Services/Navette'">
                             <div class="service-ic">🚗</div>
@@ -1534,73 +1776,59 @@
                         </div>
                         <div class="service-item" onclick="window.location='/Client/Services/Concierge'">
                             <div class="service-ic">🗝️</div>
-                            <div><div class="service-name">Conciergerie</div><div class="service-status">Disponible 24h/24</div></div>
+                            <div><div class="service-name">Conciergerie</div><div class="service-status">24h/24</div></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- HISTORIQUE + ACTIONS + AVIS (messagerie supprimée) -->
-            <div class="main-grid-wide">
+            <!-- HISTORIQUE + ACTIONS + AVIS -->
+            <div class="main-grid-wide" style="margin-bottom:1rem;">
                 <div style="display:flex;flex-direction:column;gap:1rem;">
-
-                    <!-- Historique séjours -->
                     <div class="card">
                         <div class="card-header">
                             <span class="card-title">Historique des séjours</span>
                             <a href="/Client/Sejours" class="card-link">Voir tout →</a>
                         </div>
                         <div id="stayList">
-                            <div style="padding:0.5rem 0;">
-                                <div class="skeleton" style="height:46px;width:100%;margin-bottom:12px;border-radius:10px;"></div>
-                                <div class="skeleton" style="height:46px;width:100%;margin-bottom:12px;border-radius:10px;"></div>
-                                <div class="skeleton" style="height:46px;width:100%;border-radius:10px;"></div>
-                            </div>
+                            <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                            <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                            <div class="skeleton" style="height:56px;width:100%;border-radius:10px;"></div>
                         </div>
                     </div>
-
-                    <!-- Factures -->
                     <div class="card">
                         <div class="card-header">
                             <span class="card-title">Dernières factures</span>
                             <a href="/Client/Factures" class="card-link">Voir tout →</a>
                         </div>
                         <div id="invoiceList">
-                            <div style="padding:0.5rem 0;">
-                                <div class="skeleton" style="height:36px;width:100%;margin-bottom:10px;border-radius:8px;"></div>
-                                <div class="skeleton" style="height:36px;width:100%;margin-bottom:10px;border-radius:8px;"></div>
-                                <div class="skeleton" style="height:36px;width:100%;border-radius:8px;"></div>
-                            </div>
+                            <div class="skeleton" style="height:36px;width:100%;margin-bottom:10px;border-radius:8px;"></div>
+                            <div class="skeleton" style="height:36px;width:100%;margin-bottom:10px;border-radius:8px;"></div>
+                            <div class="skeleton" style="height:36px;width:100%;border-radius:8px;"></div>
                         </div>
                     </div>
-
                 </div>
-
                 <div style="display:flex;flex-direction:column;gap:1rem;">
-
-                    <!-- Actions rapides (avec déconnexion) -->
                     <div class="card">
-                        <div class="card-header">
-                            <span class="card-title">Actions rapides</span>
-                        </div>
-                        <a href="/Client/Reservations/New" class="quick-action">
+                        <div class="card-header"><span class="card-title">Actions rapides</span></div>
+                        <a href="/Client/NewReservation" class="quick-action">
                             <div class="qa-icon"><i data-lucide="plus-circle"></i></div>
                             <div><div class="qa-label">Nouvelle réservation</div><div class="qa-sub">Réserver une chambre</div></div>
                             <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
                         </a>
+                        <a href="/Client/ListeHotels" class="quick-action">
+                            <div class="qa-icon"><i data-lucide="building-2"></i></div>
+                            <div><div class="qa-label">Voir les hôtels</div><div class="qa-sub">Parcourir nos établissements</div></div>
+                            <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                        </a>
                         <a href="/Client/Profil" class="quick-action">
-                            <div class="qa-icon"><i data-lucide="user-pen"></i></div>
+                            <div class="qa-icon"><i data-lucide="user-check"></i></div>
                             <div><div class="qa-label">Modifier mon profil</div><div class="qa-sub">Mettre à jour vos informations</div></div>
                             <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
                         </a>
                         <a href="/Client/Fidelite" class="quick-action">
                             <div class="qa-icon"><i data-lucide="gift"></i></div>
                             <div><div class="qa-label">Utiliser mes points</div><div class="qa-sub">Récompenses disponibles</div></div>
-                            <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
-                        </a>
-                        <a href="/Login/ForgotPassword" class="quick-action">
-                            <div class="qa-icon"><i data-lucide="lock-keyhole"></i></div>
-                            <div><div class="qa-label">Changer mon mot de passe</div><div class="qa-sub">Réinitialiser via e-mail</div></div>
                             <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
                         </a>
                         <button class="quick-action" onclick="logout()">
@@ -1612,28 +1840,52 @@
                             <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
                         </button>
                     </div>
-
-                    <!-- Dernier avis -->
                     <div class="card">
                         <div class="card-header">
                             <span class="card-title">Mon dernier avis</span>
-                            <a href="/Client/Avis" class="card-link">Mes avis →</a>
+                            <a href="/Client/ListeAvis" class="card-link">Mes avis →</a>
                         </div>
-                        <div class="rating-row">
-                            <div class="stars">
-                                <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
-                            </div>
-                            <span class="rating-hotel">Pillowfy Nice</span>
-                            <span class="rating-date">5 jan 2026</span>
-                        </div>
-                        <div class="rating-comment">"Séjour parfait, chambre avec vue mer magnifique. Personnel très attentionné et petit-déjeuner excellent. Je reviendrai sans hésitation !"</div>
-                        <div style="margin-top:10px;">
-                            <button class="btn-sm-gold">
-                                <i data-lucide="star"></i> Laisser un avis
-                            </button>
+                        <div id="dernierAvisContent">
+                            <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
+                            <div class="skeleton" style="height:40px;width:100%;border-radius:8px;"></div>
                         </div>
                     </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Dernier paiement</span>
+                            <a href="/Client/Factures" class="card-link">Factures →</a>
+                        </div>
+                        <div id="dernierPaiementContent">
+                            <div class="skeleton" style="height:14px;width:50%;margin-bottom:8px;"></div>
+                            <div class="skeleton" style="height:40px;width:100%;border-radius:8px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- HÔTELS & CHAMBRES -->
+            <div class="main-grid-wide" style="margin-top:1rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Hôtels disponibles</span>
+                        <a href="/Client/ListeHotels" class="card-link">Voir tout →</a>
+                    </div>
+                    <div id="hotelsList">
+                        <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:56px;width:100%;border-radius:10px;"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Chambres disponibles</span>
+                        <a href="/Client/NewReservation" class="card-link">Réserver →</a>
+                    </div>
+                    <div id="chambresList">
+                        <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:56px;width:100%;border-radius:10px;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1645,22 +1897,16 @@
            SESSION MANAGER
         ════════════════════════════════════════════════ */
         const SESSION = {
-            TOKEN_KEY:         'pillowfy_token',
-            REFRESH_TOKEN_KEY: 'pillowfy_refresh',
-            COOKIE_NAME:       'token',
-            LOGIN_URL:         '/Login/Index',
-            REFRESH_URL:       '/api/auth/refresh',
-            REFRESH_THRESHOLD: 5 * 60,
-            CHECK_INTERVAL:    60 * 1000,
-            WARN_BEFORE:       2 * 60,
+            TOKEN_KEY: 'pillowfy_token', REFRESH_TOKEN_KEY: 'pillowfy_refresh',
+            COOKIE_NAME: 'token', LOGIN_URL: '/Login/Index',
+            REFRESH_URL: '/api/auth/refresh', REFRESH_THRESHOLD: 5 * 60,
+            CHECK_INTERVAL: 60 * 1000, WARN_BEFORE: 2 * 60,
             CLAIMS: {
                 name:  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
                 email: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
                 role:  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
             },
-            _heartbeatTimer: null,
-            _warnShown: false,
-
+            _heartbeatTimer: null, _warnShown: false,
             getToken()        { return this._readCookie(this.COOKIE_NAME) || localStorage.getItem(this.TOKEN_KEY); },
             getRefreshToken() { return this._readCookie('refresh_token')  || localStorage.getItem(this.REFRESH_TOKEN_KEY); },
             saveToken(token, rememberMe = false) {
@@ -1669,25 +1915,20 @@
                 localStorage.setItem(this.TOKEN_KEY, token);
             },
             clearSession() {
-                localStorage.removeItem(this.TOKEN_KEY);
-                localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+                localStorage.removeItem(this.TOKEN_KEY); localStorage.removeItem(this.REFRESH_TOKEN_KEY);
                 document.cookie = `${this.COOKIE_NAME}=; Max-Age=0; path=/; SameSite=Strict`;
                 document.cookie = `refresh_token=; Max-Age=0; path=/; SameSite=Strict`;
                 if (this._heartbeatTimer) clearInterval(this._heartbeatTimer);
             },
             parseJwt(token) {
-                try { return JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); }
+                try { return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }
                 catch { return null; }
             },
-            secondsLeft(p) {
-                if (!p?.exp) return Infinity;
-                return p.exp - Math.floor(Date.now() / 1000);
-            },
+            secondsLeft(p) { if (!p?.exp) return Infinity; return p.exp - Math.floor(Date.now() / 1000); },
             async tryRefresh() {
-                const rt = this.getRefreshToken();
-                if (!rt) return false;
+                const rt = this.getRefreshToken(); if (!rt) return false;
                 try {
-                    const res  = await fetch(this.REFRESH_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({refreshToken:rt}), credentials:'include' });
+                    const res = await fetch(this.REFRESH_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({refreshToken:rt}), credentials:'include' });
                     if (!res.ok) return false;
                     const data = await res.json();
                     if (data.token) { this.saveToken(data.token); if (data.refreshToken) localStorage.setItem(this.REFRESH_TOKEN_KEY, data.refreshToken); return true; }
@@ -1695,10 +1936,8 @@
                 } catch { return false; }
             },
             async check() {
-                const token = this.getToken();
-                if (!token) { this.redirectLogin('no_token'); return false; }
-                const p = this.parseJwt(token);
-                if (!p)    { this.redirectLogin('invalid_token'); return false; }
+                const token = this.getToken(); if (!token) { this.redirectLogin('no_token'); return false; }
+                const p = this.parseJwt(token); if (!p) { this.redirectLogin('invalid_token'); return false; }
                 const left = this.secondsLeft(p);
                 if (left <= 0) { const r = await this.tryRefresh(); if (!r) { this.redirectLogin('expired'); return false; } return true; }
                 if (left < this.REFRESH_THRESHOLD) this.tryRefresh();
@@ -1708,13 +1947,11 @@
             redirectLogin(reason) {
                 this.clearSession();
                 const url = new URL(this.LOGIN_URL, window.location.origin);
-                url.searchParams.set('reason', reason);
-                url.searchParams.set('returnUrl', window.location.pathname);
+                url.searchParams.set('reason', reason); url.searchParams.set('returnUrl', window.location.pathname);
                 window.location.href = url.toString();
             },
             _showSessionWarning(minsLeft) {
-                const toast = document.getElementById('sessionWarning');
-                if (!toast) return;
+                const toast = document.getElementById('sessionWarning'); if (!toast) return;
                 toast.querySelector('#warnMins').textContent = minsLeft + ' min';
                 toast.style.display = 'flex';
                 setTimeout(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 10);
@@ -1735,7 +1972,7 @@
            DATE
         ════════════════════════════════════════════════ */
         (function () {
-            const now   = new Date();
+            const now = new Date();
             const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
             const mois  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
             document.getElementById('dateLabel').textContent =
@@ -1750,9 +1987,9 @@
 
         function statusBadge(status) {
             const map = {
-                'Confirmed': { cls:'upcoming', label:'↗ À venir'  },
-                'Cancelled': { cls:'cancelled',label:'✕ Annulé'   },
-                'Completed': { cls:'done',     label:'✓ Terminé'  },
+                'Confirmed': { cls:'upcoming', label:'↗ À venir' },
+                'Cancelled': { cls:'cancelled', label:'✕ Annulé' },
+                'Completed': { cls:'done', label:'✓ Terminé' },
             };
             const s = map[status] || { cls:'done', label: status };
             return `<div class="stay-badge ${s.cls}">${s.label}</div>`;
@@ -1762,52 +1999,56 @@
            CHARGEMENT UTILISATEUR
         ════════════════════════════════════════════════ */
         async function loadUser() {
-            const ok = await SESSION.check();
-            if (!ok) return;
-
+            const ok = await SESSION.check(); if (!ok) return;
             const token    = SESSION.getToken();
             const p        = SESSION.parseJwt(token);
             const fullName = p[SESSION.CLAIMS.name]  || '';
             const email    = p[SESSION.CLAIMS.email] || '';
             const role     = p[SESSION.CLAIMS.role]  || 'Customer';
-            const firstName= fullName.split(' ')[0]  || 'Client';
-
+            const firstName = fullName.split(' ')[0] || 'Client';
             document.getElementById('firstName').textContent     = firstName;
             document.getElementById('userName').textContent      = fullName || email;
             document.getElementById('userRole').textContent      = role;
             document.getElementById('avatarInitial').textContent = firstName.charAt(0).toUpperCase();
-
             SESSION.startHeartbeat();
             await loadDashboardData(token);
         }
 
         /* ════════════════════════════════════════════════
-           DONNÉES DASHBOARD — 3 API en parallèle
+           DONNÉES DASHBOARD
         ════════════════════════════════════════════════ */
         async function loadDashboardData(token) {
             const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-
             try {
-                const [dashRes, occRes, resaRes] = await Promise.all([
+                const [dashRes, occRes, hotelsRes, chambresRes] = await Promise.all([
                     fetch('/api/client/dashboard',        { headers, credentials:'include' }),
                     fetch('/api/client/hotels/occupancy', { headers, credentials:'include' }),
-                    fetch('/api/reservations/user',       { headers, credentials:'include' })
+                    fetch('/api/hotels',                  { headers, credentials:'include' }),
+                    fetch('/api/chambres',                { headers, credentials:'include' })
                 ]);
 
                 if (dashRes.status === 401) { SESSION.redirectLogin('unauthorized'); return; }
 
-                /* ── Stats + Fidélité ── */
                 if (dashRes.ok) {
                     const dash = await dashRes.json();
 
+                    // Stats
                     document.getElementById('statResTotal').textContent = dash.reservationsTotal ?? '—';
                     document.getElementById('statNuits').textContent    = dash.nuitsTotal        ?? '—';
                     document.getElementById('statPoints').textContent   = dash.pointsFidelite != null ? dash.pointsFidelite.toLocaleString('fr-FR') : '—';
                     document.getElementById('statTier').textContent     = dash.tier              ?? '—';
                     document.getElementById('statDepense').textContent  = dash.totalDepense      ?? '—';
-                    document.getElementById('loyaltyTier').textContent  = dash.tier              ?? '—';
-                    document.getElementById('loyaltyPts').textContent   = dash.pointsFidelite != null ? dash.pointsFidelite.toLocaleString('fr-FR') : '—';
-                    document.getElementById('loyaltyLvlFrom').textContent = dash.tier           ?? '';
+
+                    // ── FIDÉLITÉ FIX ──────────────────────────────────
+                    const tier   = dash.tier ?? 'Bronze';
+                    const points = dash.pointsFidelite ?? 0;
+
+                    const tierEl = document.getElementById('loyaltyTier');
+                    tierEl.textContent = tier;
+                    tierEl.className   = 'loyalty-tier ' + tier;
+
+                    document.getElementById('loyaltyPts').textContent     = points.toLocaleString('fr-FR');
+                    document.getElementById('loyaltyLvlFrom').textContent = tier;
                     document.getElementById('loyaltyLvlNext').textContent = dash.nextTierPts
                         ? dash.nextTierPts + ' pts pour ' + (dash.nextTierName ?? '') : 'Niveau max atteint ✓';
 
@@ -1815,25 +2056,155 @@
                         document.getElementById('loyaltyFill').style.width = (dash.loyaltyProgress ?? 0) + '%';
                     }, 300);
 
-                    /* ── Réservation active dans le banner ── */
+                    // Bloc remise disponible
+                    const remiseMax = Math.floor(points / 100) * 10;
+                    if (remiseMax > 0) {
+                        const remiseBox = document.getElementById('loyaltyRemiseBox');
+                        remiseBox.style.display = 'block';
+                        document.getElementById('loyaltyRemiseDispo').textContent = remiseMax.toLocaleString('fr-FR') + ' €';
+                        const maxPts = Math.floor(points / 100) * 100;
+                        document.getElementById('loyaltyBtnUtiliser').href = `/Client/NewReservation?points=${maxPts}`;
+                    }
+                    // ─────────────────────────────────────────────────
+
+                    // ── BANNER RÉSERVATION ACTIVE FIX ────────────────
                     if (dash.activeReservation) {
                         const r = dash.activeReservation;
                         const n = nightsCount(r.checkIn, r.checkOut);
-                        document.getElementById('resRoomName').textContent = r.chambreName;
+                        document.getElementById('resRoomName').textContent = r.chambreName + (r.hotelName ? ' · ' + r.hotelName : '');
                         document.getElementById('resDates').textContent    = 'Arrivée : ' + fmt(r.checkIn) + ' · Départ : ' + fmt(r.checkOut);
                         document.getElementById('resNights').textContent   = n;
                         document.getElementById('resGuests').textContent   = r.numberOfGuests;
                         document.getElementById('resPrice').textContent    = r.totalPrice.toLocaleString('fr-FR') + ' €';
+                        // FIX : injecter l'ID dans le href du bouton Modifier
+                        document.getElementById('btnModifier').href = `/Client/ModifierReservation?id=${r.id}`;
                         document.getElementById('reservationBanner').style.display = 'flex';
                     } else {
                         document.getElementById('reservationBanner').style.display = 'none';
                     }
+                    // ─────────────────────────────────────────────────
+
+                    // Badge sidebar
+                    const badge = document.getElementById('nbReservations');
+                    if (badge) {
+                        const nb = dash.reservationsActives ?? 0;
+                        badge.textContent   = nb;
+                        badge.style.display = nb > 0 ? '' : 'none';
+                    }
+
+                    // Historique séjours
+                    const stayList = document.getElementById('stayList');
+                    if (stayList) {
+                        const reservations = dash.dernieresReservations ?? [];
+                        const emojis = ['🏨','🌴','🏔️','🌆','🏖️'];
+                        if (!reservations.length) {
+                            stayList.innerHTML = `<div class="empty-state"><i data-lucide="calendar-x"></i><p>Aucune réservation pour le moment.</p></div>`;
+                        } else {
+                            stayList.innerHTML = reservations.map((r, i) => {
+                                const n = nightsCount(r.checkIn, r.checkOut);
+                                let displayStatus = r.status;
+                                if (r.status === 'Confirmed' && new Date(r.checkOut) <= new Date()) displayStatus = 'Completed';
+                                const thumb = r.hotelImageUrl ? `<img src="${r.hotelImageUrl}" alt="">` : emojis[i % emojis.length];
+                                return `
+                                    <div class="stay-item">
+                                        <div class="stay-thumb">${thumb}</div>
+                                        <div>
+                                            <div class="stay-hotel">${r.hotelName || r.chambreName}</div>
+                                            <div class="stay-dates">${r.chambreName} · ${fmt(r.checkIn)} – ${fmt(r.checkOut)}</div>
+                                            ${statusBadge(displayStatus)}
+                                        </div>
+                                        <div class="stay-meta">
+                                            <div class="stay-price">${r.totalPrice.toLocaleString('fr-FR')} €</div>
+                                            <div class="stay-nights">${n} nuit${n > 1 ? 's' : ''} · ${r.numberOfGuests} pers.</div>
+                                        </div>
+                                    </div>`;
+                            }).join('');
+                        }
+                        lucide.createIcons();
+                    }
+
+                    // Factures
+                    const invoiceList = document.getElementById('invoiceList');
+                    if (invoiceList) {
+                        const facturables = (dash.dernieresReservations ?? []).filter(r => r.status !== 'Cancelled').slice(0, 4);
+                        if (!facturables.length) {
+                            invoiceList.innerHTML = `<div class="empty-state"><i data-lucide="receipt"></i><p>Aucune facture disponible.</p></div>`;
+                        } else {
+                            invoiceList.innerHTML = facturables.map(r => `
+                                <div style="display:flex;align-items:center;justify-content:space-between;padding:0.8rem 0;border-bottom:1px solid rgba(15,22,33,0.05);">
+                                    <div>
+                                        <div style="font-size:0.8rem;font-weight:600;color:var(--ink);">FAC-${new Date(r.checkOut).getFullYear()}-${String(r.id).padStart(4,'0')}</div>
+                                        <div style="font-size:0.72rem;color:var(--ink-60);">${r.hotelName || r.chambreName} · ${fmt(r.checkOut)}</div>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div style="font-size:0.9rem;font-weight:700;color:var(--ink);">${r.totalPrice.toLocaleString('fr-FR')} €</div>
+                                        <button onclick="downloadInvoice(${r.id})"
+                                            style="width:28px;height:28px;border-radius:7px;background:var(--bg);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-60);transition:all .15s;"
+                                            onmouseover="this.style.background='var(--gold-lt)';this.style.color='var(--gold)'"
+                                            onmouseout="this.style.background='var(--bg)';this.style.color='var(--ink-60)'"
+                                            title="Télécharger">
+                                            <i data-lucide="download" style="width:13px;height:13px;"></i>
+                                        </button>
+                                    </div>
+                                </div>`).join('');
+                        }
+                        lucide.createIcons();
+                    }
+
+                    // Dernier avis
+                    const avisCard = document.getElementById('dernierAvisContent');
+                    if (avisCard) {
+                        if (dash.dernierAvis) {
+                            const a = dash.dernierAvis;
+                            const stars = '⭐'.repeat(Math.min(Math.max(a.note, 1), 5));
+                            const date  = new Date(a.dateAvis).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+                            avisCard.innerHTML = `
+                                <div class="rating-row">
+                                    <div class="stars">${stars}</div>
+                                    <span class="rating-hotel">${a.hotelName}</span>
+                                    <span class="rating-date">${date}</span>
+                                </div>
+                                <div class="rating-comment">"${a.commentaire}"</div>
+                                <div style="margin-top:10px;">
+                                    <a href="/Client/ListeAvis" class="btn-sm-gold"><i data-lucide="star"></i> Voir tous mes avis</a>
+                                </div>`;
+                        } else {
+                            avisCard.innerHTML = `
+                                <div class="empty-state"><i data-lucide="message-circle"></i><p>Vous n'avez pas encore laissé d'avis.</p></div>
+                                <div style="margin-top:10px;">
+                                    <a href="/Client/ListeAvis" class="btn-sm-gold"><i data-lucide="star"></i> Laisser un avis</a>
+                                </div>`;
+                        }
+                        lucide.createIcons();
+                    }
+
+                    // Dernier paiement
+                    const paiementCard = document.getElementById('dernierPaiementContent');
+                    if (paiementCard) {
+                        if (dash.dernierPaiement) {
+                            const p = dash.dernierPaiement;
+                            const date = new Date(p.datePaiement).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+                            const statutColor = p.statut === 'Confirme' ? '#16a34a' : p.statut === 'Rembourse' ? '#C0596A' : '#9A722E';
+                            const statutLabel = p.statut === 'Confirme' ? '✓ Confirmé' : p.statut === 'Rembourse' ? '↩ Remboursé' : p.statut;
+                            paiementCard.innerHTML = `
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                                    <div style="font-size:0.82rem;font-weight:600;color:var(--ink);">${p.hotelName}</div>
+                                    <span style="font-size:0.72rem;font-weight:700;color:${statutColor};background:${statutColor}18;padding:2px 9px;border-radius:100px;">${statutLabel}</span>
+                                </div>
+                                <div style="font-size:0.75rem;color:var(--ink-60);margin-bottom:6px;">${p.chambreName} · ${date}</div>
+                                <div style="font-size:1.1rem;font-weight:700;color:var(--ink);font-family:'DM Serif Display',serif;">${p.montant.toLocaleString('fr-FR')} €</div>
+                                <div style="font-size:0.72rem;color:var(--ink-60);margin-top:3px;">via ${p.methode}</div>`;
+                        } else {
+                            paiementCard.innerHTML = `<div class="empty-state"><i data-lucide="credit-card"></i><p>Aucun paiement enregistré.</p></div>`;
+                        }
+                        lucide.createIcons();
+                    }
                 }
 
-                /* ── Taux d'occupation ── */
+                // Taux d'occupation
                 const occList = document.getElementById('occupancyList');
                 if (occList) {
-                    const colors = ['gold', 'teal', 'green', 'rose'];
+                    const colors = ['gold','teal','green','rose'];
                     if (occRes.ok) {
                         const occ = await occRes.json();
                         if (!occ.length) {
@@ -1843,9 +2214,7 @@
                                 <div class="occ-item">
                                     <div class="occ-header">
                                         <div style="display:flex;align-items:center;gap:8px;">
-                                            ${o.imageUrl
-                                                ? `<img src="${o.imageUrl}" style="width:22px;height:22px;border-radius:5px;object-fit:cover;" alt="">`
-                                                : `<span style="font-size:1rem;">🏨</span>`}
+                                            ${o.imageUrl ? `<img src="${o.imageUrl}" style="width:22px;height:22px;border-radius:5px;object-fit:cover;" alt="">` : `<span style="font-size:1rem;">🏨</span>`}
                                             <span class="occ-hotel">${o.hotelName}</span>
                                         </div>
                                         <span class="occ-pct">${o.occupancyRate}%</span>
@@ -1853,110 +2222,96 @@
                                     <div class="occ-bar">
                                         <div class="occ-bar-fill ${colors[i % colors.length]}" style="width:0%;" data-width="${o.occupancyRate}%"></div>
                                     </div>
-                                </div>
-                            `).join('');
-                            setTimeout(() => {
-                                occList.querySelectorAll('.occ-bar-fill').forEach(el => { el.style.width = el.dataset.width; });
-                            }, 300);
+                                </div>`).join('');
+                            setTimeout(() => { occList.querySelectorAll('.occ-bar-fill').forEach(el => { el.style.width = el.dataset.width; }); }, 300);
                         }
-                        lucide.createIcons();
                     } else {
                         occList.innerHTML = `<div class="empty-state"><i data-lucide="wifi-off"></i><p>Données indisponibles.</p></div>`;
-                        lucide.createIcons();
                     }
+                    lucide.createIcons();
                 }
 
-                /* ── Historique des séjours ── */
-                const stayList = document.getElementById('stayList');
-                if (stayList) {
-                    if (resaRes.ok) {
-                        const reservations = await resaRes.json();
-
-                        const sorted = [...reservations].sort((a, b) => {
-                            const aFut = new Date(a.checkOut) > new Date();
-                            const bFut = new Date(b.checkOut) > new Date();
-                            if (aFut && !bFut) return -1;
-                            if (!aFut && bFut) return  1;
-                            return new Date(b.checkIn) - new Date(a.checkIn);
-                        });
-
-                        const toShow = sorted.slice(0, 5);
-                        const emojis = ['🏨', '🌴', '🏔️', '🌆', '🏖️'];
-
-                        if (!toShow.length) {
-                            stayList.innerHTML = `<div class="empty-state"><i data-lucide="calendar-x"></i><p>Aucune réservation pour le moment.</p></div>`;
-                            lucide.createIcons();
+                // Hôtels
+                const hotelsList = document.getElementById('hotelsList');
+                if (hotelsList) {
+                    if (hotelsRes.ok) {
+                        const hotels = await hotelsRes.json();
+                        if (!hotels.length) {
+                            hotelsList.innerHTML = `<div class="empty-state"><i data-lucide="building-2"></i><p>Aucun hôtel disponible.</p></div>`;
                         } else {
-                            stayList.innerHTML = toShow.map((r, i) => {
-                                const n = nightsCount(r.checkIn, r.checkOut);
-                                let displayStatus = r.status;
-                                if (r.status === 'Confirmed' && new Date(r.checkOut) <= new Date()) displayStatus = 'Completed';
-                                return `
-                                    <div class="stay-item">
-                                        <div class="stay-thumb">${emojis[i % emojis.length]}</div>
-                                        <div>
-                                            <div class="stay-hotel">${r.chambreName}</div>
-                                            <div class="stay-dates">${fmt(r.checkIn)} – ${fmt(r.checkOut)}</div>
-                                            ${statusBadge(displayStatus)}
-                                        </div>
-                                        <div class="stay-meta">
-                                            <div class="stay-price">${r.totalPrice.toLocaleString('fr-FR')} €</div>
-                                            <div class="stay-nights">${n} nuit${n > 1 ? 's' : ''} · ${r.numberOfGuests} pers.</div>
-                                        </div>
+                            hotelsList.innerHTML = hotels.slice(0, 4).map(h => `
+                                <div class="hotel-item" onclick="window.location='/Client/Hotels/${h.id}'">
+                                    <div class="hotel-thumb">
+                                        ${h.imageUrl ? `<img src="${h.imageUrl}" alt="${h.name}">` : `<span style="font-size:1.4rem;">🏨</span>`}
                                     </div>
-                                `;
-                            }).join('');
-                        }
-
-                        /* Badge sidebar */
-                        const nbActives = reservations.filter(r => r.status === 'Confirmed' && new Date(r.checkOut) > new Date()).length;
-                        const badge = document.getElementById('nbReservations');
-                        if (badge) {
-                            badge.textContent = nbActives;
-                            badge.style.display = nbActives > 0 ? '' : 'none';
-                        }
-
-                        /* ── Factures ── */
-                        const invoiceList = document.getElementById('invoiceList');
-                        if (invoiceList) {
-                            const facturables = reservations
-                                .filter(r => r.status !== 'Cancelled')
-                                .sort((a, b) => new Date(b.checkOut) - new Date(a.checkOut))
-                                .slice(0, 4);
-
-                            if (!facturables.length) {
-                                invoiceList.innerHTML = `<div class="empty-state"><i data-lucide="receipt"></i><p>Aucune facture disponible.</p></div>`;
-                                lucide.createIcons();
-                            } else {
-                                invoiceList.innerHTML = facturables.map((r) => `
-                                    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.8rem 0;border-bottom:1px solid rgba(15,22,33,0.05);">
-                                        <div>
-                                            <div style="font-size:0.8rem;font-weight:600;color:var(--ink);">FAC-${new Date(r.checkOut).getFullYear()}-${String(r.id).padStart(4,'0')}</div>
-                                            <div style="font-size:0.72rem;color:var(--ink-60);">${r.chambreName} · ${fmt(r.checkOut)}</div>
+                                    <div class="hotel-info">
+                                        <div class="hotel-name">${h.name}</div>
+                                        <div class="hotel-location">
+                                            <i data-lucide="map-pin" style="width:11px;height:11px;"></i>
+                                            ${h.city}, ${h.country}
                                         </div>
-                                        <div style="display:flex;align-items:center;gap:10px;">
-                                            <div style="font-size:0.9rem;font-weight:700;color:var(--ink);">${r.totalPrice.toLocaleString('fr-FR')} €</div>
-                                            <button style="width:28px;height:28px;border-radius:7px;background:var(--bg);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-60);transition:all .15s;"
-                                                onmouseover="this.style.background='var(--gold-lt)';this.style.color='var(--gold)'"
-                                                onmouseout="this.style.background='var(--bg)';this.style.color='var(--ink-60)'"
-                                                title="Télécharger">
-                                                <i data-lucide="download" style="width:13px;height:13px;"></i>
-                                            </button>
-                                        </div>
+                                        ${h.rating ? `<div class="hotel-rating">${'⭐'.repeat(Math.round(h.rating))} <span style="font-size:0.7rem;color:var(--ink-60);">${h.rating.toFixed(1)}</span></div>` : ''}
                                     </div>
-                                `).join('');
-                                lucide.createIcons();
-                            }
+                                    <div class="hotel-action"><i data-lucide="chevron-right"></i></div>
+                                </div>`).join('');
                         }
                     } else {
-                        stayList.innerHTML = `<div class="empty-state"><i data-lucide="wifi-off"></i><p>Impossible de charger les séjours.</p></div>`;
-                        lucide.createIcons();
+                        hotelsList.innerHTML = `<div class="empty-state"><i data-lucide="wifi-off"></i><p>Données indisponibles.</p></div>`;
                     }
+                    lucide.createIcons();
+                }
+
+                // Chambres
+                const chambresList = document.getElementById('chambresList');
+                if (chambresList) {
+                    if (chambresRes.ok) {
+                        const chambres = await chambresRes.json();
+                        if (!chambres.length) {
+                            chambresList.innerHTML = `<div class="empty-state"><i data-lucide="bed-double"></i><p>Aucune chambre disponible.</p></div>`;
+                        } else {
+                            chambresList.innerHTML = chambres.slice(0, 4).map(c => `
+                                <div class="chambre-item" onclick="window.location='/Client/NewReservation?chambreId=${c.id}'">
+                                    <div class="chambre-thumb">
+                                        ${c.imageUrl ? `<img src="${c.imageUrl}" alt="${c.name}">` : `<span style="font-size:1.2rem;">🛏️</span>`}
+                                    </div>
+                                    <div class="chambre-info">
+                                        <div class="chambre-name">${c.name}</div>
+                                        <div class="chambre-hotel"><i data-lucide="building-2" style="width:11px;height:11px;"></i> ${c.hotelName ?? '—'}</div>
+                                        <div class="chambre-capacity"><i data-lucide="users" style="width:11px;height:11px;"></i> ${c.capacity} pers. max</div>
+                                    </div>
+                                    <div class="chambre-price">
+                                        <div class="chambre-price-val">${c.pricePerNight.toLocaleString('fr-FR')} €</div>
+                                        <div class="chambre-price-lbl">/ nuit</div>
+                                        <button class="chambre-book-btn" onclick="event.stopPropagation();window.location='/Client/NewReservation?chambreId=${c.id}'">
+                                            <i data-lucide="plus"></i> Réserver
+                                        </button>
+                                    </div>
+                                </div>`).join('');
+                        }
+                    } else {
+                        chambresList.innerHTML = `<div class="empty-state"><i data-lucide="wifi-off"></i><p>Données indisponibles.</p></div>`;
+                    }
+                    lucide.createIcons();
                 }
 
             } catch (e) {
                 console.error('[Dashboard] Erreur :', e);
             }
+        }
+
+        /* ════════════════════════════════════════════════
+           TÉLÉCHARGEMENT FACTURE
+        ════════════════════════════════════════════════ */
+        async function downloadInvoice(reservationId) {
+            const token = SESSION.getToken();
+            const res   = await fetch(`/api/reservations/${reservationId}/invoice`,
+                { headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include' });
+            if (!res.ok) { alert('Facture indisponible.'); return; }
+            const blob = await res.blob();
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href = url; a.download = `facture-${reservationId}.pdf`; a.click();
+            URL.revokeObjectURL(url);
         }
 
         /* ════════════════════════════════════════════════
@@ -1977,8 +2332,7 @@
         }
 
         function extendSession() {
-            SESSION._warnShown = false;
-            SESSION.tryRefresh();
+            SESSION._warnShown = false; SESSION.tryRefresh();
             const toast = document.getElementById('sessionWarning');
             if (toast) { toast.style.opacity = '0'; setTimeout(() => toast.style.display = 'none', 300); }
         }

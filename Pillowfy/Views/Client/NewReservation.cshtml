@@ -1,0 +1,984 @@
+﻿@{
+    ViewData["Title"] = "Nouvelle réservation";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Nouvelle réservation</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: rgba(201,169,110,0.12);
+            --gold-mid: rgba(201,169,110,0.25);
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+            .page-header a {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.82rem;
+                color: var(--ink-60);
+                text-decoration: none;
+                margin-bottom: 1rem;
+                transition: color .15s;
+            }
+
+                .page-header a:hover {
+                    color: var(--gold);
+                }
+
+                .page-header a svg {
+                    width: 14px;
+                    height: 14px;
+                }
+
+            .page-header h1 {
+                font-family: 'DM Serif Display', serif;
+                font-size: 1.6rem;
+                color: var(--ink);
+            }
+
+                .page-header h1 em {
+                    color: var(--gold);
+                    font-style: italic;
+                }
+
+            .page-header p {
+                font-size: 0.83rem;
+                color: var(--ink-60);
+                margin-top: 4px;
+            }
+
+        .reservation-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ÉTAPE 1 — Sélection hôtel */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.6rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--ink);
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .hotel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .hotel-select-item {
+            border: 2px solid rgba(201,169,110,0.15);
+            border-radius: 14px;
+            padding: 0.9rem;
+            cursor: pointer;
+            transition: all .18s;
+            background: var(--bg);
+        }
+
+            .hotel-select-item:hover {
+                border-color: rgba(201,169,110,0.4);
+                background: var(--gold-lt);
+            }
+
+            .hotel-select-item.selected {
+                border-color: var(--gold);
+                background: var(--gold-lt);
+            }
+
+        .hotel-select-thumb {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: var(--gold-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+            .hotel-select-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .hotel-select-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .hotel-select-loc {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+            .hotel-select-loc svg {
+                width: 10px;
+                height: 10px;
+            }
+
+        /* ÉTAPE 2 — Sélection chambre */
+        .chambre-select-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.9rem;
+            border: 2px solid rgba(201,169,110,0.15);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all .18s;
+            margin-bottom: 8px;
+            background: var(--bg);
+        }
+
+            .chambre-select-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .chambre-select-item:hover {
+                border-color: rgba(201,169,110,0.4);
+                background: var(--gold-lt);
+            }
+
+            .chambre-select-item.selected {
+                border-color: var(--gold);
+                background: var(--gold-lt);
+            }
+
+        .chambre-select-thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            background: var(--teal-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+            .chambre-select-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .chambre-select-info {
+            flex: 1;
+        }
+
+        .chambre-select-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .chambre-select-cap {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .chambre-select-cap svg {
+                width: 11px;
+                height: 11px;
+            }
+
+        .chambre-select-price {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .chambre-select-price-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .chambre-select-price-lbl {
+            font-size: 0.68rem;
+            color: var(--ink-60);
+        }
+
+        /* ÉTAPE 3 — Dates & Guests */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+            .form-group.full {
+                grid-column: 1 / -1;
+            }
+
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ink-60);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            padding: 0.7rem 1rem;
+            border: 1.5px solid rgba(15,22,33,0.12);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--ink);
+            background: var(--white);
+            transition: border-color .15s;
+            outline: none;
+        }
+
+            .form-input:focus {
+                border-color: var(--gold);
+                box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+            }
+
+        /* RÉCAPITULATIF */
+        .recap-card {
+            background: var(--ink);
+            border-radius: var(--radius-xl);
+            padding: 1.6rem;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .recap-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--white);
+            margin-bottom: 1.2rem;
+        }
+
+        .recap-hotel-img {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+            .recap-hotel-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .recap-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+            .recap-line:last-of-type {
+                border-bottom: none;
+            }
+
+        .recap-lbl {
+            font-size: 0.76rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .recap-val {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .recap-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .recap-total-lbl {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .recap-total-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--gold);
+        }
+
+        .btn-reserve {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 14px;
+            background: var(--gold);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all .18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1.2rem;
+        }
+
+            .btn-reserve:hover {
+                background: #b8924f;
+                transform: translateY(-1px);
+                box-shadow: 0 8px 24px rgba(201,169,110,0.3);
+            }
+
+            .btn-reserve:disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .btn-reserve svg {
+                width: 16px;
+                height: 16px;
+            }
+
+        /* PAIEMENT */
+        .methode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .methode-item {
+            border: 2px solid rgba(15,22,33,0.10);
+            border-radius: 12px;
+            padding: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            text-align: center;
+            background: var(--bg);
+        }
+
+            .methode-item:hover {
+                border-color: rgba(201,169,110,0.35);
+                background: var(--gold-lt);
+            }
+
+            .methode-item.selected {
+                border-color: var(--gold);
+                background: var(--gold-lt);
+            }
+
+        .methode-ic {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        .methode-lbl {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* ALERT */
+        .alert {
+            padding: 0.9rem 1.1rem;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-success {
+            background: rgba(34,197,94,0.10);
+            border: 1px solid rgba(34,197,94,0.25);
+            color: #16a34a;
+        }
+
+        .alert-error {
+            background: var(--rose-lt);
+            border: 1px solid rgba(192,89,106,0.25);
+            color: var(--rose);
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(15,22,33,0.06) 25%, rgba(15,22,33,0.10) 50%, rgba(15,22,33,0.06) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            gap: 6px;
+        }
+
+            .empty-state svg {
+                width: 28px;
+                height: 28px;
+                color: var(--ink-30);
+            }
+
+            .empty-state p {
+                font-size: 0.8rem;
+                color: var(--ink-60);
+                text-align: center;
+            }
+
+        @@keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @@media (max-width: 900px) {
+            .reservation-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .recap-card {
+                position: static;
+            }
+
+            .hotel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .methode-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @@media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <a href="/Client/Dashboard"><i data-lucide="arrow-left"></i> Retour au dashboard</a>
+        <h1>Nouvelle <em>réservation</em></h1>
+        <p>Choisissez votre hôtel, votre chambre et vos dates.</p>
+    </div>
+
+    <div id="alertSuccess" class="alert alert-success">✓ Réservation confirmée ! Vous allez être redirigé...</div>
+    <div id="alertError" class="alert alert-error"></div>
+
+    <div class="reservation-layout">
+        <div>
+            <!-- ÉTAPE 1 — Hôtel -->
+            <div class="card">
+                <div class="card-title"><span class="step-badge">1</span> Choisissez un hôtel</div>
+                <div class="hotel-grid" id="hotelGrid">
+                    <div class="skeleton" style="height:130px;border-radius:14px;"></div>
+                    <div class="skeleton" style="height:130px;border-radius:14px;"></div>
+                    <div class="skeleton" style="height:130px;border-radius:14px;"></div>
+                    <div class="skeleton" style="height:130px;border-radius:14px;"></div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 2 — Chambre -->
+            <div class="card" id="stepChambre" style="opacity:0.4;pointer-events:none;">
+                <div class="card-title"><span class="step-badge">2</span> Choisissez une chambre</div>
+                <div id="chambreGrid">
+                    <div class="empty-state"><i data-lucide="building-2"></i><p>Sélectionnez d'abord un hôtel.</p></div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 3 — Dates -->
+            <div class="card" id="stepDates" style="opacity:0.4;pointer-events:none;">
+                <div class="card-title"><span class="step-badge">3</span> Dates & voyageurs</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Date d'arrivée</label>
+                        <input type="date" class="form-input" id="checkIn" onchange="updateRecap()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date de départ</label>
+                        <input type="date" class="form-input" id="checkOut" onchange="updateRecap()">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Nombre de voyageurs</label>
+                        <input type="number" class="form-input" id="guests" min="1" max="10" value="2" onchange="updateRecap()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 4 — Paiement -->
+            <div class="card" id="stepPaiement" style="opacity:0.4;pointer-events:none;">
+                <div class="card-title"><span class="step-badge">4</span> Mode de paiement</div>
+                <div class="methode-grid">
+                    <div class="methode-item selected" onclick="selectMethode('CarteBancaire', this)">
+                        <div class="methode-ic">💳</div>
+                        <div class="methode-lbl">Carte bancaire</div>
+                    </div>
+                    <div class="methode-item" onclick="selectMethode('Especes', this)">
+                        <div class="methode-ic">💵</div>
+                        <div class="methode-lbl">Espèces</div>
+                    </div>
+                    <div class="methode-item" onclick="selectMethode('Virement', this)">
+                        <div class="methode-ic">🏦</div>
+                        <div class="methode-lbl">Virement</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RÉCAPITULATIF -->
+        <div>
+            <div class="recap-card">
+                <div class="recap-title">Récapitulatif</div>
+                <div class="recap-hotel-img" id="recapImg">🏨</div>
+                <div class="recap-line">
+                    <span class="recap-lbl">Hôtel</span>
+                    <span class="recap-val" id="recapHotel">—</span>
+                </div>
+                <div class="recap-line">
+                    <span class="recap-lbl">Chambre</span>
+                    <span class="recap-val" id="recapChambre">—</span>
+                </div>
+                <div class="recap-line">
+                    <span class="recap-lbl">Arrivée</span>
+                    <span class="recap-val" id="recapCheckIn">—</span>
+                </div>
+                <div class="recap-line">
+                    <span class="recap-lbl">Départ</span>
+                    <span class="recap-val" id="recapCheckOut">—</span>
+                </div>
+                <div class="recap-line">
+                    <span class="recap-lbl">Nuits</span>
+                    <span class="recap-val" id="recapNuits">—</span>
+                </div>
+                <div class="recap-line">
+                    <span class="recap-lbl">Voyageurs</span>
+                    <span class="recap-val" id="recapGuests">—</span>
+                </div>
+                <div class="recap-line">
+                    <span class="recap-lbl">Prix / nuit</span>
+                    <span class="recap-val" id="recapPrixNuit">—</span>
+                </div>
+                <div class="recap-total">
+                    <span class="recap-total-lbl">Total</span>
+                    <span class="recap-total-val" id="recapTotal">—</span>
+                </div>
+                <button class="btn-reserve" id="btnReserver" disabled onclick="submitReservation()">
+                    <i data-lucide="calendar-check"></i> Confirmer la réservation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ════════════════════════════════════════════════
+           SESSION
+        ════════════════════════════════════════════════ */
+        const SESSION = {
+            TOKEN_KEY: 'pillowfy_token', COOKIE_NAME: 'token', LOGIN_URL: '/Login/Index',
+            getToken() { return this._readCookie(this.COOKIE_NAME) || localStorage.getItem(this.TOKEN_KEY); },
+            parseJwt(token) {
+                try { return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }
+                catch { return null; }
+            },
+            _readCookie(name) {
+                const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return m ? decodeURIComponent(m[2]) : null;
+            }
+        };
+
+        /* ════════════════════════════════════════════════
+           STATE
+        ════════════════════════════════════════════════ */
+        let selectedHotel   = null;
+        let selectedChambre = null;
+        let selectedMethode = 'CarteBancaire';
+        let allChambres     = [];
+
+        const fmt = date => new Date(date).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+
+        /* ════════════════════════════════════════════════
+           INIT
+        ════════════════════════════════════════════════ */
+        async function init() {
+            if (typeof lucide === 'undefined') { setTimeout(init, 50); return; }
+            lucide.createIcons();
+
+            const token = SESSION.getToken();
+            if (!token) { window.location.href = SESSION.LOGIN_URL; return; }
+
+            // Pré-sélection chambre depuis URL
+            const params    = new URLSearchParams(window.location.search);
+            const preSelect = params.get('chambreId');
+
+            // Dates min
+            const today    = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            document.getElementById('checkIn').min  = today;
+            document.getElementById('checkIn').value = today;
+            document.getElementById('checkOut').min  = tomorrow;
+            document.getElementById('checkOut').value = tomorrow;
+
+            await loadHotels(token, preSelect);
+        }
+
+        /* ════════════════════════════════════════════════
+           CHARGEMENT HÔTELS
+        ════════════════════════════════════════════════ */
+        async function loadHotels(token, preSelectChambreId = null) {
+            const res = await fetch('/api/hotels', {
+                headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include'
+            });
+            if (!res.ok) { showError('Impossible de charger les hôtels.'); return; }
+
+            const hotels   = await res.json();
+            const grid     = document.getElementById('hotelGrid');
+
+            if (!hotels.length) {
+                grid.innerHTML = `<div class="empty-state"><i data-lucide="building-2"></i><p>Aucun hôtel disponible.</p></div>`;
+                lucide.createIcons(); return;
+            }
+
+            // Charger toutes les chambres une seule fois
+            const chambresRes = await fetch('/api/chambres', {
+            headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include'
+        });
+            if (chambresRes.ok) allChambres = await chambresRes.json();
+
+            grid.innerHTML = hotels.map(h => `
+                <div class="hotel-select-item" id="hotel-${h.id}" onclick="selectHotel(${h.id}, '${h.name}', '${h.imageUrl ?? ''}')">
+                    <div class="hotel-select-thumb">
+                        ${h.imageUrl ? `<img src="${h.imageUrl}" alt="${h.name}">` : '🏨'}
+                    </div>
+                    <div class="hotel-select-name">${h.name}</div>
+                    <div class="hotel-select-loc"><i data-lucide="map-pin"></i> ${h.city}, ${h.country}</div>
+                </div>`).join('');
+            lucide.createIcons();
+
+            // Pré-sélection depuis URL
+            if (preSelectChambreId) {
+                const chambre = allChambres.find(c => c.id == preSelectChambreId);
+                if (chambre) {
+                    const hotel = hotels.find(h => h.id === chambre.hotelId);
+                    if (hotel) {
+                        selectHotel(hotel.id, hotel.name, hotel.imageUrl ?? '');
+                        setTimeout(() => selectChambre(chambre.id, chambre.name, chambre.pricePerNight, chambre.imageUrl ?? ''), 100);
+                    }
+                }
+            }
+        }
+
+        /* ════════════════════════════════════════════════
+           SÉLECTION HÔTEL
+        ════════════════════════════════════════════════ */
+        function selectHotel(id, name, imageUrl) {
+            selectedHotel   = { id, name, imageUrl };
+            selectedChambre = null;
+
+            document.querySelectorAll('.hotel-select-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById('hotel-' + id)?.classList.add('selected');
+
+            // Filtrer chambres de cet hôtel
+            const chambres = allChambres.filter(c => String(c.hotelId) === String(id));
+
+
+
+            renderChambres(chambres);
+
+            document.getElementById('stepChambre').style.opacity      = '1';
+            document.getElementById('stepChambre').style.pointerEvents = 'auto';
+            document.getElementById('stepDates').style.opacity         = '0.4';
+            document.getElementById('stepDates').style.pointerEvents   = 'none';
+            document.getElementById('stepPaiement').style.opacity      = '0.4';
+            document.getElementById('stepPaiement').style.pointerEvents = 'none';
+
+            document.getElementById('recapHotel').textContent = name;
+            const recapImg = document.getElementById('recapImg');
+            recapImg.innerHTML = imageUrl ? `<img src="${imageUrl}" alt="${name}">` : '🏨';
+
+            updateRecap();
+        }
+
+        /* ════════════════════════════════════════════════
+           RENDU CHAMBRES
+        ════════════════════════════════════════════════ */
+        function renderChambres(chambres) {
+            const grid = document.getElementById('chambreGrid');
+            if (!chambres.length) {
+                grid.innerHTML = `<div class="empty-state"><i data-lucide="bed-double"></i><p>Aucune chambre disponible pour cet hôtel.</p></div>`;
+                lucide.createIcons(); return;
+            }
+            grid.innerHTML = chambres.map(c => `
+                <div class="chambre-select-item" id="chambre-${c.id}"
+                     onclick="selectChambre(${c.id}, '${c.name.replace(/'/g,"\\'")}', ${c.pricePerNight}, '${c.imageUrl ?? ''}')">
+                    <div class="chambre-select-thumb">
+                        ${c.imageUrl ? `<img src="${c.imageUrl}" alt="${c.name}">` : '🛏️'}
+                    </div>
+                    <div class="chambre-select-info">
+                        <div class="chambre-select-name">${c.name}</div>
+                        <div class="chambre-select-cap"><i data-lucide="user-round-pen"></i> ${c.capacity} pers. max</div>
+                    </div>
+                    <div class="chambre-select-price">
+                        <div class="chambre-select-price-val">${c.pricePerNight.toLocaleString('fr-FR')} €</div>
+                        <div class="chambre-select-price-lbl">/ nuit</div>
+                    </div>
+                </div>`).join('');
+            lucide.createIcons();
+        }
+
+        /* ════════════════════════════════════════════════
+           SÉLECTION CHAMBRE
+        ════════════════════════════════════════════════ */
+        function selectChambre(id, name, pricePerNight, imageUrl) {
+            selectedChambre = { id, name, pricePerNight, imageUrl };
+
+            document.querySelectorAll('.chambre-select-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById('chambre-' + id)?.classList.add('selected');
+
+            document.getElementById('stepDates').style.opacity      = '1';
+            document.getElementById('stepDates').style.pointerEvents = 'auto';
+            document.getElementById('stepPaiement').style.opacity      = '1';
+            document.getElementById('stepPaiement').style.pointerEvents = 'auto';
+
+            document.getElementById('recapChambre').textContent  = name;
+            document.getElementById('recapPrixNuit').textContent = pricePerNight.toLocaleString('fr-FR') + ' €';
+            updateRecap();
+        }
+
+        /* ════════════════════════════════════════════════
+           MÉTHODE DE PAIEMENT
+        ════════════════════════════════════════════════ */
+        function selectMethode(methode, el) {
+            selectedMethode = methode;
+            document.querySelectorAll('.methode-item').forEach(m => m.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        /* ════════════════════════════════════════════════
+           MISE À JOUR RÉCAP
+        ════════════════════════════════════════════════ */
+        function updateRecap() {
+            const ci = document.getElementById('checkIn').value;
+            const co = document.getElementById('checkOut').value;
+            const g  = parseInt(document.getElementById('guests').value) || 1;
+
+            document.getElementById('recapCheckIn').textContent  = ci ? fmt(ci) : '—';
+            document.getElementById('recapCheckOut').textContent = co ? fmt(co) : '—';
+            document.getElementById('recapGuests').textContent   = g;
+
+            if (ci && co && selectedChambre) {
+                const nights = Math.max(1, Math.round((new Date(co) - new Date(ci)) / 86400000));
+                const total  = nights * selectedChambre.pricePerNight;
+                document.getElementById('recapNuits').textContent = nights;
+                document.getElementById('recapTotal').textContent = total.toLocaleString('fr-FR') + ' €';
+                document.getElementById('btnReserver').disabled   = false;
+            } else {
+                document.getElementById('recapNuits').textContent = '—';
+                document.getElementById('recapTotal').textContent = '—';
+                document.getElementById('btnReserver').disabled   = true;
+            }
+        }
+
+        /* ════════════════════════════════════════════════
+           SOUMISSION RÉSERVATION + PAIEMENT
+        ════════════════════════════════════════════════ */
+        async function submitReservation() {
+            const token = SESSION.getToken();
+            if (!token || !selectedChambre) return;
+
+            const ci = document.getElementById('checkIn').value;
+            const co = document.getElementById('checkOut').value;
+            const g  = parseInt(document.getElementById('guests').value) || 1;
+
+            hideAlerts();
+            const btn = document.getElementById('btnReserver');
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader"></i> Traitement...';
+            lucide.createIcons();
+
+            try {
+                // 1. Créer la réservation
+                const resaRes = await fetch('/api/reservations', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        chambreId:      selectedChambre.id,
+                        checkIn:        ci,
+                        checkOut:       co,
+                        numberOfGuests: g
+                    })
+                });
+
+                if (!resaRes.ok) {
+                    const err = await resaRes.json().catch(() => ({}));
+                    throw new Error(err.message || 'Erreur lors de la réservation.');
+                }
+
+                const resa = await resaRes.json();
+
+                // 2. Payer la réservation
+                       // Mapping string → valeur enum C#
+        const METHODE_MAP = {
+            'CarteBancaire': 0,
+            'Especes':       1,
+            'Virement':      2
+        };
+
+        // 2. Payer la réservation
+        const payRes = await fetch('/api/paiement', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                reservationId: resa.id,
+                methode:       METHODE_MAP[selectedMethode] ?? 0
+            })
+        });
+
+        if (!payRes.ok) {
+            const err = await payRes.json().catch(() => ({}));
+            console.error('Erreur paiement détail:', err);
+            throw new Error(err.message || err.title || JSON.stringify(err));
+        }
+
+                // Succès
+                showSuccess();
+                setTimeout(() => { window.location.href = '/Client/Reservations'; }, 2500);
+
+            } catch (e) {
+                showError(e.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="calendar-check"></i> Confirmer la réservation';
+                lucide.createIcons();
+            }
+        }
+
+        function showSuccess() {
+            const el = document.getElementById('alertSuccess');
+            el.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function showError(msg) {
+            const el = document.getElementById('alertError');
+            el.textContent = '✕ ' + msg;
+            el.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function hideAlerts() {
+            document.getElementById('alertSuccess').style.display = 'none';
+            document.getElementById('alertError').style.display   = 'none';
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else { init(); }
+    </script>
+</body>
+</html>

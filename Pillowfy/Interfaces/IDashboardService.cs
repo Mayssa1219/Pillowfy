@@ -5,5 +5,6 @@ namespace Pillowfy.Interfaces
     {
         Task<DashboardDto> GetClientDashboardAsync(string userId);
         Task<List<OccupancyDto>> GetOccupancyAsync();
+
     }
 }
