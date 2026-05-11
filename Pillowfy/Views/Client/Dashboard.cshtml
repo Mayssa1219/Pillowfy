@@ -2373,18 +2373,22 @@
         })();
 
         /* ════════════════════════════════════════════════
-           INIT
-        ════════════════════════════════════════════════ */
-        function init() {
-            if (typeof lucide === 'undefined') { setTimeout(init, 50); return; }
-            lucide.createIcons();
-            loadUser();
-        }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
+                INIT
+             ════════════════════════════════════════════════ */
+             function init() {
+                 if (typeof lucide === 'undefined') { setTimeout(init, 50); return; }
+                 lucide.createIcons();
+                 loadUser();
+             }
+             if (document.readyState === 'loading') {
+                 document.addEventListener('DOMContentLoaded', init);
+             } else {
+                 init();
+             }
     </script>
+
+    @* ── CHATBOT POPUP ── *@
+    @await Html.PartialAsync("_Chatbot")
+
 </body>
 </html>

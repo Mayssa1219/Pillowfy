@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using Pillowfy.DTOs.Auth;
 using Pillowfy.Services;
+using System.Security.Claims;
 
 namespace Pillowfy.Controllers
 {
@@ -29,8 +32,30 @@ namespace Pillowfy.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
             var result = await _authService.LoginAsync(model);
-            return result.Success ? Ok(result) : Unauthorized(result);
+            if (!result.Success)
+                return Unauthorized(result);
+
+            // ✅ Créer le cookie MVC pour que [Authorize] fonctionne
+            var claims = new List<Claim>
+    {
+        new(ClaimTypes.NameIdentifier, result.User!.Id),
+        new(ClaimTypes.Name,           $"{result.User.FirstName} {result.User.LastName}"),
+        new(ClaimTypes.Email,          result.User.Email!),
+        new(ClaimTypes.Role,           result.Role!)
+    };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24) }
+            );
+
+            return Ok(result);
         }
 
         [HttpPost("assign-role")]

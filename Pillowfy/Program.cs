@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,21 @@ builder.Services.AddEndpointsApiExplorer();
 // Swagger + JWT
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Pillowfy API",
+        Version = "v1"
+    });
+
+    // ✅ Fix : résout les conflits de schémas avec Identity + vos modèles
+    c.CustomSchemaIds(type => type.FullName);
+
+    // ✅ Fix : ignore les actions sans route explicite
+    c.DocInclusionPredicate((docName, apiDesc) =>
+    {
+        return apiDesc.RelativePath != null;
+    });
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -48,6 +64,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+
 // DB
 builder.Services.AddDbContext<PilloWfyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -68,30 +85,36 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // ===================== JWT =====================
 
 var jwtKey = builder.Configuration["Jwt:Key"];
-
 if (string.IsNullOrEmpty(jwtKey))
     throw new Exception("Jwt:Key is missing in appsettings.json");
 
-var key = Encoding.ASCII.GetBytes(jwtKey);
-
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    // ✅ Cookie = scheme par défaut pour les controllers MVC (Owner, Client)
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.LoginPath = "/Login/Index";       // redirige vers login si non connecté
+    options.AccessDeniedPath = "/Login/Index";
+    options.ExpireTimeSpan = TimeSpan.FromHours(24);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 })
 .AddJwtBearer(options =>
 {
+    // ✅ JWT = scheme pour les appels fetch('/api/...')
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey)),
         ValidateIssuer = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
-
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Jwt:Audience"],
-
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
@@ -114,12 +137,15 @@ builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IChambreService, ChambreService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-// Ajouter avec les autres services
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IChambreFactory, ChambreFactory>();
 builder.Services.AddScoped<PaiementService>();
 builder.Services.AddScoped<AvisService>();
 builder.Services.AddScoped<StatistiqueService>();
+builder.Services.AddScoped<OwnerDashboardService>();
+builder.Services.AddScoped<OwnerPaiementService>();
+builder.Services.AddScoped<OwnerRevenusService>();
+builder.Services.AddScoped<OwnerAvisService>();
 
 // Cookie Auth pour les vues Admin (en plus du JWT)
 builder.Services.ConfigureApplicationCookie(options =>
@@ -170,34 +196,69 @@ async Task SeedDatabase(IServiceProvider serviceProvider)
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
+    // 1. Migrations
     await context.Database.MigrateAsync();
 
+    // 2. Créer les rôles
     var roles = new[] { "Admin", "Owner", "Customer" };
-
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
         {
-            await roleManager.CreateAsync(new IdentityRole(role));
+            var result = await roleManager.CreateAsync(new IdentityRole(role));
+            if (!result.Succeeded)
+                throw new Exception($"Erreur création rôle '{role}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
         }
     }
 
-    var adminEmail = "admin@pillowfy.com";
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    // 3. Seed Admin
+    await SeedUser(userManager,
+        email: "admin@pillowfy.com",
+        firstName: "Admin",
+        lastName: "Pillowfy",
+        phone: "1234567890",
+        password: "Admin@123456",
+        role: "Admin"
+    );
 
-    if (adminUser == null)
+    // 4. Seed Owner (optionnel)
+    await SeedUser(userManager,
+        email: "mayssa@pillowfy.com",
+        firstName: "Jrad",
+        lastName: "Mayssa",
+        phone: "0987654321",
+        password: "Owner@123456",
+        role: "Owner"
+    );
+}
+
+// ✅ Méthode réutilisable pour chaque user seed
+async Task SeedUser(
+    UserManager<ApplicationUser> userManager,
+    string email, string firstName, string lastName,
+    string phone, string password, string role)
+{
+    var existingUser = await userManager.FindByEmailAsync(email);
+    if (existingUser != null) return; // Déjà seedé
+
+    var user = new ApplicationUser
     {
-        adminUser = new ApplicationUser
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            FirstName = "Admin",
-            LastName = "Pillowfy",
-            PhoneNumber = "1234567890",
-            EmailConfirmed = true
-        };
+        UserName = email,
+        Email = email,
+        FirstName = firstName,
+        LastName = lastName,
+        PhoneNumber = phone,
+        EmailConfirmed = true,
+        IsActive = true
+    };
 
-        await userManager.CreateAsync(adminUser, "Admin@123456");
-        await userManager.AddToRoleAsync(adminUser, "Admin");
-    }
+    var createResult = await userManager.CreateAsync(user, password);
+    if (!createResult.Succeeded)
+        throw new Exception($"Erreur création user '{email}': {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+
+    var roleResult = await userManager.AddToRoleAsync(user, role);
+    if (!roleResult.Succeeded)
+        throw new Exception($"Erreur assignation rôle '{role}' à '{email}': {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+
+
 }

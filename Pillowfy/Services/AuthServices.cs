@@ -24,7 +24,7 @@ namespace Pillowfy.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
-        private readonly IEmailService _emailService; // ← nouveau
+        private readonly IEmailService _emailService; 
 
         public AuthService(
             UserManager<ApplicationUser> userManager,
@@ -144,28 +144,21 @@ namespace Pillowfy.Services
             try
             {
                 var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                    return new AuthResponseDto
-                    {
-                        Success = false,
-                        Message = "Utilisateur non trouvé."
-                    };
 
-                var roleExists = await _roleManager.RoleExistsAsync(role);
-                if (!roleExists)
-                    return new AuthResponseDto
-                    {
-                        Success = false,
-                        Message = $"Le rôle '{role}' n'existe pas."
-                    };
+                if (user == null)
+                    return Fail("Utilisateur non trouvé.");
+
+                if (!await _roleManager.RoleExistsAsync(role))
+                    return Fail($"Le rôle '{role}' n'existe pas.");
+
+                // vérifier si déjà dans le rôle
+                if (await _userManager.IsInRoleAsync(user, role))
+                    return Fail("Utilisateur possède déjà ce rôle.");
 
                 var result = await _userManager.AddToRoleAsync(user, role);
+
                 if (!result.Succeeded)
-                    return new AuthResponseDto
-                    {
-                        Success = false,
-                        Message = string.Join(", ", result.Errors.Select(e => e.Description))
-                    };
+                    return Fail(string.Join(", ", result.Errors.Select(e => e.Description)));
 
                 return new AuthResponseDto
                 {
@@ -175,11 +168,7 @@ namespace Pillowfy.Services
             }
             catch (Exception ex)
             {
-                return new AuthResponseDto
-                {
-                    Success = false,
-                    Message = $"Erreur lors de l'assignation du rôle: {ex.Message}"
-                };
+                return Fail(ex.Message);
             }
         }
 

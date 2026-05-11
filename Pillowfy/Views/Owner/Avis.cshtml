@@ -1,0 +1,1177 @@
+﻿@{
+    ViewData["Title"] = "Avis clients";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Avis clients</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: rgba(201,169,110,0.12);
+            --gold-mid: rgba(201,169,110,0.25);
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --sidebar: #0B1120;
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            padding: 1.6rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            border-right: 1px solid rgba(255,255,255,0.04);
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+            .sidebar-brand img {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+
+        .owner-badge-side {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0 0.8rem 1.5rem;
+            background: rgba(26,107,107,0.18);
+            border: 1px solid rgba(26,107,107,0.35);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #4ECDC4;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 0 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 1.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.42);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            transition: all .16s;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.82);
+            }
+
+            .nav-item.active {
+                background: rgba(26,107,107,0.18);
+                color: #4ECDC4;
+            }
+
+        .nav-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(26,107,107,0.25);
+        }
+
+        .nav-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: #4ECDC4;
+            color: var(--ink);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 100px;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 0.55rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#1A6B6B,#4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.9rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.68rem;
+            color: #4ECDC4;
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.32);
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-logout:hover {
+                border-color: rgba(220,38,38,0.4);
+                color: #f87171;
+                background: rgba(220,38,38,0.06);
+            }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(26,107,107,0.4) transparent;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 240px;
+            padding: 2rem 2.4rem;
+            flex: 1;
+            max-width: calc(100vw - 240px);
+        }
+
+            .main > * {
+                animation: fadeUp 0.38s ease both;
+            }
+
+                .main > *:nth-child(2) {
+                    animation-delay: .05s;
+                }
+
+                .main > *:nth-child(3) {
+                    animation-delay: .10s;
+                }
+
+                .main > *:nth-child(4) {
+                    animation-delay: .14s;
+                }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .topbar-left h1 {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+        }
+
+            .topbar-left h1 em {
+                font-style: italic;
+                color: #1A6B6B;
+            }
+
+        .topbar-left p {
+            font-size: 0.83rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.58rem 1.2rem;
+            border-radius: 100px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all .18s;
+        }
+
+        .btn-danger {
+            background: rgba(220,38,38,0.10);
+            color: #f87171;
+            border: 1px solid rgba(220,38,38,0.25);
+        }
+
+            .btn-danger:hover {
+                background: rgba(220,38,38,0.20);
+            }
+
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.3rem 1.4rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all .2s;
+        }
+
+            .stat-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-2px);
+            }
+
+        .stat-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+            .stat-icon-wrap svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .stat-icon-wrap.gold {
+                background: var(--gold-lt);
+                color: #9A722E;
+            }
+
+            .stat-icon-wrap.teal {
+                background: var(--teal-lt);
+                color: var(--teal);
+            }
+
+            .stat-icon-wrap.green {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .stat-icon-wrap.rose {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+        .stat-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--ink-30);
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        /* CARD */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.98rem;
+            color: var(--ink);
+        }
+
+        /* FILTERS */
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.38rem 1rem;
+            border-radius: 100px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid rgba(15,22,33,0.12);
+            background: transparent;
+            color: var(--ink-60);
+            transition: all .16s;
+        }
+
+            .filter-btn:hover {
+                border-color: var(--teal);
+                color: var(--teal);
+            }
+
+            .filter-btn.active {
+                background: var(--teal);
+                color: var(--white);
+                border-color: var(--teal);
+            }
+
+        .search-input {
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            border: 1px solid rgba(15,22,33,0.12);
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.82rem;
+            color: var(--ink);
+            background: var(--bg);
+            outline: none;
+            transition: border-color .16s;
+            width: 200px;
+        }
+
+            .search-input:focus {
+                border-color: var(--teal);
+            }
+
+        /* TWO COL */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* NOTE GLOBALE */
+        .note-big {
+            font-family: 'DM Serif Display',serif;
+            font-size: 3.5rem;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .stars-row {
+            display: flex;
+            gap: 3px;
+            margin: 6px 0;
+        }
+
+        .star {
+            font-size: 1.1rem;
+        }
+
+            .star.full {
+                color: #f59e0b;
+            }
+
+            .star.empty {
+                color: rgba(15,22,33,0.15);
+            }
+
+        .note-sub {
+            font-size: 0.78rem;
+            color: var(--ink-60);
+        }
+
+        /* DISTRIBUTION BARRES */
+        .distrib-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 7px;
+        }
+
+            .distrib-row:last-child {
+                margin-bottom: 0;
+            }
+
+        .distrib-label {
+            font-size: 0.78rem;
+            color: var(--ink-60);
+            width: 32px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .distrib-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(15,22,33,0.07);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .distrib-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg,#f59e0b,#fcd34d);
+            transition: width 0.8s ease;
+        }
+
+        .distrib-count {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            width: 24px;
+            flex-shrink: 0;
+        }
+
+        /* AVIS CARD */
+        .avis-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.2rem 1.4rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 10px;
+            transition: all .2s;
+        }
+
+            .avis-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-1px);
+            }
+
+            .avis-card:last-child {
+                margin-bottom: 0;
+            }
+
+        .avis-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .avis-client-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .avis-hotel {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .avis-date {
+            font-size: 0.72rem;
+            color: var(--ink-30);
+            flex-shrink: 0;
+        }
+
+        .avis-stars {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 8px;
+        }
+
+        .avis-star {
+            font-size: 0.85rem;
+        }
+
+        .avis-commentaire {
+            font-size: 0.84rem;
+            color: var(--ink-60);
+            line-height: 1.55;
+            font-style: italic;
+            border-left: 3px solid var(--gold-mid);
+            padding-left: 10px;
+        }
+
+        .avis-note-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--gold-lt);
+            color: #9A722E;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 100px;
+            flex-shrink: 0;
+        }
+
+        /* NOTE COLORS */
+        .note-5 {
+            border-left-color: #16a34a;
+        }
+
+        .note-4 {
+            border-left-color: #22c55e;
+        }
+
+        .note-3 {
+            border-left-color: #f59e0b;
+        }
+
+        .note-2 {
+            border-left-color: #f97316;
+        }
+
+        .note-1 {
+            border-left-color: var(--rose);
+        }
+
+        /* SKELETON / EMPTY */
+        .skeleton {
+            background: linear-gradient(90deg,rgba(15,22,33,0.06) 25%,rgba(15,22,33,0.10) 50%,rgba(15,22,33,0.06) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1rem;
+            gap: 8px;
+        }
+
+            .empty-state svg {
+                width: 32px;
+                height: 32px;
+                color: var(--ink-30);
+            }
+
+            .empty-state p {
+                font-size: 0.82rem;
+                color: var(--ink-60);
+                text-align: center;
+            }
+
+        /* PAGINATION */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.2rem;
+        }
+
+        .page-info {
+            font-size: 0.78rem;
+            color: var(--ink-60);
+        }
+
+        .page-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1px solid rgba(15,22,33,0.10);
+            background: transparent;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.78rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-60);
+            transition: all .14s;
+        }
+
+            .page-btn:hover {
+                background: var(--teal-lt);
+                color: var(--teal);
+                border-color: var(--teal);
+            }
+
+            .page-btn.active {
+                background: var(--teal);
+                color: var(--white);
+                border-color: var(--teal);
+            }
+
+            .page-btn:disabled {
+                opacity: 0.4;
+                cursor: default;
+            }
+
+        @@keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@media (max-width:1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width:900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.4rem;
+                max-width: 100vw;
+            }
+        }
+
+        @@media (max-width:600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/" class="sidebar-brand">
+                <img src="/Images/logo.png" alt="Pillowfy">
+                <span class="sidebar-brand-name">Pillowfy</span>
+            </a>
+            <div class="owner-badge-side">
+                <i data-lucide="building-2" style="width:12px;height:12px;"></i> Espace Propriétaire
+            </div>
+            <div class="sidebar-content">
+                <div>
+                    <div class="sidebar-section-label">Navigation</div>
+                    <nav class="sidebar-nav">
+                        <a href="/Owner/Dashboard" class="nav-item"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard</a>
+                        <a href="/Owner/Hotels" class="nav-item"><span class="nav-icon"><i data-lucide="building-2"></i></span> Mes hôtels</a>
+                        <a href="/Owner/Chambres" class="nav-item"><span class="nav-icon"><i data-lucide="bed-double"></i></span> Chambres</a>
+                        <a href="/Owner/Reservations" class="nav-item"><span class="nav-icon"><i data-lucide="calendar-check"></i></span> Réservations<span class="nav-badge" id="nbReservations" style="display:none;"></span></a>
+                        <a href="/Owner/Paiements" class="nav-item"><span class="nav-icon"><i data-lucide="credit-card"></i></span> Paiements</a>
+                        <a href="/Owner/Revenus" class="nav-item"><span class="nav-icon"><i data-lucide="trending-up"></i></span> Revenus</a>
+                        <a href="/Owner/Avis" class="nav-item active"><span class="nav-icon"><i data-lucide="star"></i></span> Avis clients</a>
+                    </nav>
+                </div>
+                <div>
+                    <div class="sidebar-section-label">Compte</div>
+                    <nav class="sidebar-nav">
+                        <a href="/Owner/Profil" class="nav-item"><span class="nav-icon"><i data-lucide="user"></i></span> Mon profil</a>
+                        <a href="/Owner/Parametres" class="nav-item"><span class="nav-icon"><i data-lucide="settings"></i></span> Paramètres</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <div>
+                        <div class="user-name" id="userName">Chargement...</div>
+                        <div class="user-role">Propriétaire</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()"><i data-lucide="log-out"></i> Déconnexion</button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Avis <em>clients</em></h1>
+                    <p id="dateLabel"></p>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-danger" onclick="logout()"><i data-lucide="log-out"></i> Déconnexion</button>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-wrap gold"><i data-lucide="star"></i></div>
+                    <div>
+                        <div class="stat-label">Note moyenne</div>
+                        <div class="stat-value" id="statMoyenne"><span class="skeleton" style="width:40px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Sur 5 étoiles</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap teal"><i data-lucide="message-square"></i></div>
+                    <div>
+                        <div class="stat-label">Total avis</div>
+                        <div class="stat-value" id="statTotal"><span class="skeleton" style="width:40px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Tous hôtels confondus</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap green"><i data-lucide="thumbs-up"></i></div>
+                    <div>
+                        <div class="stat-label">Avis positifs</div>
+                        <div class="stat-value" id="statPositifs"><span class="skeleton" style="width:40px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Note ≥ 4 étoiles</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap rose"><i data-lucide="thumbs-down"></i></div>
+                    <div>
+                        <div class="stat-label">Avis négatifs</div>
+                        <div class="stat-value" id="statNegatifs"><span class="skeleton" style="width:40px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Note ≤ 2 étoiles</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTE GLOBALE + DISTRIBUTION -->
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Note globale</span></div>
+                    <div style="display:flex;align-items:center;gap:2rem;" id="noteGlobaleWrap">
+                        <div class="skeleton" style="width:80px;height:60px;border-radius:8px;"></div>
+                        <div style="flex:1;">
+                            <div class="skeleton" style="height:8px;width:100%;margin-bottom:8px;border-radius:100px;"></div>
+                            <div class="skeleton" style="height:8px;width:100%;margin-bottom:8px;border-radius:100px;"></div>
+                            <div class="skeleton" style="height:8px;width:100%;border-radius:100px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Par hôtel</span></div>
+                    <div id="parHotelWrap">
+                        <div class="skeleton" style="height:16px;width:60%;margin-bottom:10px;"></div>
+                        <div class="skeleton" style="height:16px;width:80%;margin-bottom:10px;"></div>
+                        <div class="skeleton" style="height:16px;width:50%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LISTE DES AVIS -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Tous les avis</span>
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                        <input class="search-input" type="text" id="searchInput" placeholder="Rechercher…" oninput="filterAvis()">
+                        <div class="filters">
+                            <button class="filter-btn active" onclick="setFilter(this,0)">Tous</button>
+                            <button class="filter-btn" onclick="setFilter(this,5)">★ 5</button>
+                            <button class="filter-btn" onclick="setFilter(this,4)">★ 4</button>
+                            <button class="filter-btn" onclick="setFilter(this,3)">★ 3</button>
+                            <button class="filter-btn" onclick="setFilter(this,2)">★ ≤ 2</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="avisListWrap">
+                    <div class="skeleton" style="height:100px;border-radius:16px;margin-bottom:10px;"></div>
+                    <div class="skeleton" style="height:100px;border-radius:16px;margin-bottom:10px;"></div>
+                    <div class="skeleton" style="height:100px;border-radius:16px;"></div>
+                </div>
+                <div class="pagination" id="paginationWrap" style="display:none;">
+                    <span class="page-info" id="pageInfo"></span>
+                    <div class="page-btns" id="pageBtns"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        /* ── SESSION ── */
+        const SESSION = {
+            TOKEN_KEY:'pillowfy_token', REFRESH_TOKEN_KEY:'pillowfy_refresh',
+            COOKIE_NAME:'token', LOGIN_URL:'/Login/Index',
+            REFRESH_URL:'/api/auth/refresh', REFRESH_THRESHOLD:5*60, CHECK_INTERVAL:60*1000,
+            CLAIMS:{ name:'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name', email:'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress', role:'http://schemas.microsoft.com/ws/2008/06/identity/claims/role' },
+            _heartbeatTimer:null,
+            getToken()        { return this._readCookie(this.COOKIE_NAME)||localStorage.getItem(this.TOKEN_KEY); },
+            getRefreshToken() { return this._readCookie('refresh_token') ||localStorage.getItem(this.REFRESH_TOKEN_KEY); },
+            saveToken(t)      { localStorage.setItem(this.TOKEN_KEY,t); },
+            clearSession()    { localStorage.removeItem(this.TOKEN_KEY); localStorage.removeItem(this.REFRESH_TOKEN_KEY); document.cookie=`${this.COOKIE_NAME}=; Max-Age=0; path=/; SameSite=Strict`; document.cookie=`refresh_token=; Max-Age=0; path=/; SameSite=Strict`; if(this._heartbeatTimer) clearInterval(this._heartbeatTimer); },
+            parseJwt(t)       { try{ return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }catch{ return null; } },
+            secondsLeft(p)    { if(!p?.exp) return Infinity; return p.exp - Math.floor(Date.now()/1000); },
+            async tryRefresh(){ const rt=this.getRefreshToken(); if(!rt) return false; try{ const r=await fetch(this.REFRESH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refreshToken:rt}),credentials:'include'}); if(!r.ok) return false; const d=await r.json(); if(d.token){this.saveToken(d.token);return true;} return false; }catch{ return false; } },
+            async check()     { const t=this.getToken(); if(!t){this.redirectLogin('no_token');return false;} const p=this.parseJwt(t); if(!p){this.redirectLogin('invalid_token');return false;} if(p[this.CLAIMS.role]!=='Owner'){this.redirectLogin('unauthorized_role');return false;} const l=this.secondsLeft(p); if(l<=0){const r=await this.tryRefresh();if(!r){this.redirectLogin('expired');return false;}return true;} if(l<this.REFRESH_THRESHOLD) this.tryRefresh(); return true; },
+            redirectLogin(r)  { this.clearSession(); const u=new URL(this.LOGIN_URL,window.location.origin); u.searchParams.set('reason',r); u.searchParams.set('returnUrl',window.location.pathname); window.location.href=u.toString(); },
+            startHeartbeat()  { if(this._heartbeatTimer) clearInterval(this._heartbeatTimer); this._heartbeatTimer=setInterval(()=>this.check(),this.CHECK_INTERVAL); document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible') this.check();}); },
+            _readCookie(n)    { const m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m?decodeURIComponent(m[2]):null; }
+        };
+
+        /* ── DATE ── */
+        (function(){
+            const d=new Date();
+            const j=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+            const m=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            document.getElementById('dateLabel').textContent=j[d.getDay()]+' '+d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear();
+        })();
+
+        /* ── STATE ── */
+        let allAvis = [];
+        let currentFilter = 0;
+        let currentPage   = 1;
+        const PAGE_SIZE   = 8;
+
+        /* ── HELPERS ── */
+        const fmt = d => new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+
+        function starsHtml(note, size='1rem') {
+            let s = '';
+            for (let i=1; i<=5; i++) s += `<span class="star ${i<=note?'full':'empty'}" style="font-size:${size};">${i<=note?'★':'☆'}</span>`;
+            return s;
+        }
+
+        function noteClass(n) {
+            if (n >= 5) return 'note-5';
+            if (n >= 4) return 'note-4';
+            if (n >= 3) return 'note-3';
+            if (n >= 2) return 'note-2';
+            return 'note-1';
+        }
+
+        /* ── FILTER ── */
+        function setFilter(btn, note) {
+            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = note;
+            currentPage   = 1;
+            renderAvis();
+        }
+
+        function filterAvis() { currentPage = 1; renderAvis(); }
+
+        function getFiltered() {
+            const q = (document.getElementById('searchInput')?.value||'').toLowerCase();
+            return allAvis.filter(a => {
+                const matchNote   = currentFilter === 0 ? true : currentFilter === 2 ? a.note <= 2 : a.note === currentFilter;
+                const matchSearch = !q || (a.clientName||'').toLowerCase().includes(q) || (a.hotelName||'').toLowerCase().includes(q) || (a.commentaire||'').toLowerCase().includes(q);
+                return matchNote && matchSearch;
+            });
+        }
+
+        /* ── RENDER AVIS ── */
+        function renderAvis() {
+            const data  = getFiltered();
+            const total = data.length;
+            const pages = Math.ceil(total/PAGE_SIZE)||1;
+            const start = (currentPage-1)*PAGE_SIZE;
+            const slice = data.slice(start, start+PAGE_SIZE);
+            const wrap  = document.getElementById('avisListWrap');
+
+            if (!slice.length) {
+                wrap.innerHTML = `<div class="empty-state"><i data-lucide="star"></i><p>Aucun avis trouvé.</p></div>`;
+                lucide.createIcons();
+                document.getElementById('paginationWrap').style.display='none';
+                return;
+            }
+
+            wrap.innerHTML = slice.map(a => `
+                <div class="avis-card">
+                    <div class="avis-header">
+                        <div>
+                            <div class="avis-client-name">${a.clientName||'Client anonyme'}</div>
+                            <div class="avis-hotel"><i data-lucide="building-2" style="width:11px;height:11px;display:inline;"></i> ${a.hotelName||'—'}</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                            <span class="avis-note-badge">★ ${a.note}/5</span>
+                            <span class="avis-date">${fmt(a.dateAvis)}</span>
+                        </div>
+                    </div>
+                    <div class="avis-stars">${starsHtml(a.note,'0.9rem')}</div>
+                    <div class="avis-commentaire ${noteClass(a.note)}">${a.commentaire}</div>
+                </div>`).join('');
+
+            lucide.createIcons();
+
+            /* pagination */
+            const pagWrap = document.getElementById('paginationWrap');
+            pagWrap.style.display = 'flex';
+            document.getElementById('pageInfo').textContent = `${start+1}–${Math.min(start+PAGE_SIZE,total)} sur ${total} avis`;
+            const btns = document.getElementById('pageBtns');
+            btns.innerHTML = '';
+            const addBtn = (label,page,disabled,active) => {
+                const b=document.createElement('button'); b.className='page-btn'+(active?' active':''); b.textContent=label; b.disabled=disabled;
+                if(!disabled) b.onclick=()=>{currentPage=page;renderAvis();};
+                btns.appendChild(b);
+            };
+            addBtn('‹',currentPage-1,currentPage===1,false);
+            for(let i=1;i<=pages;i++) addBtn(i,i,false,i===currentPage);
+            addBtn('›',currentPage+1,currentPage===pages,false);
+        }
+
+        /* ── RENDER NOTE GLOBALE ── */
+        function renderNoteGlobale(avis) {
+            const wrap = document.getElementById('noteGlobaleWrap');
+            if (!avis.length) { wrap.innerHTML = `<div class="empty-state"><i data-lucide="star"></i><p>Aucun avis.</p></div>`; lucide.createIcons(); return; }
+            const moyenne = avis.reduce((s,a)=>s+a.note,0)/avis.length;
+            const distrib = [5,4,3,2,1].map(n => ({ note:n, count: avis.filter(a=>a.note===n).length }));
+            const max = Math.max(...distrib.map(d=>d.count),1);
+
+            wrap.innerHTML = `
+                <div style="text-align:center;">
+                    <div class="note-big">${moyenne.toFixed(1)}</div>
+                    <div class="stars-row">${starsHtml(Math.round(moyenne),'1rem')}</div>
+                    <div class="note-sub">${avis.length} avis</div>
+                </div>
+                <div style="flex:1;">
+                    ${distrib.map(d=>`
+                        <div class="distrib-row">
+                            <div class="distrib-label">${d.note}★</div>
+                            <div class="distrib-bar"><div class="distrib-fill" data-w="${Math.round(d.count/max*100)}" style="width:0%;"></div></div>
+                            <div class="distrib-count">${d.count}</div>
+                        </div>`).join('')}
+                </div>`;
+
+            setTimeout(()=>{ wrap.querySelectorAll('.distrib-fill').forEach(el=>{ el.style.width=el.dataset.w+'%'; }); }, 300);
+        }
+
+        /* ── RENDER PAR HÔTEL ── */
+        function renderParHotel(avis) {
+            const wrap = document.getElementById('parHotelWrap');
+            if (!avis.length) { wrap.innerHTML = `<div class="empty-state"><i data-lucide="building-2"></i><p>Aucun avis.</p></div>`; lucide.createIcons(); return; }
+
+            const hotels = {};
+            avis.forEach(a => {
+                if (!hotels[a.hotelName]) hotels[a.hotelName] = [];
+                hotels[a.hotelName].push(a.note);
+            });
+
+            const rows = Object.entries(hotels).map(([name, notes]) => ({
+                name, count: notes.length,
+                avg: notes.reduce((s,n)=>s+n,0)/notes.length
+            })).sort((a,b)=>b.avg-a.avg);
+
+            wrap.innerHTML = rows.map(h => `
+                <div style="padding:.7rem 0;border-bottom:1px solid rgba(15,22,33,0.05);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <span style="font-size:.84rem;font-weight:600;color:var(--ink);">${h.name}</span>
+                        <span style="font-size:.82rem;font-weight:700;color:var(--gold);">★ ${h.avg.toFixed(1)}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;">
+                        <div class="stars-row">${starsHtml(Math.round(h.avg),'0.75rem')}</div>
+                        <span style="font-size:.7rem;color:var(--ink-60);">${h.count} avis</span>
+                    </div>
+                </div>`).join('') + '<div style="border-bottom:none;"></div>';
+        }
+
+        /* ── LOAD ── */
+        async function loadUser() {
+            const ok = await SESSION.check(); if (!ok) return;
+            const token = SESSION.getToken();
+            const p = SESSION.parseJwt(token);
+            const fullName = p[SESSION.CLAIMS.name]||'';
+            const firstName = fullName.split(' ')[0]||'Propriétaire';
+            document.getElementById('userName').textContent      = fullName||p[SESSION.CLAIMS.email];
+            document.getElementById('avatarInitial').textContent = firstName.charAt(0).toUpperCase();
+            SESSION.startHeartbeat();
+            await loadAvis(token);
+        }
+
+        async function loadAvis(token) {
+            const headers = { 'Authorization':'Bearer '+token, 'Content-Type':'application/json' };
+            try {
+                const res = await fetch('/api/owner/avis', { headers, credentials:'include' });
+                if (res.status===401) { SESSION.redirectLogin('unauthorized'); return; }
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+
+                allAvis = Array.isArray(data) ? data : (data.avis || []);
+
+                /* Stats */
+                const total    = allAvis.length;
+                const positifs = allAvis.filter(a=>a.note>=4).length;
+                const negatifs = allAvis.filter(a=>a.note<=2).length;
+                const moyenne  = total ? allAvis.reduce((s,a)=>s+a.note,0)/total : 0;
+                document.getElementById('statMoyenne').textContent  = total ? moyenne.toFixed(1)+' / 5' : '—';
+                document.getElementById('statTotal').textContent    = total;
+                document.getElementById('statPositifs').textContent = positifs;
+                document.getElementById('statNegatifs').textContent = negatifs;
+
+                renderNoteGlobale(allAvis);
+                renderParHotel(allAvis);
+                renderAvis();
+
+            } catch(e) {
+                console.error('[Avis]', e);
+                document.getElementById('avisListWrap').innerHTML =
+                    `<div class="empty-state"><i data-lucide="wifi-off"></i><p>Impossible de charger les avis.</p></div>`;
+                lucide.createIcons();
+            }
+        }
+
+        async function logout() {
+            try { const t=SESSION.getToken(); if(t) await fetch('/api/auth/logout',{method:'POST',headers:{'Authorization':'Bearer '+t,'Content-Type':'application/json'},credentials:'include'}).catch(()=>{}); }
+            finally { SESSION.clearSession(); window.location.href=SESSION.LOGIN_URL; }
+        }
+
+        function init() {
+            if (typeof lucide === 'undefined') { setTimeout(init,50); return; }
+            lucide.createIcons();
+            loadUser();
+        }
+        document.readyState==='loading' ? document.addEventListener('DOMContentLoaded',init) : init();
+    </script>
+</body>
+</html>

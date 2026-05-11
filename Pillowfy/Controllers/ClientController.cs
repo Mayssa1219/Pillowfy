@@ -1,55 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Pillowfy.Controllers
 {
+    [Authorize(Roles = "Customer")]
+    [Route("Client")]
     public class ClientController : Controller
     {
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
+        [Route("Dashboard")]
+        public IActionResult Dashboard() => View();
 
-        public IActionResult Profil()
-        {
-            return View();
-        }
-        public IActionResult NewReservation()
-        {
-            return View();
-        }
-    
-        public IActionResult ListeHotels()
-        {
-            return View();
-        }
-        public IActionResult ListeReservations()
-        {
-            return View();
-        }
-        public IActionResult ListeAvis()
-        {
-            return View();
-        }
-        public IActionResult ModifierReservation()
-        {
-            return View();
-        }
-        public IActionResult Fidelite()
-        {
-            return View();
-        }
-        public IActionResult Factures()
-        {
-            return View();
-        }
-        public IActionResult Services()
-        {
-            return View();
-        }
-        public IActionResult Sejours()
-        {
-            return View();
-        }
+        [Route("Profil")]
+        public IActionResult Profil() => View();
 
+        [Route("ListeHotels")]
+        public IActionResult ListeHotels() => View("ListeHotels");
+
+        [Route("ListeReservations")]
+        public IActionResult ListeReservations() => View("ListeReservations");
+
+        [Route("NewReservation")]
+        public IActionResult NewReservation([FromQuery] int? chambreId, [FromQuery] int? points) => View();
+
+        
+        [Route("ModifierReservation")]
+        public IActionResult ModifierReservation([FromQuery] int id) => View();
+
+        [Route("ListeAvis")]
+        public IActionResult ListeAvis() => View("ListeAvis");
+
+        [Route("Fidelite")]
+        public IActionResult Fidelite() => View();
+
+        [Route("Factures")]
+        public IActionResult Factures() => View();
+
+        [Route("Services")]
+        public IActionResult Services() => View();
+
+        [Route("Sejours")]
+        public IActionResult Sejours() => View();
     }
 }

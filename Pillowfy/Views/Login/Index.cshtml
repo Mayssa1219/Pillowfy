@@ -620,14 +620,15 @@
             btn.disabled = true;
 
                    try {
-            const res = await fetch('/api/Auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: emailEl.value,
-                    password: pwdEl.value
-                })
-            });
+                   const res = await fetch('/api/Auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',          // ✅ essentiel pour les cookies
+            body: JSON.stringify({
+                email: emailEl.value,
+                password: pwdEl.value
+            })
+        });
 
             const data = await res.json();
 

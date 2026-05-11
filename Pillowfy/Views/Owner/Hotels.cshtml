@@ -1,0 +1,1149 @@
+﻿@{
+    ViewData["Title"] = "Mes Hôtels";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Mes Hôtels</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --sidebar: #0B1120;
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            padding: 1.6rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            border-right: 1px solid rgba(255,255,255,0.04);
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+            .sidebar-brand img {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+
+        .owner-badge-side {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0 0.8rem 1.5rem;
+            background: rgba(26,107,107,0.18);
+            border: 1px solid rgba(26,107,107,0.35);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #4ECDC4;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 0 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 1.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.42);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            transition: all .16s;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.82);
+            }
+
+            .nav-item.active {
+                background: rgba(26,107,107,0.18);
+                color: #4ECDC4;
+            }
+
+        .nav-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(26,107,107,0.25);
+        }
+
+        .nav-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 0.55rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#1A6B6B,#4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.9rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.68rem;
+            color: #4ECDC4;
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.32);
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-logout:hover {
+                border-color: rgba(220,38,38,0.4);
+                color: #f87171;
+                background: rgba(220,38,38,0.06);
+            }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(26,107,107,0.4) transparent;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 2rem 2.4rem;
+            flex: 1;
+            max-width: calc(100vw - 240px);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .topbar-left h1 {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+        }
+
+            .topbar-left h1 em {
+                font-style: italic;
+                color: var(--teal);
+            }
+
+        .topbar-left p {
+            font-size: 0.83rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.58rem 1.2rem;
+            border-radius: 100px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all .18s;
+        }
+
+            .btn svg {
+                width: 14px;
+                height: 14px;
+            }
+
+        .btn-teal {
+            background: var(--teal);
+            color: var(--white);
+        }
+
+            .btn-teal:hover {
+                background: #155858;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(26,107,107,0.4);
+            }
+
+        .btn-danger {
+            background: var(--rose-lt);
+            color: var(--rose);
+            border: 1px solid rgba(192,89,106,0.25);
+        }
+
+            .btn-danger:hover {
+                background: rgba(192,89,106,0.2);
+            }
+
+        .btn-ghost {
+            background: rgba(15,22,33,0.06);
+            color: var(--ink-60);
+            border: 1px solid rgba(15,22,33,0.10);
+        }
+
+            .btn-ghost:hover {
+                background: rgba(15,22,33,0.10);
+                color: var(--ink);
+            }
+
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .hotel-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all .2s;
+        }
+
+            .hotel-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-3px);
+                border-color: rgba(26,107,107,0.2);
+            }
+
+        .hotel-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: var(--teal-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+            .hotel-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .hotel-body {
+            padding: 1.2rem;
+        }
+
+        .hotel-name {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.05rem;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .hotel-loc {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.78rem;
+            color: var(--ink-60);
+            margin-bottom: 10px;
+        }
+
+            .hotel-loc svg {
+                width: 12px;
+                height: 12px;
+            }
+
+        .hotel-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .hotel-stat {
+            flex: 1;
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+            text-align: center;
+        }
+
+        .hotel-stat-val {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+        .hotel-stat-lbl {
+            font-size: 0.65rem;
+            color: var(--ink-60);
+            margin-top: 1px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .hotel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            gap: 12px;
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            border: 2px dashed rgba(26,107,107,0.2);
+        }
+
+            .empty-state svg {
+                width: 48px;
+                height: 48px;
+                color: rgba(26,107,107,0.3);
+            }
+
+            .empty-state h3 {
+                font-family: 'DM Serif Display',serif;
+                font-size: 1.1rem;
+                color: var(--ink);
+            }
+
+            .empty-state p {
+                font-size: 0.84rem;
+                color: var(--ink-60);
+                text-align: center;
+            }
+
+        .skeleton {
+            background: linear-gradient(90deg,rgba(15,22,33,0.06) 25%,rgba(15,22,33,0.10) 50%,rgba(15,22,33,0.06) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+
+        .skeleton-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid rgba(201,169,110,0.10);
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,22,33,0.55);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .modal-backdrop.open {
+                display: flex;
+            }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 64px rgba(15,22,33,0.2);
+            animation: slideUp .25s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.2rem;
+            color: var(--ink);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ink-30);
+            font-size: 1.3rem;
+            line-height: 1;
+            padding: 4px;
+            transition: color .15s;
+        }
+
+            .modal-close:hover {
+                color: var(--ink);
+            }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+            .form-group.full {
+                grid-column: 1/-1;
+            }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--ink-60);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.72rem 1rem;
+            background: var(--bg);
+            border: 1.5px solid rgba(15,22,33,0.10);
+            border-radius: 12px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.9rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+            .form-input:focus {
+                border-color: var(--teal);
+                box-shadow: 0 0 0 3px rgba(26,107,107,0.12);
+            }
+
+            .form-input::placeholder {
+                color: var(--ink-30);
+            }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ── IMAGE UPLOAD ── */
+        .image-upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 2px dashed rgba(26,107,107,0.3);
+            border-radius: 12px;
+            padding: 1.4rem 1rem;
+            cursor: pointer;
+            background: var(--bg);
+            transition: all .2s;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            min-height: 90px;
+        }
+
+            .image-upload-zone:hover {
+                border-color: var(--teal);
+                background: var(--teal-lt);
+            }
+
+        .upload-icon {
+            color: var(--teal);
+            width: 26px;
+            height: 26px;
+        }
+
+        .upload-text {
+            font-size: 0.82rem;
+            color: var(--ink-60);
+            text-align: center;
+        }
+
+        .upload-hint {
+            font-size: 0.7rem;
+            color: var(--ink-30);
+        }
+
+        #imagePreview {
+            display: none;
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+            #imagePreview.visible {
+                display: block;
+            }
+
+        .image-upload-zone.has-image .upload-icon,
+        .image-upload-zone.has-image .upload-text,
+        .image-upload-zone.has-image .upload-hint {
+            display: none;
+        }
+
+        .image-change-btn {
+            display: none;
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(15,22,33,0.65);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+        }
+
+        .image-upload-zone.has-image .image-change-btn {
+            display: block;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 999;
+            background: var(--ink);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 0.9rem 1.2rem;
+            font-size: 0.86rem;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-md);
+        }
+
+            .toast.show {
+                display: flex;
+                animation: fadeUp .25s ease;
+            }
+
+            .toast.success {
+                border-left: 3px solid #22c55e;
+            }
+
+            .toast.error {
+                border-left: 3px solid var(--rose);
+            }
+
+        @@keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@media (max-width:900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.4rem;
+                max-width: 100vw;
+            }
+        }
+
+        @@media (max-width:600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hotels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/" class="sidebar-brand">
+                <img src="/Images/logo.png" alt="Pillowfy">
+                <span class="sidebar-brand-name">Pillowfy</span>
+            </a>
+            <div class="owner-badge-side">
+                <i data-lucide="building-2" style="width:12px;height:12px;"></i> Espace Propriétaire
+            </div>
+            <div class="sidebar-content">
+                <div>
+                    <div class="sidebar-section-label">Navigation</div>
+                    <nav class="sidebar-nav">
+                        <a href="/Owner/Dashboard" class="nav-item"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard</a>
+                        <a href="/Owner/Hotels" class="nav-item active"><span class="nav-icon"><i data-lucide="building-2"></i></span> Mes hôtels</a>
+                        <a href="/Owner/Chambres" class="nav-item"><span class="nav-icon"><i data-lucide="bed-double"></i></span> Chambres</a>
+                        <a href="/Owner/Reservations" class="nav-item"><span class="nav-icon"><i data-lucide="calendar-check"></i></span> Réservations<span class="nav-badge" id="nbReservations" style="display:none;"></span></a>
+                        <a href="/Owner/Paiements" class="nav-item"><span class="nav-icon"><i data-lucide="credit-card"></i></span> Paiements</a>
+                        <a href="/Owner/Revenus" class="nav-item"><span class="nav-icon"><i data-lucide="trending-up"></i></span> Revenus</a>
+                        <a href="/Owner/Avis" class="nav-item"><span class="nav-icon"><i data-lucide="star"></i></span> Avis clients</a>
+                    </nav>
+                </div>
+                <div>
+                    <div class="sidebar-section-label">Compte</div>
+                    <nav class="sidebar-nav">
+                        <a href="/Owner/Profil" class="nav-item"><span class="nav-icon"><i data-lucide="user"></i></span> Mon profil</a>
+                        <a href="/Owner/Parametres" class="nav-item"><span class="nav-icon"><i data-lucide="settings"></i></span> Paramètres</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <div>
+                        <div class="user-name" id="userName">Chargement...</div>
+                        <div class="user-role">Propriétaire</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()"><i data-lucide="log-out"></i> Déconnexion</button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Mes <em>hôtels</em></h1>
+                    <p id="hotelCount">Chargement...</p>
+                </div>
+                <button class="btn btn-teal" onclick="openModal()">
+                    <i data-lucide="plus"></i> Ajouter un hôtel
+                </button>
+            </div>
+            <div id="hotelsGrid" class="hotels-grid">
+                <div class="skeleton-card">
+                    <div class="skeleton" style="height:160px;width:100%;border-radius:0;"></div>
+                    <div style="padding:1.2rem;">
+                        <div class="skeleton" style="height:18px;width:60%;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="height:13px;width:40%;margin-bottom:16px;"></div>
+                        <div class="skeleton" style="height:50px;width:100%;border-radius:10px;"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton" style="height:160px;width:100%;border-radius:0;"></div>
+                    <div style="padding:1.2rem;">
+                        <div class="skeleton" style="height:18px;width:60%;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="height:13px;width:40%;margin-bottom:16px;"></div>
+                        <div class="skeleton" style="height:50px;width:100%;border-radius:10px;"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton" style="height:160px;width:100%;border-radius:0;"></div>
+                    <div style="padding:1.2rem;">
+                        <div class="skeleton" style="height:18px;width:60%;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="height:13px;width:40%;margin-bottom:16px;"></div>
+                        <div class="skeleton" style="height:50px;width:100%;border-radius:10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Ajouter un hôtel</div>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="form-grid">
+                <input type="hidden" id="hotelId">
+                <div class="form-group full">
+                    <label class="form-label">Nom de l'hôtel *</label>
+                    <input class="form-input" id="hotelName" placeholder="Ex : Hôtel Bellevue">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ville *</label>
+                    <input class="form-input" id="hotelCity" placeholder="Paris">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pays *</label>
+                    <input class="form-input" id="hotelCountry" placeholder="France">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Adresse</label>
+                    <input class="form-input" id="hotelAddress" placeholder="12 rue de la Paix">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Téléphone</label>
+                    <input class="form-input" id="hotelPhone" placeholder="+33 1 23 45 67 89">
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Email de contact</label>
+                    <input class="form-input" id="hotelEmail" type="email" placeholder="contact@hotel.fr">
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input form-textarea" id="hotelDesc" placeholder="Décrivez votre établissement..."></textarea>
+                </div>
+
+                <!-- ✅ UPLOAD IMAGE -->
+                <div class="form-group full">
+                    <label class="form-label">Image de l'hôtel</label>
+                    <label class="image-upload-zone" id="imageDropZone">
+                        <i data-lucide="image-plus" class="upload-icon"></i>
+                        <span class="upload-text">Cliquez pour choisir une image</span>
+                        <span class="upload-hint">JPG, PNG, WEBP — max 5 Mo</span>
+                        <img id="imagePreview" alt="Aperçu">
+                        <button type="button" class="image-change-btn" onclick="triggerFileInput(event)">Changer</button>
+                        <input type="file" id="hotelImageFile" accept="image/*"
+                               style="display:none;" onchange="previewImage(event)">
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+                <button class="btn btn-teal" id="saveBtn" onclick="saveHotel()">
+                    <i data-lucide="check"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* ── SESSION ── */
+        const SESSION = {
+            TOKEN_KEY: 'pillowfy_token', COOKIE_NAME: 'token', LOGIN_URL: '/Login/Index',
+            CLAIMS: {
+                name: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                role: 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
+            },
+            getToken() { return this._readCookie(this.COOKIE_NAME) || localStorage.getItem(this.TOKEN_KEY); },
+            parseJwt(t) { try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; } },
+            clearSession() { localStorage.removeItem(this.TOKEN_KEY); document.cookie = `${this.COOKIE_NAME}=; Max-Age=0; path=/;`; },
+            check() {
+                const t = this.getToken(); if (!t) { this.redirect('no_token'); return null; }
+                const p = this.parseJwt(t); if (!p) { this.redirect('invalid'); return null; }
+                if (p[this.CLAIMS.role] !== 'Owner') { this.redirect('unauthorized'); return null; }
+                return t;
+            },
+            redirect(r) { this.clearSession(); window.location.href = `${this.LOGIN_URL}?reason=${r}`; },
+            _readCookie(n) { const m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? decodeURIComponent(m[2]) : null; }
+        };
+
+        let hotels = [];
+        let editingId = null;
+
+        /* ── INIT ── */
+        function init() {
+            if (typeof lucide === 'undefined') { setTimeout(init, 50); return; }
+            lucide.createIcons();
+            const token = SESSION.check(); if (!token) return;
+            const p = SESSION.parseJwt(token);
+            const name = (p[SESSION.CLAIMS.name] || '').split(' ')[0] || 'Propriétaire';
+            document.getElementById('userName').textContent = p[SESSION.CLAIMS.name] || name;
+            document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+            loadHotels(token);
+        }
+
+        /* ── LOAD ── */
+        async function loadHotels(token) {
+            token = token || SESSION.check(); if (!token) return;
+            try {
+                const res = await fetch('/api/owner/hotels', {
+                    headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include'
+                });
+                if (res.status === 401) { SESSION.redirect('unauthorized'); return; }
+                hotels = res.ok ? await res.json() : [];
+                renderHotels();
+            } catch {
+                showToast('Erreur lors du chargement.', 'error');
+                hotels = []; renderHotels();
+            }
+        }
+
+        /* ── RENDER ── */
+        function renderHotels() {
+            const grid = document.getElementById('hotelsGrid');
+            const countEl = document.getElementById('hotelCount');
+            countEl.textContent = hotels.length
+                ? `${hotels.length} établissement${hotels.length > 1 ? 's' : ''} enregistré${hotels.length > 1 ? 's' : ''}`
+                : 'Aucun hôtel pour le moment';
+
+            if (!hotels.length) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <i data-lucide="building-2"></i>
+                        <h3>Aucun hôtel enregistré</h3>
+                        <p>Ajoutez votre premier établissement pour commencer.</p>
+                        <button class="btn btn-teal" onclick="openModal()"><i data-lucide="plus"></i> Ajouter un hôtel</button>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = hotels.map(h => `
+                <div class="hotel-card">
+                    <div class="hotel-img">
+                        ${h.imageUrl ? `<img src="${h.imageUrl}" alt="${h.name}">` : '🏨'}
+                    </div>
+                    <div class="hotel-body">
+                        <div class="hotel-name">${h.name}</div>
+                        <div class="hotel-loc">
+                            <i data-lucide="map-pin"></i>
+                            ${h.city}, ${h.country}
+                        </div>
+                        <div class="hotel-stats">
+                            <div class="hotel-stat">
+                                <div class="hotel-stat-val">${h.chambresCount ?? '—'}</div>
+                                <div class="hotel-stat-lbl">Chambres</div>
+                            </div>
+                            <div class="hotel-stat">
+                                <div class="hotel-stat-val">${h.reservationsCount ?? '—'}</div>
+                                <div class="hotel-stat-lbl">Réservations</div>
+                            </div>
+                            <div class="hotel-stat">
+                                <div class="hotel-stat-val">${h.occupancyRate != null ? h.occupancyRate + '%' : '—'}</div>
+                                <div class="hotel-stat-lbl">Occupation</div>
+                            </div>
+                        </div>
+                        <div class="hotel-actions">
+                            <button class="btn btn-ghost" style="flex:1;" onclick="editHotel(${h.id})">
+                                <i data-lucide="pencil"></i> Modifier
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteHotel(${h.id}, '${h.name.replace(/'/g,"\\'")}')">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`).join('');
+            lucide.createIcons();
+        }
+
+        /* ── IMAGE UPLOAD ── */
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const preview = document.getElementById('imagePreview');
+            const zone = document.getElementById('imageDropZone');
+            preview.src = URL.createObjectURL(file);
+            preview.classList.add('visible');
+            zone.classList.add('has-image');
+            lucide.createIcons();
+        }
+
+        function triggerFileInput(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('hotelImageFile').click();
+        }
+
+        function resetImageZone() {
+            const preview = document.getElementById('imagePreview');
+            const zone = document.getElementById('imageDropZone');
+            preview.src = '';
+            preview.classList.remove('visible');
+            zone.classList.remove('has-image');
+            document.getElementById('hotelImageFile').value = '';
+        }
+
+        /* ── MODAL ── */
+        function openModal(hotel = null) {
+            editingId = hotel ? hotel.id : null;
+            document.getElementById('modalTitle').textContent = hotel ? "Modifier l'hôtel" : 'Ajouter un hôtel';
+            document.getElementById('hotelId').value      = hotel?.id      ?? '';
+            document.getElementById('hotelName').value    = hotel?.name    ?? '';
+            document.getElementById('hotelCity').value    = hotel?.city    ?? '';
+            document.getElementById('hotelCountry').value = hotel?.country ?? '';
+            document.getElementById('hotelAddress').value = hotel?.address ?? '';
+            document.getElementById('hotelPhone').value   = hotel?.phone   ?? '';
+            document.getElementById('hotelEmail').value   = hotel?.email   ?? '';
+            document.getElementById('hotelDesc').value    = hotel?.description ?? '';
+
+            resetImageZone();
+            if (hotel?.imageUrl) {
+                const preview = document.getElementById('imagePreview');
+                const zone = document.getElementById('imageDropZone');
+                preview.src = hotel.imageUrl;
+                preview.classList.add('visible');
+                zone.classList.add('has-image');
+            }
+
+            document.getElementById('modalBackdrop').classList.add('open');
+            lucide.createIcons();
+        }
+
+        function editHotel(id) {
+            const h = hotels.find(x => x.id === id);
+            if (h) openModal(h);
+        }
+
+        function closeModal() {
+            document.getElementById('modalBackdrop').classList.remove('open');
+        }
+
+        function closeModalOutside(e) {
+            if (e.target === document.getElementById('modalBackdrop')) closeModal();
+        }
+
+        /* ── SAVE ── */
+        async function saveHotel() {
+            const token = SESSION.check(); if (!token) return;
+
+            const name    = document.getElementById('hotelName').value.trim();
+            const city    = document.getElementById('hotelCity').value.trim();
+            const country = document.getElementById('hotelCountry').value.trim();
+            if (!name || !city || !country) { showToast('Nom, ville et pays sont obligatoires.', 'error'); return; }
+
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true; btn.textContent = 'Enregistrement...';
+
+            try {
+                const url    = editingId ? `/api/owner/hotels/${editingId}` : '/api/owner/hotels';
+                const method = editingId ? 'PUT' : 'POST';
+
+                const formData = new FormData();
+                formData.append('name',        name);
+                formData.append('city',        city);
+                formData.append('country',     country);
+                formData.append('address',     document.getElementById('hotelAddress').value.trim());
+                formData.append('phone',       document.getElementById('hotelPhone').value.trim());
+                formData.append('email',       document.getElementById('hotelEmail').value.trim());
+                formData.append('description', document.getElementById('hotelDesc').value.trim());
+
+                const file = document.getElementById('hotelImageFile').files[0];
+                if (file) formData.append('image', file);
+
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    body: formData,
+                    credentials: 'include'
+                });
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.message || 'Erreur serveur');
+                }
+
+                closeModal();
+                showToast(editingId ? 'Hôtel modifié avec succès.' : 'Hôtel ajouté avec succès.', 'success');
+                await loadHotels(token);
+            } catch (e) {
+                showToast(e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="check"></i> Enregistrer';
+                lucide.createIcons();
+            }
+        }
+
+        /* ── DELETE ── */
+        async function deleteHotel(id, name) {
+            if (!confirm(`Supprimer "${name}" ? Cette action est irréversible.`)) return;
+            const token = SESSION.check(); if (!token) return;
+            try {
+                const res = await fetch(`/api/owner/hotels/${id}`, {
+                    method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }, credentials: 'include'
+                });
+                if (!res.ok) throw new Error('Suppression échouée.');
+                showToast('Hôtel supprimé.', 'success');
+                await loadHotels(token);
+            } catch (e) {
+                showToast(e.message, 'error');
+            }
+        }
+
+        /* ── TOAST ── */
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = (type === 'success' ? '✓ ' : '⚠ ') + msg;
+            t.className = `toast show ${type}`;
+            setTimeout(() => t.className = 'toast', 3000);
+        }
+
+        /* ── LOGOUT ── */
+        async function logout() {
+            const token = SESSION.getToken();
+            if (token) await fetch('/api/auth/logout', { method:'POST', headers:{'Authorization':'Bearer '+token}, credentials:'include' }).catch(()=>{});
+            SESSION.clearSession();
+            window.location.href = SESSION.LOGIN_URL;
+        }
+
+        document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
+    </script>
+</body>
+</html>

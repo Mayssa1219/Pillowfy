@@ -1,0 +1,1522 @@
+﻿@{
+    ViewData["Title"] = "Owner Dashboard";
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pillowfy — Espace Propriétaire</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #C9A96E;
+            --gold-lt: rgba(201,169,110,0.12);
+            --gold-mid: rgba(201,169,110,0.25);
+            --ink: #0F1621;
+            --ink-60: rgba(15,22,33,0.60);
+            --ink-30: rgba(15,22,33,0.30);
+            --white: #FFFFFF;
+            --teal: #1A6B6B;
+            --teal-lt: rgba(26,107,107,0.10);
+            --rose: #C0596A;
+            --rose-lt: rgba(192,89,106,0.10);
+            --sidebar: #0B1120;
+            --bg: #F4F1EC;
+            --radius-xl: 22px;
+            --shadow-sm: 0 2px 12px rgba(15,22,33,0.06);
+            --shadow-md: 0 8px 32px rgba(15,22,33,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            padding: 1.6rem 1.1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            border-right: 1px solid rgba(255,255,255,0.04);
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+            .sidebar-brand img {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+
+        .sidebar-brand-name {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+
+        .owner-badge-side {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0 0.8rem 1.5rem;
+            background: rgba(26,107,107,0.18);
+            border: 1px solid rgba(26,107,107,0.35);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #4ECDC4;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            padding: 0 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 1.4rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.42);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 500;
+            transition: all .16s;
+        }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
+                color: rgba(255,255,255,0.82);
+            }
+
+            .nav-item.active {
+                background: rgba(26,107,107,0.18);
+                color: #4ECDC4;
+            }
+
+        .nav-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(26,107,107,0.25);
+        }
+
+        .nav-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: #4ECDC4;
+            color: var(--ink);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 100px;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0.7rem 0.8rem;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 0.55rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#1A6B6B,#4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.9rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.68rem;
+            color: #4ECDC4;
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.55rem;
+            border-radius: 9px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.32);
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all .16s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-logout:hover {
+                border-color: rgba(220,38,38,0.4);
+                color: #f87171;
+                background: rgba(220,38,38,0.06);
+            }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(26,107,107,0.4) transparent;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 240px;
+            padding: 2rem 2.4rem;
+            flex: 1;
+            max-width: calc(100vw - 240px);
+        }
+
+            .main > * {
+                animation: fadeUp 0.38s ease both;
+            }
+
+                .main > *:nth-child(2) {
+                    animation-delay: 0.05s;
+                }
+
+                .main > *:nth-child(3) {
+                    animation-delay: 0.10s;
+                }
+
+                .main > *:nth-child(4) {
+                    animation-delay: 0.14s;
+                }
+
+                .main > *:nth-child(5) {
+                    animation-delay: 0.18s;
+                }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .topbar-left h1 {
+            font-family: 'DM Serif Display',serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+        }
+
+            .topbar-left h1 em {
+                font-style: italic;
+                color: #1A6B6B;
+            }
+
+        .topbar-left p {
+            font-size: 0.83rem;
+            color: var(--ink-60);
+            margin-top: 3px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-online {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(26,107,107,0.10);
+            border: 1px solid rgba(26,107,107,0.25);
+            border-radius: 100px;
+            padding: 0.38rem 0.85rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--teal);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        /* HERO */
+        .hero-card {
+            background: linear-gradient(135deg,#0E2D2D 0%,#0B1120 100%);
+            border-radius: var(--radius-xl);
+            padding: 1.8rem 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.4rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(26,107,107,0.2);
+        }
+
+            .hero-card::before {
+                content: '';
+                position: absolute;
+                right: -5%;
+                top: -55%;
+                width: 320px;
+                height: 320px;
+                border-radius: 50%;
+                background: radial-gradient(circle,rgba(26,107,107,0.2) 0%,transparent 65%);
+            }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(26,107,107,0.2);
+            border: 1px solid rgba(26,107,107,0.35);
+            border-radius: 100px;
+            padding: 3px 11px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #4ECDC4;
+            margin-bottom: 8px;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 1;
+        }
+
+            .hero-text h2 {
+                font-family: 'DM Serif Display',serif;
+                font-size: 1.45rem;
+                color: var(--white);
+                margin-bottom: 4px;
+            }
+
+                .hero-text h2 em {
+                    color: #4ECDC4;
+                    font-style: italic;
+                }
+
+            .hero-text p {
+                font-size: 0.83rem;
+                color: rgba(255,255,255,0.4);
+                max-width: 360px;
+                line-height: 1.5;
+            }
+
+        .hero-actions {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.58rem 1.2rem;
+            border-radius: 100px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all .18s;
+        }
+
+            .btn svg {
+                width: 13px;
+                height: 13px;
+            }
+
+        .btn-teal {
+            background: #1A6B6B;
+            color: var(--white);
+        }
+
+            .btn-teal:hover {
+                background: #155858;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(26,107,107,0.4);
+            }
+
+        .btn-outline {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.65);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+            .btn-outline:hover {
+                background: rgba(255,255,255,0.12);
+                color: var(--white);
+            }
+
+        .btn-danger {
+            background: rgba(220,38,38,0.10);
+            color: #f87171;
+            border: 1px solid rgba(220,38,38,0.25);
+        }
+
+            .btn-danger:hover {
+                background: rgba(220,38,38,0.20);
+            }
+
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.3rem 1.4rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all .2s;
+        }
+
+            .stat-card:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-2px);
+            }
+
+        .stat-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+            .stat-icon-wrap svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .stat-icon-wrap.gold {
+                background: var(--gold-lt);
+                color: #9A722E;
+            }
+
+            .stat-icon-wrap.teal {
+                background: var(--teal-lt);
+                color: var(--teal);
+            }
+
+            .stat-icon-wrap.green {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .stat-icon-wrap.rose {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+        .stat-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--ink-30);
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            border: 1px solid rgba(201,169,110,0.10);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.1rem;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.98rem;
+            color: var(--ink);
+        }
+
+        .card-link {
+            font-size: 0.76rem;
+            color: var(--teal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .card-link:hover {
+                text-decoration: underline;
+            }
+
+        /* GRIDS */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .main-grid-wide {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        /* SKELETON */
+        .skeleton {
+            background: linear-gradient(90deg,rgba(15,22,33,0.06) 25%,rgba(15,22,33,0.10) 50%,rgba(15,22,33,0.06) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            gap: 8px;
+        }
+
+            .empty-state svg {
+                width: 32px;
+                height: 32px;
+                color: var(--ink-30);
+            }
+
+            .empty-state p {
+                font-size: 0.82rem;
+                color: var(--ink-60);
+                text-align: center;
+            }
+
+        /* RESERVATION TABLE */
+        .res-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .res-table th {
+                font-size: 0.68rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: var(--ink-30);
+                padding: 0.5rem 0.8rem;
+                text-align: left;
+                border-bottom: 1px solid rgba(15,22,33,0.07);
+            }
+
+            .res-table td {
+                padding: 0.85rem 0.8rem;
+                font-size: 0.83rem;
+                color: var(--ink);
+                border-bottom: 1px solid rgba(15,22,33,0.05);
+            }
+
+            .res-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .res-table tr:hover td {
+                background: rgba(26,107,107,0.03);
+            }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 9px;
+            border-radius: 100px;
+        }
+
+            .badge.confirmed {
+                background: rgba(26,107,107,0.10);
+                color: var(--teal);
+            }
+
+            .badge.completed {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .badge.cancelled {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+            .badge.pending {
+                background: var(--gold-lt);
+                color: #9A722E;
+            }
+
+        /* OCCUPATION BAR */
+        .occ-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+        }
+
+            .occ-item:last-child {
+                border-bottom: none;
+            }
+
+        .occ-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .occ-hotel {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .occ-pct {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--ink-60);
+        }
+
+        .occ-bar {
+            height: 5px;
+            background: rgba(15,22,33,0.07);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .occ-bar-fill {
+            height: 100%;
+            border-radius: 100px;
+            transition: width 0.9s ease;
+        }
+
+            .occ-bar-fill.teal {
+                background: linear-gradient(90deg,#1A6B6B,#4ECDC4);
+            }
+
+            .occ-bar-fill.gold {
+                background: linear-gradient(90deg,#C9A96E,#e8c080);
+            }
+
+            .occ-bar-fill.green {
+                background: linear-gradient(90deg,#16a34a,#4ade80);
+            }
+
+            .occ-bar-fill.rose {
+                background: linear-gradient(90deg,#C0596A,#e87f8e);
+            }
+
+        /* CHAMBRE CARD */
+        .chambre-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid rgba(15,22,33,0.05);
+            transition: all .16s;
+        }
+
+            .chambre-item:last-child {
+                border-bottom: none;
+            }
+
+            .chambre-item:hover {
+                background: var(--teal-lt);
+                padding-left: 6px;
+                border-radius: 8px;
+            }
+
+        .chambre-thumb {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            background: var(--teal-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+            .chambre-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .chambre-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .chambre-meta {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+            margin-top: 2px;
+        }
+
+        .chambre-price {
+            margin-left: auto;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .chambre-price-val {
+            font-family: 'DM Serif Display',serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+
+        .chambre-price-lbl {
+            font-size: 0.68rem;
+            color: var(--ink-60);
+        }
+
+        .chambre-status {
+            display: inline-flex;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-top: 4px;
+        }
+
+            .chambre-status.available {
+                background: rgba(34,197,94,0.10);
+                color: #16a34a;
+            }
+
+            .chambre-status.occupied {
+                background: var(--rose-lt);
+                color: var(--rose);
+            }
+
+        /* QUICK ACTIONS */
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0.8rem;
+            border-radius: 11px;
+            background: var(--bg);
+            margin-bottom: 7px;
+            text-decoration: none;
+            transition: all .16s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+            .quick-action:hover {
+                background: var(--teal-lt);
+                transform: translateX(3px);
+            }
+
+            .quick-action:last-child {
+                margin-bottom: 0;
+            }
+
+        .qa-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            color: var(--ink-60);
+        }
+
+            .qa-icon svg {
+                width: 15px;
+                height: 15px;
+            }
+
+        .qa-label {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .qa-sub {
+            font-size: 0.72rem;
+            color: var(--ink-60);
+        }
+
+        .qa-arrow {
+            margin-left: auto;
+            color: var(--ink-30);
+        }
+
+            .qa-arrow svg {
+                width: 15px;
+                height: 15px;
+            }
+
+        /* REVENU CHART BARS */
+        .rev-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 100px;
+            margin-top: 1rem;
+        }
+
+        .rev-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rev-bar {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(180deg,#4ECDC4,#1A6B6B);
+            transition: height 0.7s ease;
+            min-height: 4px;
+        }
+
+        .rev-bar-lbl {
+            font-size: 0.62rem;
+            color: var(--ink-60);
+        }
+
+        .rev-bar-val {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        /* ANIMATIONS */
+        @@keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(34,197,94,0.07);
+            }
+        }
+
+        /* RESPONSIVE */
+        @@media (max-width:1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @@media (max-width:900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.4rem;
+                max-width: 100vw;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .main-grid, .main-grid-wide {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                flex-direction: column;
+                gap: 1.2rem;
+                align-items: flex-start;
+            }
+        }
+
+        @@media (max-width:600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="/" class="sidebar-brand">
+                <img src="/Images/logo.png" alt="Pillowfy">
+                <span class="sidebar-brand-name">Pillowfy</span>
+            </a>
+            <div class="owner-badge-side">
+                <i data-lucide="building-2" style="width:12px;height:12px;"></i> Espace Propriétaire
+            </div>
+            <div class="sidebar-content">
+                <div>
+                    <div class="sidebar-section-label">Navigation</div>
+                    <nav class="sidebar-nav">
+                        <a href="/Owner/Dashboard" class="nav-item active">
+                            <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard
+                        </a>
+                        <a href="/Owner/Hotels" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="building-2"></i></span> Mes hôtels
+                        </a>
+                        <a href="/Owner/Chambres" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="bed-double"></i></span> Chambres
+                        </a>
+                        <a href="/Owner/Reservations" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="calendar-check"></i></span>
+                            Réservations
+                            <span class="nav-badge" id="nbReservations" style="display:none;"></span>
+                        </a>
+                        <a href="/Owner/Paiements" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="credit-card"></i></span> Paiements
+                        </a>
+                        <a href="/Owner/Revenus" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="trending-up"></i></span> Revenus
+                        </a>
+                        <a href="/Owner/Avis" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="star"></i></span> Avis clients
+                        </a>
+                    </nav>
+                </div>
+                <div>
+                    <div class="sidebar-section-label">Compte</div>
+                    <nav class="sidebar-nav">
+                        <a href="/Owner/Profil" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="user"></i></span> Mon profil
+                        </a>
+                        <a href="/Owner/Parametres" class="nav-item">
+                            <span class="nav-icon"><i data-lucide="settings"></i></span> Paramètres
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar" id="avatarInitial">?</div>
+                    <div>
+                        <div class="user-name" id="userName">Chargement...</div>
+                        <div class="user-role">Propriétaire</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i data-lucide="log-out"></i> Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <h1>Bonjour, <em id="firstName">...</em> 👋</h1>
+                    <p id="dateLabel"></p>
+                </div>
+                <div class="topbar-right">
+                    <div class="badge-online"><span class="badge-dot"></span> Propriétaire</div>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <i data-lucide="log-out"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+
+            <!-- HERO -->
+            <div class="hero-card">
+                <div class="hero-text">
+                    <div class="hero-tag"><i data-lucide="building-2"></i> Espace propriétaire</div>
+                    <h2>Gérez vos <em>établissements</em></h2>
+                    <p>Suivez vos réservations, revenus et taux d'occupation en temps réel.</p>
+                </div>
+                <div class="hero-actions">
+                    <a href="/Owner/Hotels/Ajouter" class="btn btn-teal">
+                        <i data-lucide="plus"></i> Ajouter un hôtel
+                    </a>
+                    <a href="/Owner/Reservations" class="btn btn-outline">
+                        <i data-lucide="calendar-check"></i> Réservations
+                    </a>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-wrap teal"><i data-lucide="building-2"></i></div>
+                    <div>
+                        <div class="stat-label">Mes hôtels</div>
+                        <div class="stat-value" id="statHotels"><span class="skeleton" style="width:40px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Établissements actifs</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap gold"><i data-lucide="calendar-check"></i></div>
+                    <div>
+                        <div class="stat-label">Réservations</div>
+                        <div class="stat-value" id="statReservations"><span class="skeleton" style="width:40px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Ce mois-ci</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap green"><i data-lucide="trending-up"></i></div>
+                    <div>
+                        <div class="stat-label">Revenus</div>
+                        <div class="stat-value" id="statRevenus"><span class="skeleton" style="width:70px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Total ce mois</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrap rose"><i data-lucide="percent"></i></div>
+                    <div>
+                        <div class="stat-label">Taux occupation</div>
+                        <div class="stat-value" id="statOccupancy"><span class="skeleton" style="width:60px;height:18px;display:block;"></span></div>
+                        <div class="stat-sub">Moyenne hôtels</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OCCUPATION + REVENUS + ACTIONS -->
+            <div class="main-grid" style="margin-bottom:1rem;">
+
+                <!-- OCCUPATION -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Taux d'occupation</span>
+                        <a href="/Owner/Hotels" class="card-link">Détails →</a>
+                    </div>
+                    <div id="occupancyList">
+                        <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="height:5px;width:100%;margin-bottom:16px;"></div>
+                        <div class="skeleton" style="height:14px;width:50%;margin-bottom:8px;"></div>
+                        <div class="skeleton" style="height:5px;width:100%;"></div>
+                    </div>
+                </div>
+
+                <!-- REVENUS PAR MOIS -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Revenus mensuels</span>
+                        <a href="/Owner/Revenus" class="card-link">Voir tout →</a>
+                    </div>
+                    <div id="revenusChart">
+                        <div class="skeleton" style="height:100px;width:100%;border-radius:10px;"></div>
+                    </div>
+                </div>
+
+                <!-- ACTIONS RAPIDES -->
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Actions rapides</span></div>
+                    <a href="/Owner/Hotels/Ajouter" class="quick-action">
+                        <div class="qa-icon"><i data-lucide="plus-circle"></i></div>
+                        <div><div class="qa-label">Ajouter un hôtel</div><div class="qa-sub">Nouvel établissement</div></div>
+                        <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                    </a>
+                    <a href="/Owner/Chambres/Ajouter" class="quick-action">
+                        <div class="qa-icon"><i data-lucide="bed-double"></i></div>
+                        <div><div class="qa-label">Ajouter une chambre</div><div class="qa-sub">Nouvelle chambre</div></div>
+                        <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                    </a>
+                    <a href="/Owner/Reservations" class="quick-action">
+                        <div class="qa-icon"><i data-lucide="calendar-check"></i></div>
+                        <div><div class="qa-label">Voir réservations</div><div class="qa-sub">Gérer les demandes</div></div>
+                        <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                    </a>
+                    <a href="/Owner/Revenus" class="quick-action">
+                        <div class="qa-icon"><i data-lucide="trending-up"></i></div>
+                        <div><div class="qa-label">Mes revenus</div><div class="qa-sub">Statistiques détaillées</div></div>
+                        <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                    </a>
+                    <button class="quick-action" onclick="logout()">
+                        <div class="qa-icon" style="color:var(--rose);"><i data-lucide="log-out"></i></div>
+                        <div><div class="qa-label" style="color:var(--rose);">Se déconnecter</div><div class="qa-sub">Fermer la session</div></div>
+                        <span class="qa-arrow"><i data-lucide="chevron-right"></i></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- RÉSERVATIONS + CHAMBRES -->
+            <div class="main-grid-wide" style="margin-bottom:1rem;">
+
+                <!-- DERNIÈRES RÉSERVATIONS -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Dernières réservations</span>
+                        <a href="/Owner/Reservations" class="card-link">Voir tout →</a>
+                    </div>
+                    <div id="reservationsList">
+                        <div class="skeleton" style="height:42px;width:100%;margin-bottom:8px;border-radius:8px;"></div>
+                        <div class="skeleton" style="height:42px;width:100%;margin-bottom:8px;border-radius:8px;"></div>
+                        <div class="skeleton" style="height:42px;width:100%;border-radius:8px;"></div>
+                    </div>
+                </div>
+
+                <!-- MES CHAMBRES -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Mes chambres</span>
+                        <a href="/Owner/Chambres" class="card-link">Gérer →</a>
+                    </div>
+                    <div id="chambresList">
+                        <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:56px;width:100%;margin-bottom:10px;border-radius:10px;"></div>
+                        <div class="skeleton" style="height:56px;width:100%;border-radius:10px;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        /* ════════════════════════════════════
+           SESSION MANAGER (identique Customer)
+        ════════════════════════════════════ */
+        const SESSION = {
+            TOKEN_KEY: 'pillowfy_token', REFRESH_TOKEN_KEY: 'pillowfy_refresh',
+            COOKIE_NAME: 'token', LOGIN_URL: '/Login/Index',
+            REFRESH_URL: '/api/auth/refresh', REFRESH_THRESHOLD: 5 * 60,
+            CHECK_INTERVAL: 60 * 1000, WARN_BEFORE: 2 * 60,
+            CLAIMS: {
+                name:  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                email: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                role:  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
+            },
+            _heartbeatTimer: null, _warnShown: false,
+            getToken()        { return this._readCookie(this.COOKIE_NAME) || localStorage.getItem(this.TOKEN_KEY); },
+            getRefreshToken() { return this._readCookie('refresh_token')  || localStorage.getItem(this.REFRESH_TOKEN_KEY); },
+            saveToken(token)  { localStorage.setItem(this.TOKEN_KEY, token); },
+            clearSession() {
+                localStorage.removeItem(this.TOKEN_KEY); localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+                document.cookie = `${this.COOKIE_NAME}=; Max-Age=0; path=/; SameSite=Strict`;
+                document.cookie = `refresh_token=; Max-Age=0; path=/; SameSite=Strict`;
+                if (this._heartbeatTimer) clearInterval(this._heartbeatTimer);
+            },
+            parseJwt(token) {
+                try { return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }
+                catch { return null; }
+            },
+            secondsLeft(p) { if (!p?.exp) return Infinity; return p.exp - Math.floor(Date.now() / 1000); },
+            async tryRefresh() {
+                const rt = this.getRefreshToken(); if (!rt) return false;
+                try {
+                    const res = await fetch(this.REFRESH_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({refreshToken:rt}), credentials:'include' });
+                    if (!res.ok) return false;
+                    const data = await res.json();
+                    if (data.token) { this.saveToken(data.token); return true; }
+                    return false;
+                } catch { return false; }
+            },
+            async check() {
+                const token = this.getToken(); if (!token) { this.redirectLogin('no_token'); return false; }
+                const p = this.parseJwt(token); if (!p) { this.redirectLogin('invalid_token'); return false; }
+                // Vérification rôle Owner
+                const role = p[this.CLAIMS.role];
+                if (role !== 'Owner') { this.redirectLogin('unauthorized_role'); return false; }
+                const left = this.secondsLeft(p);
+                if (left <= 0) { const r = await this.tryRefresh(); if (!r) { this.redirectLogin('expired'); return false; } return true; }
+                if (left < this.REFRESH_THRESHOLD) this.tryRefresh();
+                return true;
+            },
+            redirectLogin(reason) {
+                this.clearSession();
+                const url = new URL(this.LOGIN_URL, window.location.origin);
+                url.searchParams.set('reason', reason); url.searchParams.set('returnUrl', window.location.pathname);
+                window.location.href = url.toString();
+            },
+            startHeartbeat() {
+                if (this._heartbeatTimer) clearInterval(this._heartbeatTimer);
+                this._heartbeatTimer = setInterval(() => this.check(), this.CHECK_INTERVAL);
+                document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') this.check(); });
+            },
+            _readCookie(name) {
+                const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return m ? decodeURIComponent(m[2]) : null;
+            }
+        };
+
+        /* ════════════════════════════════════
+           DATE
+        ════════════════════════════════════ */
+        (function () {
+            const now = new Date();
+            const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+            const mois  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            document.getElementById('dateLabel').textContent =
+                jours[now.getDay()] + ' ' + now.getDate() + ' ' + mois[now.getMonth()] + ' ' + now.getFullYear();
+        })();
+
+        /* ════════════════════════════════════
+           HELPERS
+        ════════════════════════════════════ */
+        const fmt = d => new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+
+        function statusBadge(status) {
+            const map = {
+                'Confirmed': { cls:'confirmed', label:'↗ Confirmée' },
+                'Cancelled': { cls:'cancelled', label:'✕ Annulée'  },
+                'Completed': { cls:'completed', label:'✓ Terminée' },
+                'Pending':   { cls:'pending',   label:'⏳ En attente' },
+            };
+            const s = map[status] || { cls:'pending', label: status };
+            return `<span class="badge ${s.cls}">${s.label}</span>`;
+        }
+
+        /* ════════════════════════════════════
+           LOAD USER
+        ════════════════════════════════════ */
+        async function loadUser() {
+            const ok = await SESSION.check(); if (!ok) return;
+            const token = SESSION.getToken();
+            const p = SESSION.parseJwt(token);
+            const fullName  = p[SESSION.CLAIMS.name]  || '';
+            const firstName = fullName.split(' ')[0]  || 'Propriétaire';
+            document.getElementById('firstName').textContent     = firstName;
+            document.getElementById('userName').textContent      = fullName || p[SESSION.CLAIMS.email];
+            document.getElementById('avatarInitial').textContent = firstName.charAt(0).toUpperCase();
+            SESSION.startHeartbeat();
+            await loadOwnerData(token);
+        }
+
+        /* ════════════════════════════════════
+           LOAD OWNER DATA
+        ════════════════════════════════════ */
+        async function loadOwnerData(token) {
+            const headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+
+            try {
+                const [dashRes, occRes] = await Promise.all([
+                    fetch('/api/owner/dashboard', { headers, credentials:'include' }),
+                    fetch('/api/owner/hotels/occupancy', { headers, credentials:'include' }),
+                ]);
+
+                if (dashRes.status === 401) { SESSION.redirectLogin('unauthorized'); return; }
+
+                /* ── DASHBOARD ── */
+                if (dashRes.ok) {
+                    const dash = await dashRes.json();
+
+                    // Stats
+                    document.getElementById('statHotels').textContent      = dash.hotelsTotal        ?? '—';
+                    document.getElementById('statReservations').textContent = dash.reservationsMois   ?? '—';
+                    document.getElementById('statRevenus').textContent      = dash.revenusMois != null
+                        ? dash.revenusMois.toLocaleString('fr-FR') + ' €' : '—';
+                    document.getElementById('statOccupancy').textContent    = dash.tauxOccupationMoyen != null
+                        ? dash.tauxOccupationMoyen + '%' : '—';
+
+                    // Badge sidebar
+                    const badge = document.getElementById('nbReservations');
+                    if (badge) {
+                        const nb = dash.reservationsEnAttente ?? 0;
+                        badge.textContent   = nb;
+                        badge.style.display = nb > 0 ? '' : 'none';
+                    }
+
+                    /* ── RÉSERVATIONS TABLE ── */
+                    const resList = document.getElementById('reservationsList');
+                    if (resList) {
+                        const reservations = dash.dernieresReservations ?? [];
+                        if (!reservations.length) {
+                            resList.innerHTML = `<div class="empty-state"><i data-lucide="calendar-x"></i><p>Aucune réservation pour le moment.</p></div>`;
+                        } else {
+                            resList.innerHTML = `
+                                <table class="res-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Client</th>
+                                            <th>Chambre</th>
+                                            <th>Arrivée</th>
+                                            <th>Nuits</th>
+                                            <th>Montant</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${reservations.map(r => {
+                                            const nights = Math.max(1, Math.round((new Date(r.checkOut) - new Date(r.checkIn)) / 86400000));
+                                            return `<tr>
+                                                <td style="font-weight:600;">${r.clientName || '—'}</td>
+                                                <td style="color:var(--ink-60);">${r.chambreName}</td>
+                                                <td style="color:var(--ink-60);">${fmt(r.checkIn)}</td>
+                                                <td style="text-align:center;">${nights}</td>
+                                                <td style="font-weight:700;">${r.totalPrice.toLocaleString('fr-FR')} €</td>
+                                                <td>${statusBadge(r.status)}</td>
+                                            </tr>`;
+                                        }).join('')}
+                                    </tbody>
+                                </table>`;
+                        }
+                        lucide.createIcons();
+                    }
+
+                    /* ── REVENUS CHART ── */
+                    const chartDiv = document.getElementById('revenusChart');
+                    if (chartDiv && dash.revenusMensuels?.length) {
+                        const maxVal = Math.max(...dash.revenusMensuels.map(m => m.montant), 1);
+                        chartDiv.innerHTML = `
+                            <div class="rev-bars">
+                                ${dash.revenusMensuels.map(m => {
+                                    const h = Math.round((m.montant / maxVal) * 100);
+                                    return `<div class="rev-bar-wrap">
+                                        <div class="rev-bar-val">${m.montant >= 1000 ? (m.montant/1000).toFixed(1)+'k' : m.montant}€</div>
+                                        <div class="rev-bar" data-h="${h}" style="height:4px;"></div>
+                                        <div class="rev-bar-lbl">${m.mois}</div>
+                                    </div>`;
+                                }).join('')}
+                            </div>`;
+                        setTimeout(() => {
+                            chartDiv.querySelectorAll('.rev-bar').forEach(el => {
+                                el.style.height = el.dataset.h + 'px';
+                            });
+                        }, 300);
+                    } else if (chartDiv) {
+                        chartDiv.innerHTML = `<div class="empty-state"><i data-lucide="trending-up"></i><p>Données de revenus indisponibles.</p></div>`;
+                        lucide.createIcons();
+                    }
+
+                    /* ── CHAMBRES ── */
+                    const chambresList = document.getElementById('chambresList');
+                    if (chambresList) {
+                        const chambres = dash.mesChambresDispo ?? [];
+                        if (!chambres.length) {
+                            chambresList.innerHTML = `<div class="empty-state"><i data-lucide="bed-double"></i><p>Aucune chambre enregistrée.</p></div>`;
+                        } else {
+                            chambresList.innerHTML = chambres.slice(0, 5).map(c => `
+                                <div class="chambre-item" onclick="window.location='/Owner/Chambres/${c.id}'">
+                                    <div class="chambre-thumb">
+                                        ${c.imageUrl ? `<img src="${c.imageUrl}" alt="">` : `<span style="font-size:1.2rem;">🛏️</span>`}
+                                    </div>
+                                    <div style="flex:1;min-width:0;">
+                                        <div class="chambre-name">${c.name}</div>
+                                        <div class="chambre-meta">${c.hotelName ?? '—'} · ${c.capacity} pers.</div>
+                                        <span class="chambre-status ${c.isAvailable ? 'available' : 'occupied'}">
+                                            ${c.isAvailable ? '✓ Disponible' : '● Occupée'}
+                                        </span>
+                                    </div>
+                                    <div class="chambre-price">
+                                        <div class="chambre-price-val">${c.pricePerNight.toLocaleString('fr-FR')} €</div>
+                                        <div class="chambre-price-lbl">/ nuit</div>
+                                    </div>
+                                </div>`).join('');
+                        }
+                        lucide.createIcons();
+                    }
+                }
+
+                /* ── OCCUPATION ── */
+                const occList = document.getElementById('occupancyList');
+                if (occList) {
+                    const colors = ['teal','gold','green','rose'];
+                    if (occRes.ok) {
+                        const occ = await occRes.json();
+                        if (!occ.length) {
+                            occList.innerHTML = `<div class="empty-state"><i data-lucide="building-2"></i><p>Aucun hôtel enregistré.</p></div>`;
+                        } else {
+                            occList.innerHTML = occ.map((o, i) => `
+                                <div class="occ-item">
+                                    <div class="occ-header">
+                                        <span class="occ-hotel">${o.hotelName}</span>
+                                        <span class="occ-pct">${o.occupancyRate}%</span>
+                                    </div>
+                                    <div class="occ-bar">
+                                        <div class="occ-bar-fill ${colors[i % colors.length]}" style="width:0%;" data-width="${o.occupancyRate}%"></div>
+                                    </div>
+                                </div>`).join('');
+                            setTimeout(() => {
+                                occList.querySelectorAll('.occ-bar-fill').forEach(el => { el.style.width = el.dataset.width; });
+                            }, 300);
+                        }
+                    } else {
+                        occList.innerHTML = `<div class="empty-state"><i data-lucide="wifi-off"></i><p>Données indisponibles.</p></div>`;
+                    }
+                    lucide.createIcons();
+                }
+
+            } catch (e) {
+                console.error('[Owner Dashboard] Erreur :', e);
+            }
+        }
+
+        /* ════════════════════════════════════
+           DÉCONNEXION
+        ════════════════════════════════════ */
+        async function logout() {
+            try {
+                const token = SESSION.getToken();
+                if (token) {
+                    await fetch('/api/auth/logout', {
+                        method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}, credentials:'include'
+                    }).catch(() => {});
+                }
+            } finally {
+                SESSION.clearSession();
+                window.location.href = SESSION.LOGIN_URL;
+            }
+        }
+
+        /* ════════════════════════════════════
+           INIT
+        ════════════════════════════════════ */
+        function init() {
+            if (typeof lucide === 'undefined') { setTimeout(init, 50); return; }
+            lucide.createIcons();
+            loadUser();
+        }
+        document.readyState === 'loading'
+            ? document.addEventListener('DOMContentLoaded', init)
+            : init();
+    </script>
+</body>
+</html>
