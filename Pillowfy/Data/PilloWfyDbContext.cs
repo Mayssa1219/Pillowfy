@@ -36,14 +36,14 @@ namespace Pillowfy.Data
                 .HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // 🔥 AJOUT IMPORTANT
             modelBuilder.Entity<Chambre>()
                 .HasOne(c => c.Hotel)
                 .WithMany(h => h.Chambres)
                 .HasForeignKey(c => c.HotelId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // ── Fluent API : Paiement ──────────────────────────────────
             modelBuilder.Entity<Paiement>(e =>
