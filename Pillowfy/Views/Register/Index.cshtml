@@ -760,7 +760,7 @@
 
                 if (data.success) {
                     if (data.token) localStorage.setItem('token', data.token);
-                    window.location.href = '/Home/Index';
+                    window.location.href = '/Login/Index';
                 } else {
                     document.getElementById('alertMsg').textContent = data.message || 'Une erreur est survenue. Veuillez réessayer.';
                     alertBox.classList.add('visible');
