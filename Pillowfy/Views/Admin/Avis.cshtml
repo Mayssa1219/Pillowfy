@@ -1,6 +1,6 @@
-﻿@model List<Pillowfy.Models.Hotel>
+﻿@model List<Pillowfy.Models.Avis>
 @{
-    ViewData["Title"] = "Gestion Hôtels";
+    ViewData["Title"] = "Modération Avis";
     Layout = null;
 }
 
@@ -8,7 +8,7 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
-    <title>Pillowfy Admin — Hôtels</title>
+    <title>Pillowfy Admin — Avis</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after {
@@ -21,7 +21,6 @@
             --gold: #C9A96E;
             --ink: #0F1621;
             --ink-60: rgba(15,22,33,0.60);
-            --ink-30: rgba(15,22,33,0.30);
             --cream: #FAF7F2;
             --cream-dk: #F0EBE1;
             --white: #FFFFFF;
@@ -216,7 +215,6 @@
             background: var(--white);
             outline: none;
             width: 280px;
-            transition: border-color .2s;
         }
 
             .search-input:focus {
@@ -266,59 +264,45 @@
             background: rgba(201,169,110,0.03);
         }
 
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 100px;
+        .stars {
+            color: var(--gold);
+            font-size: 0.9rem;
         }
 
-        .pill-active {
-            background: rgba(26,107,107,0.1);
-            color: var(--teal);
-        }
-
-        .pill-inactive {
-            background: rgba(15,22,33,0.06);
+        .comment {
+            max-width: 300px;
+            font-size: 0.85rem;
             color: var(--ink-60);
+            line-height: 1.4;
         }
 
-        .action-btn {
+        .btn-delete {
             padding: 0.4rem 0.9rem;
             border-radius: 8px;
             font-size: 0.78rem;
             font-weight: 600;
             border: none;
             cursor: pointer;
+            background: rgba(192,57,43,0.1);
+            color: #c0392b;
             transition: all .2s;
         }
 
-        .btn-deactivate {
-            background: rgba(192,57,43,0.1);
-            color: #c0392b;
-        }
-
-            .btn-deactivate:hover {
+            .btn-delete:hover {
                 background: rgba(192,57,43,0.2);
             }
 
-        .btn-activate {
-            background: rgba(26,107,107,0.1);
-            color: var(--teal);
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
         }
 
-            .btn-activate:hover {
-                background: rgba(26,107,107,0.2);
-            }
-
-        .rating {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.82rem;
+        .alert-success {
+            background: rgba(26,107,107,0.1);
+            color: var(--teal);
+            border: 1px solid rgba(26,107,107,0.2);
         }
     </style>
 </head>
@@ -329,26 +313,13 @@
             <span class="sidebar-brand-name">Pillowfy</span>
         </a>
         <div class="sidebar-label">Principal</div>
-        <a href="/Admin/Dashboard" class="nav-item @(ViewData["Title"]?.ToString() == "Dashboard Admin" ? "active" : "")">
-            <span class="icon">📊</span> Dashboard
-        </a>
-
+        <a href="/Admin/Dashboard" class="nav-item"><span class="icon">📊</span> Dashboard</a>
         <div class="sidebar-label">Gestion</div>
-        <a href="/Admin/Users" class="nav-item @(ViewData["Title"]?.ToString() == "Gestion Utilisateurs" ? "active" : "")">
-            <span class="icon">👥</span> Utilisateurs
-        </a>
-        <a href="/Admin/Hotels" class="nav-item @(ViewData["Title"]?.ToString() == "Gestion Hôtels" ? "active" : "")">
-            <span class="icon">🏨</span> Hôtels
-        </a>
-        <a href="/Admin/Reservations" class="nav-item @(ViewData["Title"]?.ToString() == "Gestion Réservations" ? "active" : "")">
-            <span class="icon">📅</span> Réservations
-        </a>
-        <a href="/Admin/Avis" class="nav-item @(ViewData["Title"]?.ToString() == "Modération Avis" ? "active" : "")">
-            <span class="icon">⭐</span> Avis
-        </a>
-        <a href="/Admin/Statistiques" class="nav-item @(ViewData["Title"]?.ToString() == "Statistiques" ? "active" : "")">
-            <span class="icon">📈</span> Statistiques
-        </a>
+        <a href="/Admin/Users" class="nav-item"><span class="icon">👥</span> Utilisateurs</a>
+        <a href="/Admin/Hotels" class="nav-item"><span class="icon">🏨</span> Hôtels</a>
+        <a href="/Admin/Reservations" class="nav-item"><span class="icon">📅</span> Réservations</a>
+        <a href="/Admin/Avis" class="nav-item active"><span class="icon">⭐</span> Avis</a>
+        <a href="/Admin/Statistiques" class="nav-item"><span class="icon">📈</span> Statistiques</a>
         <div class="sidebar-footer">
             <div class="admin-info">
                 <div class="admin-avatar">A</div>
@@ -360,89 +331,49 @@
 
     <main class="main">
         <div class="page-header">
-            <div class="page-eyebrow">Gestion</div>
-            <h1 class="page-title">Gestion des <em>hôtels</em></h1>
+            <div class="page-eyebrow">Modération</div>
+            <h1 class="page-title">Gestion des <em>avis</em></h1>
         </div>
 
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">✅ @TempData["Success"]</div>
+        }
+
         <div class="toolbar">
-            <input type="text" class="search-input"
-                   placeholder="🔍 Rechercher un hôtel..."
-                   id="searchInput" onkeyup="filterTable()" />
-            <span style="font-size:0.85rem;color:var(--ink-60);">
-                @Model.Count hôtels au total —
-                @Model.Count(h => h.IsActive) actifs,
-                @Model.Count(h => !h.IsActive) désactivés
-            </span>
+            <input type="text" class="search-input" placeholder="🔍 Rechercher un avis..." id="searchInput" onkeyup="filterTable()" />
+            <span style="font-size:0.85rem;color:var(--ink-60);">@Model.Count avis au total</span>
         </div>
 
         <div class="table-card">
-            <table id="hotelsTable">
+            <table id="avisTable">
                 <thead>
                     <tr>
+                        <th>Client</th>
                         <th>Hôtel</th>
-                        <th>Image</th>
-                        <th>Propriétaire</th>
-                        <th>Ville</th>
-                        <th>Rating</th>
-                        <th>Statut</th>
-                        <th>Créé le</th>
+                        <th>Note</th>
+                        <th>Commentaire</th>
+                        <th>Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var hotel in Model)
+                    @foreach (var avis in Model)
                     {
                         <tr>
                             <td>
-                                <div style="font-weight:500">@hotel.Name</div>
-                                <div style="font-size:0.75rem;color:var(--ink-60)">@hotel.Address</div>
+                                <div style="font-weight:500">@avis.User?.FirstName @avis.User?.LastName</div>
+                                <div style="font-size:0.75rem;color:var(--ink-60)">@avis.User?.Email</div>
                             </td>
+                            <td style="font-weight:500">@avis.Hotel?.Name</td>
+                            <td><span class="stars">@(new string('⭐', avis.Note))</span> <span style="font-size:0.75rem;color:var(--ink-60)">(@avis.Note/5)</span></td>
+                            <td><div class="comment">@avis.Commentaire</div></td>
+                            <td style="color:var(--ink-60)">@avis.DateAvis.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>
-                                @if (!string.IsNullOrEmpty(hotel.ImageUrl))
-                                {
-                                    <img src="@hotel.ImageUrl" alt="@hotel.Name"
-                                         style="width:60px;height:45px;border-radius:8px;object-fit:cover;" />
-                                }
-                                else
-                                {
-                                    <div style="width:60px;height:45px;border-radius:8px;background:var(--cream-dk);
-                            display:flex;align-items:center;justify-content:center;
-                            font-size:1.2rem;color:var(--ink-30);">
-                                        🏨
-                                    </div>
-                                }
-                            </td>
-                            <td>
-                                <div>@hotel.Owner?.FirstName @hotel.Owner?.LastName</div>
-                                <div style="font-size:0.75rem;color:var(--ink-60)">@hotel.Owner?.Email</div>
-                            </td>
-                            <td>@hotel.City, @hotel.Country</td>
-                            <td>
-                                <span class="rating">⭐ @hotel.Rating.ToString("F1")</span>
-                            </td>
-                            <td>
-                                <span class="status-pill @(hotel.IsActive ? "pill-active" : "pill-inactive")">
-                                    @(hotel.IsActive ? "● Actif" : "○ Désactivé")
-                                </span>
-                            </td>
-                            <td style="color:var(--ink-60)">
-                                @hotel.CreatedAt.ToString("dd/MM/yyyy")
-                            </td>
-                            <td>
-                                <form method="post" action="/Admin/ToggleHotel" style="display:inline">
+                                <form method="post" action="/Admin/DeleteAvis" style="display:inline">
                                     @Html.AntiForgeryToken()
-                                    <input type="hidden" name="hotelId" value="@hotel.Id" />
-                                    <button type="submit"
-                                            class="action-btn @(hotel.IsActive ? "btn-deactivate" : "btn-activate")">
-                                        @(hotel.IsActive ? "🚫 Désactiver" : "✅ Activer")
-                                    </button>
-
-                                    <button type="button"
-                                            class="action-btn btn-delete"
-                                            onclick="confirmDeleteHotel(@hotel.Id, '@hotel.Name')">
-                                        🗑 Supprimer
-                                    </button>
-
+                                    <input type="hidden" name="avisId" value="@avis.Id" />
+                                    <button type="submit" class="btn-delete" onclick="return confirm('Supprimer cet avis ?')">🗑 Supprimer</button>
                                 </form>
                             </td>
                         </tr>
@@ -455,51 +386,10 @@
     <script>
         function filterTable() {
             const q = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('#hotelsTable tbody tr').forEach(row => {
+            document.querySelectorAll('#avisTable tbody tr').forEach(row => {
                 row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
             });
         }
     </script>
-
-
-    <div id="deleteHotelModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
-     z-index:999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:2rem;max-width:400px;width:90%;margin:auto;margin-top:20vh;">
-            <h3 style="font-family:'DM Serif Display',serif;margin-bottom:0.5rem;">Supprimer l'hôtel</h3>
-            <p style="color:rgba(15,22,33,0.6);font-size:0.9rem;margin-bottom:1.5rem;">
-                Supprimer <strong id="deleteHotelName"></strong> ?
-                Toutes ses chambres et réservations seront supprimées. <strong>Irréversible.</strong>
-            </p>
-            <form method="post" action="/Admin/DeleteHotel">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="hotelId" id="deleteHotelId" />
-                <div style="display:flex;gap:10px;justify-content:flex-end;">
-                    <button type="button" onclick="closeHotelModal()"
-                            style="padding:0.6rem 1.2rem;border-radius:8px;border:1.5px solid #ddd;
-                               background:white;cursor:pointer;font-weight:500;">
-                        Annuler
-                    </button>
-                    <button type="submit"
-                            style="padding:0.6rem 1.2rem;border-radius:8px;border:none;
-                               background:#c0392b;color:white;cursor:pointer;font-weight:600;">
-                        🗑 Supprimer définitivement
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function confirmDeleteHotel(hotelId, hotelName) {
-            document.getElementById('deleteHotelId').value = hotelId;
-            document.getElementById('deleteHotelName').textContent = hotelName;
-            document.getElementById('deleteHotelModal').style.display = 'flex';
-        }
-        function closeHotelModal() {
-            document.getElementById('deleteHotelModal').style.display = 'none';
-        }
-    </script>
-
-
 </body>
 </html>

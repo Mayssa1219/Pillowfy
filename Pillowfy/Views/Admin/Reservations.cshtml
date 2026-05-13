@@ -1,14 +1,15 @@
-﻿@model List<Pillowfy.Models.Hotel>
+﻿@model List<Pillowfy.Models.Reservation>
 @{
-    ViewData["Title"] = "Gestion Hôtels";
+    ViewData["Title"] = "Gestion Réservations";
     Layout = null;
+    var statusFilter = ViewBag.StatusFilter as string;
 }
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
-    <title>Pillowfy Admin — Hôtels</title>
+    <title>Pillowfy Admin — Réservations</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after {
@@ -21,7 +22,6 @@
             --gold: #C9A96E;
             --ink: #0F1621;
             --ink-60: rgba(15,22,33,0.60);
-            --ink-30: rgba(15,22,33,0.30);
             --cream: #FAF7F2;
             --cream-dk: #F0EBE1;
             --white: #FFFFFF;
@@ -199,27 +199,28 @@
                 color: var(--gold);
             }
 
-        .toolbar {
+        .filter-bar {
             display: flex;
-            align-items: center;
-            gap: 1rem;
+            gap: 0.5rem;
             margin-bottom: 1.5rem;
         }
 
-        .search-input {
-            padding: 0.65rem 1rem;
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             border: 1.5px solid var(--cream-dk);
-            border-radius: 10px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 0.9rem;
-            color: var(--ink);
             background: var(--white);
-            outline: none;
-            width: 280px;
-            transition: border-color .2s;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            color: var(--ink);
         }
 
-            .search-input:focus {
+            .filter-btn:hover, .filter-btn.active {
+                background: var(--gold);
+                color: white;
                 border-color: var(--gold);
             }
 
@@ -276,49 +277,29 @@
             border-radius: 100px;
         }
 
-        .pill-active {
+        .pill-pending {
+            background: rgba(201,169,110,0.15);
+            color: #9A722E;
+        }
+
+        .pill-confirmed {
             background: rgba(26,107,107,0.1);
             color: var(--teal);
         }
 
-        .pill-inactive {
-            background: rgba(15,22,33,0.06);
-            color: var(--ink-60);
-        }
-
-        .action-btn {
-            padding: 0.4rem 0.9rem;
-            border-radius: 8px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all .2s;
-        }
-
-        .btn-deactivate {
+        .pill-rejected {
             background: rgba(192,57,43,0.1);
             color: #c0392b;
         }
 
-            .btn-deactivate:hover {
-                background: rgba(192,57,43,0.2);
-            }
-
-        .btn-activate {
-            background: rgba(26,107,107,0.1);
-            color: var(--teal);
+        .pill-cancelled {
+            background: rgba(15,22,33,0.06);
+            color: var(--ink-60);
         }
 
-            .btn-activate:hover {
-                background: rgba(26,107,107,0.2);
-            }
-
-        .rating {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.82rem;
+        .price-tag {
+            font-weight: 600;
+            color: var(--teal);
         }
     </style>
 </head>
@@ -360,90 +341,70 @@
 
     <main class="main">
         <div class="page-header">
-            <div class="page-eyebrow">Gestion</div>
-            <h1 class="page-title">Gestion des <em>hôtels</em></h1>
+            <div class="page-eyebrow">Supervision</div>
+            <h1 class="page-title">Gestion des <em>réservations</em></h1>
         </div>
 
-        <div class="toolbar">
-            <input type="text" class="search-input"
-                   placeholder="🔍 Rechercher un hôtel..."
-                   id="searchInput" onkeyup="filterTable()" />
-            <span style="font-size:0.85rem;color:var(--ink-60);">
-                @Model.Count hôtels au total —
-                @Model.Count(h => h.IsActive) actifs,
-                @Model.Count(h => !h.IsActive) désactivés
-            </span>
+        <div class="filter-bar">
+            <a href="/Admin/Reservations" class="filter-btn @(string.IsNullOrEmpty(statusFilter) ? "active" : "")">Tous</a>
+            <a href="/Admin/Reservations?status=Pending" class="filter-btn @(statusFilter == "Pending" ? "active" : "")">⏳ En attente</a>
+            <a href="/Admin/Reservations?status=Confirmed" class="filter-btn @(statusFilter == "Confirmed" ? "active" : "")">✅ Confirmées</a>
+            <a href="/Admin/Reservations?status=Rejected" class="filter-btn @(statusFilter == "Rejected" ? "active" : "")">❌ Rejetées</a>
+            <a href="/Admin/Reservations?status=Cancelled" class="filter-btn @(statusFilter == "Cancelled" ? "active" : "")">🚫 Annulées</a>
         </div>
 
         <div class="table-card">
-            <table id="hotelsTable">
+            <table>
                 <thead>
                     <tr>
-                        <th>Hôtel</th>
-                        <th>Image</th>
-                        <th>Propriétaire</th>
-                        <th>Ville</th>
-                        <th>Rating</th>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Hôtel / Chambre</th>
+                        <th>Dates</th>
+                        <th>Voyageurs</th>
+                        <th>Prix total</th>
                         <th>Statut</th>
-                        <th>Créé le</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var hotel in Model)
+                    @foreach (var r in Model)
                     {
                         <tr>
+                            <td>#@r.Id</td>
                             <td>
-                                <div style="font-weight:500">@hotel.Name</div>
-                                <div style="font-size:0.75rem;color:var(--ink-60)">@hotel.Address</div>
+                                <div style="font-weight:500">@r.User?.FirstName @r.User?.LastName</div>
+                                <div style="font-size:0.75rem;color:var(--ink-60)">@r.User?.Email</div>
                             </td>
                             <td>
-                                @if (!string.IsNullOrEmpty(hotel.ImageUrl))
-                                {
-                                    <img src="@hotel.ImageUrl" alt="@hotel.Name"
-                                         style="width:60px;height:45px;border-radius:8px;object-fit:cover;" />
+                                <div style="font-weight:500">@r.Chambre?.Hotel?.Name</div>
+                                <div style="font-size:0.75rem;color:var(--ink-60)">@r.Chambre?.Name</div>
+                            </td>
+                            <td>
+                                <div>@r.CheckIn.ToString("dd/MM/yyyy")</div>
+                                <div style="font-size:0.75rem;color:var(--ink-60)">→ @r.CheckOut.ToString("dd/MM/yyyy")</div>
+                            </td>
+                            <td>@r.NumberOfGuests pers.</td>
+                            <td class="price-tag">@r.TotalPrice.ToString("N2") TND</td>
+                            <td>
+                                @{
+                                    var statusClass = r.Status.ToString() switch
+                                    {
+                                        "Pending" => "pill-pending",
+                                        "Confirmed" => "pill-confirmed",
+                                        "Rejected" => "pill-rejected",
+                                        "Cancelled" => "pill-cancelled",
+                                        _ => "pill-pending"
+                                    };
+                                    var statusLabel = r.Status.ToString() switch
+                                    {
+                                        "Pending" => "⏳ En attente",
+                                        "Confirmed" => "✅ Confirmée",
+                                        "Rejected" => "❌ Rejetée",
+                                        "Cancelled" => "🚫 Annulée",
+                                        _ => r.Status.ToString()
+                                    };
                                 }
-                                else
-                                {
-                                    <div style="width:60px;height:45px;border-radius:8px;background:var(--cream-dk);
-                            display:flex;align-items:center;justify-content:center;
-                            font-size:1.2rem;color:var(--ink-30);">
-                                        🏨
-                                    </div>
-                                }
-                            </td>
-                            <td>
-                                <div>@hotel.Owner?.FirstName @hotel.Owner?.LastName</div>
-                                <div style="font-size:0.75rem;color:var(--ink-60)">@hotel.Owner?.Email</div>
-                            </td>
-                            <td>@hotel.City, @hotel.Country</td>
-                            <td>
-                                <span class="rating">⭐ @hotel.Rating.ToString("F1")</span>
-                            </td>
-                            <td>
-                                <span class="status-pill @(hotel.IsActive ? "pill-active" : "pill-inactive")">
-                                    @(hotel.IsActive ? "● Actif" : "○ Désactivé")
-                                </span>
-                            </td>
-                            <td style="color:var(--ink-60)">
-                                @hotel.CreatedAt.ToString("dd/MM/yyyy")
-                            </td>
-                            <td>
-                                <form method="post" action="/Admin/ToggleHotel" style="display:inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="hotelId" value="@hotel.Id" />
-                                    <button type="submit"
-                                            class="action-btn @(hotel.IsActive ? "btn-deactivate" : "btn-activate")">
-                                        @(hotel.IsActive ? "🚫 Désactiver" : "✅ Activer")
-                                    </button>
-
-                                    <button type="button"
-                                            class="action-btn btn-delete"
-                                            onclick="confirmDeleteHotel(@hotel.Id, '@hotel.Name')">
-                                        🗑 Supprimer
-                                    </button>
-
-                                </form>
+                                <span class="status-pill @statusClass">@statusLabel</span>
                             </td>
                         </tr>
                     }
@@ -451,55 +412,5 @@
             </table>
         </div>
     </main>
-
-    <script>
-        function filterTable() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('#hotelsTable tbody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
-            });
-        }
-    </script>
-
-
-    <div id="deleteHotelModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
-     z-index:999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:2rem;max-width:400px;width:90%;margin:auto;margin-top:20vh;">
-            <h3 style="font-family:'DM Serif Display',serif;margin-bottom:0.5rem;">Supprimer l'hôtel</h3>
-            <p style="color:rgba(15,22,33,0.6);font-size:0.9rem;margin-bottom:1.5rem;">
-                Supprimer <strong id="deleteHotelName"></strong> ?
-                Toutes ses chambres et réservations seront supprimées. <strong>Irréversible.</strong>
-            </p>
-            <form method="post" action="/Admin/DeleteHotel">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="hotelId" id="deleteHotelId" />
-                <div style="display:flex;gap:10px;justify-content:flex-end;">
-                    <button type="button" onclick="closeHotelModal()"
-                            style="padding:0.6rem 1.2rem;border-radius:8px;border:1.5px solid #ddd;
-                               background:white;cursor:pointer;font-weight:500;">
-                        Annuler
-                    </button>
-                    <button type="submit"
-                            style="padding:0.6rem 1.2rem;border-radius:8px;border:none;
-                               background:#c0392b;color:white;cursor:pointer;font-weight:600;">
-                        🗑 Supprimer définitivement
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function confirmDeleteHotel(hotelId, hotelName) {
-            document.getElementById('deleteHotelId').value = hotelId;
-            document.getElementById('deleteHotelName').textContent = hotelName;
-            document.getElementById('deleteHotelModal').style.display = 'flex';
-        }
-        function closeHotelModal() {
-            document.getElementById('deleteHotelModal').style.display = 'none';
-        }
-    </script>
-
-
 </body>
 </html>

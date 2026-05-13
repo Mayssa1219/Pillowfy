@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pillowfy.Data;
+using Pillowfy.Enums;
 using Pillowfy.Models;
 using Pillowfy.Services;
 
@@ -198,13 +199,13 @@ namespace Pillowfy.Controllers
         public async Task<IActionResult> DeleteHotel(int hotelId)
         {
             var hotel = await _context.Hotels.FindAsync(hotelId);
-            if (hotel == null)
-                return NotFound();
+            if (hotel == null) return NotFound();
 
-            _context.Hotels.Remove(hotel);
+            // Suppression logique plutôt que physique (évite les FK violations)
+            hotel.IsActive = false;
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Hôtel \"{hotel.Name}\" supprimé définitivement.";
+            TempData["Success"] = $"Hôtel \"{hotel.Name}\" désactivé.";
             return RedirectToAction("Hotels");
         }
 
@@ -219,9 +220,9 @@ namespace Pillowfy.Controllers
                     .ThenInclude(c => c.Hotel)
                 .AsQueryable();
 
-            // Filtre optionnel par statut
-            if (!string.IsNullOrEmpty(status))
-                query = query.Where(r => r.Status.ToString() == status);
+            // ✅ CORRIGÉ : Parse l'enum au lieu de ToString()
+            if (!string.IsNullOrEmpty(status) && Enum.TryParse<ReservationStatus>(status, out var statusEnum))
+                query = query.Where(r => r.Status == statusEnum);
 
             var reservations = await query
                 .OrderByDescending(r => r.CheckIn)
@@ -229,6 +230,66 @@ namespace Pillowfy.Controllers
 
             ViewBag.StatusFilter = status;
             return View(reservations);
+        }
+
+        // ── Changer le rôle d'un utilisateur (Customer ↔ Owner) ──
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = "Identity.Application", Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeRole(string userId, string newRole)
+        {
+            var allowedRoles = new[] { "Customer", "Owner" };
+            if (!allowedRoles.Contains(newRole))
+            {
+                TempData["Error"] = "Rôle invalide.";
+                return RedirectToAction("Users");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound();
+
+            // Sécurité : pas de changement sur un Admin
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                TempData["Error"] = "Impossible de modifier le rôle d'un administrateur.";
+                return RedirectToAction("Users");
+            }
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _userManager.AddToRoleAsync(user, newRole);
+
+            TempData["Success"] = $"Rôle de {user.Email} changé en {newRole}.";
+            return RedirectToAction("Users");
+        }
+
+        // ── Modération des avis ──
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = "Identity.Application", Roles = "Admin")]
+        public async Task<IActionResult> Avis()
+        {
+            var avis = await _context.Avis
+                .Include(a => a.User)
+                .Include(a => a.Hotel)
+                .OrderByDescending(a => a.DateAvis)
+                .ToListAsync();
+
+            return View(avis);
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = "Identity.Application", Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAvis(int avisId)
+        {
+            var avis = await _context.Avis.FindAsync(avisId);
+            if (avis == null) return NotFound();
+
+            _context.Avis.Remove(avis);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Avis supprimé.";
+            return RedirectToAction("Avis");
         }
     }
 }

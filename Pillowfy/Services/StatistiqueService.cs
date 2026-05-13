@@ -1,21 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Pillowfy.Data;
 using Pillowfy.DTOs;
 using Pillowfy.Enums;
+using Pillowfy.Models;
 
 namespace Pillowfy.Services
 {
     public class StatistiqueService
     {
         private readonly PilloWfyDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public StatistiqueService(PilloWfyDbContext context)
+        public StatistiqueService(PilloWfyDbContext context,
+                          UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
         public async Task<DashboardAdminDto> GetDashboardAsync()
         {
+
+            // Dans le service :
+            var totalOwners = (await _userManager.GetUsersInRoleAsync("Owner")).Count;
+            var totalCustomers = (await _userManager.GetUsersInRoleAsync("Customer")).Count;
+
+            // Nouveaux inscrits ce mois
+            var debutMois = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+            var newUsersThisMonth = await _context.Users
+                .CountAsync(u => u.CreatedAt >= debutMois);
             // ── Réservations chargées en mémoire (avec Hotel inclus) ──
             var reservations = await _context.Reservations
                 .Include(r => r.Chambre).ThenInclude(c => c.Hotel)
@@ -93,15 +108,19 @@ namespace Pillowfy.Services
             {
                 TotalReservations = reservations.Count,
                 ReservationsConfirmees = confirmees.Count,
-                ReservationsAnnulees = reservations
-                                            .Count(r => r.Status == ReservationStatus.Cancelled),
+                ReservationsAnnulees = reservations.Count(r => r.Status == ReservationStatus.Cancelled),
                 RevenuTotal = confirmees.Sum(r => r.TotalPrice),
                 TauxOccupation = await GetTauxOccupationAsync(),
                 TotalHotels = await _context.Hotels.CountAsync(),
                 TotalChambres = await _context.Chambres.CountAsync(),
-                TotalClients = await _context.Users.CountAsync(),
+                TotalClients = totalOwners + totalCustomers,
                 TotalAvis = await _context.Avis.CountAsync(),
                 NoteMoyenneGlobale = noteMoyenne,
+
+                TotalOwners = totalOwners,
+                TotalCustomers = totalCustomers,
+                NewUsersThisMonth = newUsersThisMonth,
+
                 ReservationsParMois = parMois,
                 HotelsLesPlusReserves = hotelsPopulaires
             };

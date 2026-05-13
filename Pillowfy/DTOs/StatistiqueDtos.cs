@@ -12,6 +12,10 @@
         public int TotalClients { get; set; }
         public int TotalAvis { get; set; }
         public double NoteMoyenneGlobale { get; set; }
+        
+        public int TotalOwners { get; set; }
+        public int TotalCustomers { get; set; }
+        public int NewUsersThisMonth { get; set; }
         public List<ReservationsParMoisDto> ReservationsParMois { get; set; } = new();
         public List<HotelPopulaireDto> HotelsLesPlusReserves { get; set; } = new();
     }

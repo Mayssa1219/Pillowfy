@@ -198,6 +198,7 @@ async Task SeedDatabase(IServiceProvider serviceProvider)
 
     // 1. Migrations
     await context.Database.MigrateAsync();
+    await SeedAvis(context, userManager);
 
     // 2. Créer les rôles
     var roles = new[] { "Admin", "Owner", "Customer" };
@@ -261,4 +262,41 @@ async Task SeedUser(
         throw new Exception($"Erreur assignation rôle '{role}' à '{email}': {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
 
 
+}
+
+// 5. Seed Avis (test)
+async Task SeedAvis(PilloWfyDbContext context, UserManager<ApplicationUser> userManager)
+{
+    if (await context.Avis.AnyAsync()) return; // Déjà seedé
+
+    var slimen = await userManager.FindByEmailAsync("SiSlimen@gmail.com");
+    var sbou3i = await userManager.FindByEmailAsync("sbou3i@gmail.com");
+    var bayoudh = await userManager.FindByEmailAsync("bayoudh@gmail.com");
+    var mayssa = await userManager.FindByEmailAsync("mayssa@pillowfy.com");
+
+    var sahaBeach = await context.Hotels.FirstOrDefaultAsync(h => h.Name == "SAHA BEACH");
+    var testHotel = await context.Hotels.FirstOrDefaultAsync(h => h.Name == "Hotel Test Pillowfy");
+
+    if (slimen == null || sbou3i == null || sahaBeach == null) return;
+
+    var avisList = new List<Avis>
+    {
+        new Avis { Note = 5, Commentaire = "Excellent hôtel, service impeccable !",
+                   DateAvis = DateTime.UtcNow, UserId = sbou3i.Id, HotelId = sahaBeach.Id },
+
+        new Avis { Note = 4, Commentaire = "Très bon séjour, chambre propre.",
+                   DateAvis = DateTime.UtcNow.AddDays(-2), UserId = bayoudh?.Id ?? sbou3i.Id, HotelId = sahaBeach.Id },
+
+        new Avis { Note = 3, Commentaire = "Correct mais prix élevé.",
+                   DateAvis = DateTime.UtcNow.AddDays(-5), UserId = sbou3i.Id, HotelId = testHotel?.Id ?? sahaBeach.Id },
+
+        new Avis { Note = 5, Commentaire = "Parfait ! Je reviendrai.",
+                   DateAvis = DateTime.UtcNow.AddDays(-1), UserId = mayssa?.Id ?? sbou3i.Id, HotelId = testHotel?.Id ?? sahaBeach.Id },
+
+        new Avis { Note = 2, Commentaire = "Déçu, trop bruyant.",
+                   DateAvis = DateTime.UtcNow.AddDays(-3), UserId = slimen.Id, HotelId = sahaBeach.Id }
+    };
+
+    await context.Avis.AddRangeAsync(avisList);
+    await context.SaveChangesAsync();
 }

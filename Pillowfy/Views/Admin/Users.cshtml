@@ -18,6 +18,16 @@
             padding: 0;
         }
 
+        select[name="newRole"] {
+            background: var(--white);
+            color: var(--ink);
+            outline: none;
+        }
+
+            select[name="newRole"]:focus {
+                border-color: var(--gold);
+            }
+
         :root {
             --gold: #C9A96E;
             --ink: #0F1621;
@@ -390,11 +400,26 @@
             <span class="sidebar-brand-name">Pillowfy</span>
         </a>
         <div class="sidebar-label">Principal</div>
-        <a href="/Admin/Dashboard" class="nav-item"><span class="icon">📊</span> Dashboard</a>
+        <a href="/Admin/Dashboard" class="nav-item @(ViewData["Title"]?.ToString() == "Dashboard Admin" ? "active" : "")">
+            <span class="icon">📊</span> Dashboard
+        </a>
+
         <div class="sidebar-label">Gestion</div>
-        <a href="/Admin/Users" class="nav-item active"><span class="icon">👥</span> Utilisateurs</a>
-        <a href="/Admin/Hotels" class="nav-item"><span class="icon">🏨</span> Hôtels</a>
-        <a href="/Admin/Statistiques" class="nav-item"><span class="icon">📈</span> Statistiques</a>
+        <a href="/Admin/Users" class="nav-item @(ViewData["Title"]?.ToString() == "Gestion Utilisateurs" ? "active" : "")">
+            <span class="icon">👥</span> Utilisateurs
+        </a>
+        <a href="/Admin/Hotels" class="nav-item @(ViewData["Title"]?.ToString() == "Gestion Hôtels" ? "active" : "")">
+            <span class="icon">🏨</span> Hôtels
+        </a>
+        <a href="/Admin/Reservations" class="nav-item @(ViewData["Title"]?.ToString() == "Gestion Réservations" ? "active" : "")">
+            <span class="icon">📅</span> Réservations
+        </a>
+        <a href="/Admin/Avis" class="nav-item @(ViewData["Title"]?.ToString() == "Modération Avis" ? "active" : "")">
+            <span class="icon">⭐</span> Avis
+        </a>
+        <a href="/Admin/Statistiques" class="nav-item @(ViewData["Title"]?.ToString() == "Statistiques" ? "active" : "")">
+            <span class="icon">📈</span> Statistiques
+        </a>
         <div class="sidebar-footer">
             <div class="admin-info">
                 <div class="admin-avatar">A</div>
@@ -469,25 +494,32 @@
                                 <td>
                                     @if (primaryRole != "Admin")
                                     {
+                                        <!-- Changement de rôle -->
+                                        <form method="post" action="/Admin/ChangeRole" style="display:inline;margin-right:4px;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <select name="newRole" onchange="this.form.submit()"
+                                                    style="padding:0.35rem 0.6rem;border-radius:6px;border:1.5px solid var(--cream-dk);
+                                       font-family:'DM Sans',sans-serif;font-size:0.78rem;cursor:pointer;">
+                                                <option value="Customer" selected="@(primaryRole == "Customer")">👤 Customer</option>
+                                                <option value="Owner" selected="@(primaryRole == "Owner")">🏨 Owner</option>
+                                            </select>
+                                        </form>
+
                                         <form method="post" action="/Admin/ToggleUser" style="display:inline">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="userId" value="@user.Id" />
-                                            <button type="submit"
-                                                    class="action-btn @(isBlocked ? "btn-unblock" : "btn-block")">
+                                            <button type="submit" class="action-btn @(isBlocked ? "btn-unblock" : "btn-block")">
                                                 @(isBlocked ? "✅ Débloquer" : "🚫 Bloquer")
                                             </button>
-
-                                            <button type="button"
-                                                    class="action-btn btn-delete"
-                                                    onclick="confirmDelete('@user.Id', '@user.FirstName @user.LastName')">
+                                            <button type="button" class="action-btn btn-delete" onclick="confirmDelete('@user.Id', '@user.FirstName @user.LastName')">
                                                 🗑 Supprimer
                                             </button>
-
                                         </form>
                                     }
                                     else
                                     {
-                                        <span style="font-size:0.78rem;color:var(--ink-30)">—</span>
+                                        <span style="font-size:0.78rem;color:var(--ink-30)">🔒 Admin protégé</span>
                                     }
                                 </td>
                             </tr>
