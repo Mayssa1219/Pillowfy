@@ -198,14 +198,30 @@ namespace Pillowfy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteHotel(int hotelId)
         {
-            var hotel = await _context.Hotels.FindAsync(hotelId);
+            var hotel = await _context.Hotels
+                .Include(h => h.Chambres)           // ← Charge les chambres liées
+                .ThenInclude(c => c.Reservations)   // ← Charge les réservations liées
+                .FirstOrDefaultAsync(h => h.Id == hotelId);
+
             if (hotel == null) return NotFound();
 
-            // Suppression logique plutôt que physique (évite les FK violations)
-            hotel.IsActive = false;
+            // ⚠️ Vérification : ne pas supprimer si des réservations actives existent
+            var hasActiveReservations = hotel.Chambres
+                .SelectMany(c => c.Reservations)
+                .Any(r => r.Status == ReservationStatus.Confirmed
+                       && r.CheckOut >= DateTime.UtcNow);
+
+            if (hasActiveReservations)
+            {
+                TempData["Error"] = $"Impossible de supprimer \"{hotel.Name}\" : des réservations actives existent.";
+                return RedirectToAction("Hotels");
+            }
+
+            // 🔥 SUPPRESSION PHYSIQUE (cascade sur chambres si configuré)
+            _context.Hotels.Remove(hotel);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Hôtel \"{hotel.Name}\" désactivé.";
+            TempData["Success"] = $"Hôtel \"{hotel.Name}\" supprimé définitivement.";
             return RedirectToAction("Hotels");
         }
 

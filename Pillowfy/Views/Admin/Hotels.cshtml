@@ -462,6 +462,7 @@
     </script>
 
 
+    <!-- Modal de confirmation suppression -->
     <div id="deleteHotelModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
      z-index:999;align-items:center;justify-content:center;">
         <div style="background:white;border-radius:16px;padding:2rem;max-width:400px;width:90%;margin:auto;margin-top:20vh;">
@@ -470,9 +471,9 @@
                 Supprimer <strong id="deleteHotelName"></strong> ?
                 Toutes ses chambres et réservations seront supprimées. <strong>Irréversible.</strong>
             </p>
-            <form method="post" action="/Admin/DeleteHotel">
+            <form method="post" action="/Admin/DeleteHotel" id="deleteHotelForm">
                 @Html.AntiForgeryToken()
-                <input type="hidden" name="hotelId" id="deleteHotelId" />
+                <input type="hidden" name="hotelId" id="deleteHotelId" value="" />
                 <div style="display:flex;gap:10px;justify-content:flex-end;">
                     <button type="button" onclick="closeHotelModal()"
                             style="padding:0.6rem 1.2rem;border-radius:8px;border:1.5px solid #ddd;
@@ -491,10 +492,11 @@
 
     <script>
         function confirmDeleteHotel(hotelId, hotelName) {
-            document.getElementById('deleteHotelId').value = hotelId;
+            document.getElementById('deleteHotelId').value = hotelId;  
             document.getElementById('deleteHotelName').textContent = hotelName;
             document.getElementById('deleteHotelModal').style.display = 'flex';
         }
+
         function closeHotelModal() {
             document.getElementById('deleteHotelModal').style.display = 'none';
         }
