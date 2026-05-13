@@ -102,15 +102,16 @@ namespace Pillowfy.Services
             if (user == null)
                 return Fail("Email ou mot de passe incorrect.");
 
+            // ✅ Vérifier si le compte est actif
+            if (!user.IsActive)
+                return Fail("Votre compte a été désactivé. Veuillez contacter l'administrateur.");
+
             var passwordValid = await _userManager.CheckPasswordAsync(user, model.Password);
 
             if (!passwordValid)
                 return Fail("Email ou mot de passe incorrect.");
 
-            // récupérer les rôles
             var roles = await _userManager.GetRolesAsync(user);
-
-            // générer le token
             var token = GenerateJwtToken(user, roles);
 
             return new AuthResponseDto
@@ -118,7 +119,6 @@ namespace Pillowfy.Services
                 Success = true,
                 Token = token,
                 Role = roles.FirstOrDefault(),
-
                 User = new UserDto
                 {
                     Id = user.Id,
