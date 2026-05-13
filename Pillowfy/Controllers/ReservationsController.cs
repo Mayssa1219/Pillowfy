@@ -8,7 +8,7 @@ namespace Pillowfy.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // ← appliqué globalement, plus besoin de le répéter
+    [Authorize] 
     public class ReservationsController : ControllerBase
     {
         private readonly IReservationService _service;

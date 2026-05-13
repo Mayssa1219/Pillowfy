@@ -5,9 +5,11 @@ namespace Pillowfy.Controllers
 {
     [Authorize(Roles = "Customer")]
     [Route("Client")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ClientController : Controller
     {
         [Route("Dashboard")]
+
         public IActionResult Dashboard() => View();
 
         [Route("Profil")]

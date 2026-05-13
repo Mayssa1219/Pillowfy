@@ -6,6 +6,7 @@ namespace Pillowfy.Controllers
 {
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "Owner")]
     [Route("Owner")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class OwnerController : Controller
     {
         [Route("Dashboard")]

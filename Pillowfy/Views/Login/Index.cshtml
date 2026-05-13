@@ -654,10 +654,13 @@
             window.location.href = '/Client/Dashboard';
         }
         else if (role === "Owner") {
-            window.location.href = '/Owner/Dashboard';
-        }
+            window.location.href = '/Owner/Dashboard';}
+        
+        else if (role === "Admin") {
+        alert("Cet espace n'est pas destiné aux administrateurs.");        }
         else {
             window.location.href = '/';
+
         }
 
         } catch (err) {

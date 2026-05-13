@@ -1649,9 +1649,7 @@
                     <a href="/Client/ListeReservations" class="btn-teal">
                         <i data-lucide="eye"></i> Voir détail
                     </a>
-                    <a href="#" class="btn-teal" id="btnModifier">
-                        <i data-lucide="pencil"></i> Modifier
-                    </a>
+                    
                 </div>
             </div>
 
@@ -1738,7 +1736,7 @@
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">Taux d'occupation</span>
-                        <a href="/Admin/Hotels" class="card-link">Détails →</a>
+                        <a href="/Client/ListeHotels" class="card-link">Détails →</a>
                     </div>
                     <div id="occupancyList">
                         <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;"></div>
@@ -1754,27 +1752,27 @@
                         <a href="/Client/Services" class="card-link">Voir tout →</a>
                     </div>
                     <div class="service-grid">
-                        <div class="service-item" onclick="window.location='/Client/Services/SpaWellness'">
+                        <div class="service-item" >
                             <div class="service-ic">🧖</div>
                             <div><div class="service-name">Spa & Bien-être</div><div class="service-status">Ouvert · 9h–21h</div></div>
                         </div>
-                        <div class="service-item" onclick="window.location='/Client/Services/Restaurant'">
+                        <div class="service-item" >
                             <div class="service-ic">🍽️</div>
                             <div><div class="service-name">Restaurant</div><div class="service-status">Ouvert · 12h–23h</div></div>
                         </div>
-                        <div class="service-item" onclick="window.location='/Client/Services/RoomService'">
+                        <div class="service-item">
                             <div class="service-ic">🛎️</div>
                             <div><div class="service-name">Room Service</div><div class="service-status">24h/24</div></div>
                         </div>
-                        <div class="service-item" onclick="window.location='/Client/Services/Navette'">
+                        <div class="service-item">
                             <div class="service-ic">🚗</div>
                             <div><div class="service-name">Navette aéroport</div><div class="service-status">Sur réservation</div></div>
                         </div>
-                        <div class="service-item" onclick="window.location='/Client/Services/Piscine'">
+                        <div class="service-item">
                             <div class="service-ic">🏊</div>
                             <div><div class="service-name">Piscine</div><div class="service-status">Ouvert · 8h–20h</div></div>
                         </div>
-                        <div class="service-item" onclick="window.location='/Client/Services/Concierge'">
+                        <div class="service-item">
                             <div class="service-ic">🗝️</div>
                             <div><div class="service-name">Conciergerie</div><div class="service-status">24h/24</div></div>
                         </div>
@@ -2076,8 +2074,7 @@
                         document.getElementById('resNights').textContent   = n;
                         document.getElementById('resGuests').textContent   = r.numberOfGuests;
                         document.getElementById('resPrice').textContent    = r.totalPrice.toLocaleString('fr-FR') + ' €';
-                        // FIX : injecter l'ID dans le href du bouton Modifier
-                        document.getElementById('btnModifier').href = `/Client/ModifierReservation?id=${r.id}`;
+                   
                         document.getElementById('reservationBanner').style.display = 'flex';
                     } else {
                         document.getElementById('reservationBanner').style.display = 'none';
