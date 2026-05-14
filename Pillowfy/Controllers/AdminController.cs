@@ -176,8 +176,7 @@ namespace Pillowfy.Controllers
         public async Task<IActionResult> DeleteUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return NotFound();
+            if (user == null) return NotFound();
 
             // Sécurité : on ne peut pas supprimer un Admin
             var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
@@ -187,6 +186,35 @@ namespace Pillowfy.Controllers
                 return RedirectToAction("Users");
             }
 
+            // ✅ CORRIGÉ : Supprimer d'abord les avis liés à cet utilisateur
+            var userAvis = await _context.Avis.Where(a => a.UserId == userId).ToListAsync();
+            if (userAvis.Any())
+            {
+                _context.Avis.RemoveRange(userAvis);
+                await _context.SaveChangesAsync();  // Sauvegarde intermédiaire
+            }
+
+            // Supprimer aussi les réservations liées (si NoAction sur User)
+            var userReservations = await _context.Reservations
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
+            if (userReservations.Any())
+            {
+                // Supprimer d'abord les paiements liés
+                var reservationIds = userReservations.Select(r => r.Id).ToList();
+                var paiements = await _context.Paiements
+                    .Where(p => reservationIds.Contains(p.ReservationId))
+                    .ToListAsync();
+                if (paiements.Any())
+                {
+                    _context.Paiements.RemoveRange(paiements);
+                }
+
+                _context.Reservations.RemoveRange(userReservations);
+                await _context.SaveChangesAsync();
+            }
+
+            // Maintenant supprimer l'utilisateur
             await _userManager.DeleteAsync(user);
             TempData["Success"] = $"Utilisateur {user.Email} supprimé avec succès.";
             return RedirectToAction("Users");

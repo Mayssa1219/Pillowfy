@@ -361,7 +361,20 @@
             transition: all .2s;
         }
 
-        .btn-block {
+
+        .btn-disable {
+            background: rgba(192,57,43,0.1);
+            color: #c0392b;
+        }
+        /* au lieu de btn-block */
+        .btn-enable {
+            background: rgba(26,107,107,0.1);
+            color: var(--teal);
+        }
+        /* au lieu de btn-unblock */
+
+
+        /* .btn-block {
             background: rgba(192,57,43,0.1);
             color: #c0392b;
         }
@@ -377,7 +390,7 @@
 
             .btn-unblock:hover {
                 background: rgba(26,107,107,0.2);
-            }
+            } */
 
         .btn-delete {
             background: rgba(192,57,43,0.08);
@@ -510,7 +523,7 @@
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="userId" value="@user.Id" />
                                             <button type="submit" class="action-btn @(isBlocked ? "btn-unblock" : "btn-block")">
-                                                @(isBlocked ? "✅ Débloquer" : "🚫 Bloquer")
+                                                @(isBlocked ? "✅ Activer" : "🚫 Désactiver") 
                                             </button>
                                             <button type="button" class="action-btn btn-delete" onclick="confirmDelete('@user.Id', '@user.FirstName @user.LastName')">
                                                 🗑 Supprimer

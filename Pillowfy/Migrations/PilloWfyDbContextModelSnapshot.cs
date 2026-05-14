@@ -270,7 +270,7 @@ namespace Pillowfy.Migrations
                     b.HasIndex("UserId", "HotelId")
                         .IsUnique();
 
-                    b.ToTable("Avis");
+                    b.ToTable("Avis", (string)null);
                 });
 
             modelBuilder.Entity("Pillowfy.Models.Chambre", b =>
@@ -305,7 +305,7 @@ namespace Pillowfy.Migrations
 
                     b.HasIndex("HotelId");
 
-                    b.ToTable("Chambres");
+                    b.ToTable("Chambres", (string)null);
                 });
 
             modelBuilder.Entity("Pillowfy.Models.Hotel", b =>
@@ -359,7 +359,7 @@ namespace Pillowfy.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Hotels");
+                    b.ToTable("Hotels", (string)null);
                 });
 
             modelBuilder.Entity("Pillowfy.Models.Paiement", b =>
@@ -392,7 +392,7 @@ namespace Pillowfy.Migrations
                     b.HasIndex("ReservationId")
                         .IsUnique();
 
-                    b.ToTable("Paiements");
+                    b.ToTable("Paiements", (string)null);
                 });
 
             modelBuilder.Entity("Pillowfy.Models.Reservation", b =>
@@ -434,7 +434,7 @@ namespace Pillowfy.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
